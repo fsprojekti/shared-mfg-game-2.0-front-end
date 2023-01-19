@@ -120,6 +120,9 @@ export const ContextWrapper = (props) => {
     const [cancelVoteModalContent, setCancelVoteModalContent] = useState({});
     const [isCancelVoteModalOpen, setIsCancelVoteModalOpen] = useState(false);
 
+    const [cancelBlockMocalContent, setCancelBlockModalContent] = useState({});
+    const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);
+
     
 
     //--------------------- FUNCTIONS ------------------------------------------------------
@@ -186,7 +189,7 @@ export const ContextWrapper = (props) => {
             const index = orders.findIndex(c => {
                 return c.id === orderObj.id;
             });
-            // console.log(index)
+            console.log(index)
             if(index !== -1) {
                 orders[index] = orderObj;
                 // console.log(oldChains[index])
@@ -492,12 +495,11 @@ export const ContextWrapper = (props) => {
     }, []);
 
     //User create order function
-    const apiUserCancelOrder= useCallback((price, orderId) => {
+    const apiUserCancelOrder= useCallback((orderId) => {
         return new Promise(async (resolve, reject) => {
             try {                
                 let out = await axios.get(`user/order/cancel`,{
                     params: {
-                        price: price,
                         orderId: orderId,
                     },
                     headers: {
@@ -1059,8 +1061,9 @@ export const ContextWrapper = (props) => {
             apiGameBridges,
             apiUserBlockGet, apiUserStealGet,
             stealVotes, setStealVotes,
-            blockVotes, setBlockVotes
-            
+            blockVotes, setBlockVotes,
+            cancelBlockMocalContent, setCancelBlockModalContent,
+            isCancelBlockModalOpen, setIsCanclBlockModalOpen,
         }}>
             {props.children}
         </AppContext.Provider>

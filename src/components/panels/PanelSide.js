@@ -14,7 +14,7 @@ import {
 import classNames from "classnames";
 import { AppContext } from "../../context/context";
 
-import {useState, useContext, useEffect, useReducer} from "react";
+import {useContext} from "react";
 import {GiStoneBridge, GiTakeMyMoney, GiTriquetra} from "react-icons/gi";
 import UserInfo from "../misc/SidebarPanel/UserInfo";
 
@@ -27,7 +27,7 @@ const PanelSide = () => {
 
 
     return (
-        <Col sm={12} md={3} lg={4} xl={3}>
+        <Col sm={12} md={3} lg={4} xl={3} style={{zIndex: 1}}>
 {/*  //007676 */}
             <IconContext.Provider value={{color: "black", size: "20px"}}>
                 <ListGroup className={"p-2"} style={{"marginTop": "5%", "borderRadius": "5px", "boxShadow": "var(--dark-shadow)"}}>

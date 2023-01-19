@@ -105,7 +105,7 @@ const UserInfo = () => {
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
 
         {/* , boxShadow: "var(--dark-shadow)" */}
-            <div className="d-flex " style={{zIndex: 2, position: "absolute", width: "80%", flexWrap: "wrap",  borderRadius: "10px", bottom: "1",  width:"fitContent", backgroundColor: "rgba(251, 170, 12, 0.9)", justifySelf: "center", alignSelf: "center"}}>
+            <div className="d-flex " style={{zIndex: 2, position: "absolute", flexWrap: "wrap",  borderRadius: "10px", maxWidth: "400px", backgroundColor: "rgba(251, 170, 12)", alignSelf: "center"}}>
                 <CreateOrderModal 
                     show={orderModal.show}
                     reportHide={() => {
@@ -133,10 +133,7 @@ const UserInfo = () => {
                     
                 </div>
                 <hr />
-                {/* <div style={{margin:"2rem"}}> */}
-                    {/* {user.amountOfAvailableService === 1 && orderExists ? <button className="create-order-btn" onClick={openCreateOrderModal}>Set Price</button> : ''} */}
-                         {/* <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={openCreateOrderModal}>Set Price</Button> */}
-                {/* </div> */}
+
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <h4>Number of upgrades: {user.upgradeNumber}</h4>
                 </div>

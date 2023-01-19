@@ -66,17 +66,18 @@ const Trades = () => {
 
                 const providerAgentObject = agents.filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
+                console.log(providerAgentObject[0])
                 ordr.providerName = providerClient[0].name;
+                ordr.agentId = providerAgentObject[0]._id;
+                ordr.agentAccount = providerAgentObject[0].account;
+                ordr.providerId = providerClient[0].id;
 
                 return ordr
             })   
-
-            console.log(placedOrdersWithPlayerData);
-
                 
 
-            let uniqueService = await [...new Set(servicesAll.map(item => item.type))];
-            uniqueService = await uniqueService.filter(item => item !== service.type);
+            let uniqueService = [...new Set(servicesAll.map(item => item.type))];
+            uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices(uniqueService)
 
             
@@ -179,7 +180,7 @@ const Trades = () => {
 
     return (
         <>
-            <div className="d-flex flex-row flex-wrap ">
+            <div className="d-flex flex-row flex-wrap" style={{zIndex: 2}}>
 
                 <div style={{width: "35vw", maxWidth: "100%", boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", background: backColor }}>
                     <div style={{ textAlign: "center", paddingTop: "7px"}}>

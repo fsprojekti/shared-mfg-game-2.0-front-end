@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
-import { useGlobalContext } from '../../../context/context';
+import React, {useState, useContext} from 'react';
+import { AppContext } from '../../../context/context';
 import {InputGroup, FormControl, Button} from "react-bootstrap";
 import Collapse from 'react-bootstrap/Collapse';
 
 const CreateOrderModal = (props) => {
-    const { apiUserCreateOrder, closeCreateOrderModal, user, chains, cookies, activeChain, setNote, note } = useGlobalContext();
+    const context = useContext(AppContext);
     const [price, setPrice] = useState("0");
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertContent, setAlertContent] = useState('');
+
 
     const countDecimals = (value) => {
         if(Math.floor(value).toString() === value) return 0;
@@ -17,7 +16,7 @@ const CreateOrderModal = (props) => {
     const confirm = async () => {
         try {
             if (price === undefined || price === "" || price == 0) {
-                setNote((prevState) => {
+                context.setNote((prevState) => {
                     return({
                       ...prevState,
                       msg: 'You must enter a value',
@@ -28,7 +27,7 @@ const CreateOrderModal = (props) => {
                   });
             } else {
                 if (isNaN(price) || price < 0) {
-                    setNote((prevState) => {
+                    context.setNote((prevState) => {
                         return({
                           ...prevState,
                           msg: 'You must enter positive numbers',
@@ -39,7 +38,7 @@ const CreateOrderModal = (props) => {
                       });
                 } else {
                     if (countDecimals(price) > 0) {
-                        setNote((prevState) => {
+                        context.setNote((prevState) => {
                             return({
                               ...prevState,
                               msg: 'Input value must be an integer',
@@ -50,7 +49,7 @@ const CreateOrderModal = (props) => {
                           });
                     } else {
                         if (parseInt(price) > 30000) {
-                            setNote((prevState) => {
+                            context.setNote((prevState) => {
                                 return({
                                   ...prevState,
                                   msg: 'Maximum price in this game is 30000',
@@ -60,8 +59,8 @@ const CreateOrderModal = (props) => {
                                 });
                               });
                         } else {
-                            if (user.amountOfAvailableService === 0) {
-                                setNote((prevState) => {
+                            if (context.user.amountOfAvailableService === 0) {
+                                context.setNote((prevState) => {
                                     return({
                                       ...prevState,
                                       msg: 'Amount of available services is too low',
@@ -72,7 +71,8 @@ const CreateOrderModal = (props) => {
                                   });
                             } else {
 
-                                await apiUserCreateOrder(price, chains[activeChain].id);
+                                console.log("ORDER")
+                                await context.apiUserCreateOrder(price, context.chains[context.activeChain].id);
                                 props.reportHide();
                                 setPrice("0");
                             }
@@ -82,7 +82,7 @@ const CreateOrderModal = (props) => {
             }
         } catch(err) {
             if (err.response !== undefined && err.response.data.message === "Trade already exists") {
-                setNote((prevState) => {
+                context.setNote((prevState) => {
                     return({
                       ...prevState,
                       msg: 'Trade with this person already exists',
@@ -108,19 +108,19 @@ const CreateOrderModal = (props) => {
     return (
 
         
-        <div className="d-flex flew-column" >
+        <div className="d-flex flex-column" >
                 
-                <Collapse in={props.show == true} dimension="height">
+                <Collapse in={props.show == true}>
 
                 <div >       
                 
                     <div>   
-                        <h4 className="d-flex flex-column" style={{backgroundColor: "rgba(251, 191, 12)", textAlign: "center", marginBottom: "2px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px"}}>  { chains.length < 1  ? "null" : chains[cookies.activeChain].name  }  </h4> 
+                        <h4 className="d-flex flex-column" style={{backgroundColor: "rgba(251, 191, 12)", textAlign: "center", marginBottom: "2px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px"}}>  { context.chains.length < 1  ? "null" : context.chains[context.activeChain].name  }  </h4> 
                     </div>
 
                 
                     <div style={{text: "blue", marginTop: "1%"}}>
-                        <h4>Set <span style={{color: 'red'}}> {user.typeOfService} </span> price</h4>
+                        <h4>Set <span style={{color: 'red'}}> {context.user.typeOfService} </span> price</h4>
                     </div>
 
                   <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
@@ -138,7 +138,7 @@ const CreateOrderModal = (props) => {
 
                         <Button class="btn btn-danger active" style={{padding: "0.375rem 0.75rem", margin: "1rem"}} onClick={() => {
                             props.reportHide();
-                            setNote({...(note.show = false)});
+                            context.setNote({...(context.note.show = false)});
                             setPrice(0);
                             document.getElementById("priceInput").value= "";
                         }}>

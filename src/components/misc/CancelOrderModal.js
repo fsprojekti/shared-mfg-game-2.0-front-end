@@ -8,8 +8,8 @@ const CancelOrderModal = () => {
 
     const confirm = async () => {
         try {
-
-
+            console.log(context.cancelOrderModalContent.id);
+            await context.apiUserCancelOrder(context.cancelOrderModalContent.id);
             context.closeCancelOrderModal();
         } catch(err) {
             console.log(err);

@@ -6,8 +6,6 @@ import {motion} from 'framer-motion'
 const TradeModal = () => {
     const { transactions, user, isTradeModalOpen, usersBalances, closeTradeModal, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useGlobalContext();
     const [txFee, setTxFee] = useState("0");
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertContent, setAlertContent] = useState('');
     const [tableDataArray, setTableDataArray] = useState([]);
     const [provider, setProvider] = useState('');
 
@@ -87,45 +85,33 @@ const TradeModal = () => {
             }
         } catch(err) {
             if (err.response !== undefined && err.response.data.message === "Trade already exists") {
-                setAlertContent('Trade with this person already exists');
-                setShowAlert(true);
+                // setAlertContent('Trade with this person already exists');
+                // setShowAlert(true);
             }
         }
     };
 
     useEffect(() => {
         
-        console.log(parseInt(tradeModalContent.price)  )
+        console.log(servicesAll);
+        console.log(transactions);
 
         const renderTableData = async () => {
-            console.log(tradeModalContent);
-            const orderTransactions = await transactions[chains[activeChain].name].filter(transaction => transaction.order == tradeModalContent._id  && transaction.state == "SEND");
-            console.log(orderTransactions[0]);
-            const providerServiceObject = await servicesAll.filter(service => service._id === tradeModalContent.service);
-            console.log(providerServiceObject[0]);
-            const providerAgentObject = await agents.filter(agent => agent._id === providerServiceObject[0].agent);
-            const providerUser = await users["users"].filter(user => user._id === providerAgentObject[0].user);
-
-            setProvider(providerUser[0]);
-            
-
+            const orderTransactions = await transactions.filter(transaction => transaction.chain == chains[activeChain].id && transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
             const transactionsInOrder = await orderTransactions.sort((a, b) => b.fee - a.fee);
 
             const transactionsArray = await Promise.all(transactionsInOrder.map(async (item) => {
-                let { from, to, fee, amount} = item;
-                console.log(from)
-                console.log(agents)
+                let { from, fee, amount} = item;
                 const consumerAgent = await agents.filter(agent => agent.account === from);
-                console.log(consumerAgent);
                 
-                const consumerUser = await users["users"].filter(user => user._id === consumerAgent[0].user);
-            
+                const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
+                console.log(consumerUser);
                 
                 return (
                     {
                         id: item._id,
                         consumer: consumerUser[0].name,
-                        provider: providerUser[0].name,
+                        provider: tradeModalContent.providerName,
                         price: amount,
                         fee: fee,
                     }
@@ -135,7 +121,7 @@ const TradeModal = () => {
             setTableDataArray(transactionsArray);
         };
         renderTableData();
-    }, [transactions]);
+    }, [transactions, tradeModalContent]);
 
     const handleKeypress = async e => {
         try {
@@ -148,13 +134,13 @@ const TradeModal = () => {
     };
 
     return (
-        <div>
+        <div >
             {isTradeModalOpen ? (
 
                 
 
                 <div
-            className={`${'modal-confirm-overlay show-modal-confirm'}`}>
+            className={`${'modal-confirm-overlay show-modal-confirm'}`} >
             <motion.div 
               className="box"
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -167,7 +153,7 @@ const TradeModal = () => {
                 }}
             >
             <div className='modal-confirm-container'>
-                <h3>Bid for <span style={{color: "orange"}}> {`${provider.name}'s`}</span>  service</h3>
+                <h3>Bid for <span style={{color: "orange"}}> {`${tradeModalContent.providerName}'s`}</span>  service</h3>
                 <div className='modal-confirm-container-data'>
                     <div className='modal-confirm-container-input'>
                         <ul>

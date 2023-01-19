@@ -11,7 +11,7 @@ const AttackCard = () => {
     let [bridge, setbridgeNo] = useState(0);
     let [user, setUser] = useState(0);
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState("");
 
     function attackbridge(number){
         setbridgeNo(number);
@@ -51,8 +51,8 @@ const AttackCard = () => {
     let voteStealBridge = async () => {
         try {
             
-            setLoading(true);
-            console.log("loadingtrue")
+            setLoading("steal");
+
             console.log(context.bridges[0])
             await context.apiUserStealVoteON(context.bridges[bridge]._id);
 
@@ -85,9 +85,9 @@ const AttackCard = () => {
                 msg: "Attack vote removed",
                 heading: "Success!"
             })
-            setLoading(false);
+            setLoading("");
         } catch (e) {
-            setLoading(false);
+            setLoading("");
             context.setNote({
                 show: true,
                 type: "danger",
@@ -146,7 +146,7 @@ const AttackCard = () => {
                         </Card>
 
                         <Button variant="danger" style={{borderRadius: "8px"}} onClick={voteStealBridge}> 
-                            {loading ? (
+                            {loading === "steal" ? (
                                 <div>
                                     <Spinner
                                     as="span"
@@ -236,7 +236,7 @@ const AttackCard = () => {
                         </Card>
 
                         <Button variant="danger" style={{borderRadius: "8px"}} onClick={voteStealBridge}> 
-                            {loading ? (
+                            {loading === "block" ? (
                                 <div>
                                     <Spinner
                                     as="span"

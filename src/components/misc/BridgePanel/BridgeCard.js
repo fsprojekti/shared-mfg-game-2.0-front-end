@@ -103,7 +103,7 @@ const BridgeCard = () => {
                             setLoading(false);
                         } else {
                             
-                            console.log(chains[bridge].name)
+                            
                             if(direction == false) await apiUserBridge(amount, fee, chains[0].id, chains[bridge].id);
                             else await apiUserBridge(amount, fee, chains[bridge].id, chains[0].id,);  
 

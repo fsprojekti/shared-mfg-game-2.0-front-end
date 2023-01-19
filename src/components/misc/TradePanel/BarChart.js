@@ -5,35 +5,18 @@ import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { GiConsoleController } from 'react-icons/gi';
 import { Card } from 'react-bootstrap';
 const BarChart = ({dataArray, modifiedData, checked}) => {
-    const {user,  transactions, chains, activeChain, openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service, agent, agents } = useGlobalContext();
+    const {orders, user,  transactions, servicesAll, activeChain, openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent, agents } = useGlobalContext();
     const setTradeModal = (data) => {
-        console.log(service);
-        console.log(transactions);
-        const serviceTransaction = transactions.filter(transaction => transaction.type  == "SERVICE" && transaction.state == "SEND" && transaction.chain == chains[activeChain].name);
-        console.log(serviceTransaction)
 
-        const orderTransactions = serviceTransaction.filter(transaction => transaction.order === data._id);
-        const serviceTransactionUser = orderTransactions.filter(transaction => transaction.from === agent.account);
+        const modalService = services.filter(service => service._id  == data.service && service.state == "MARKET");
+        console.log(data)
 
-        console.log(serviceTransactionUser.length);
-
-
-        if (serviceTransactionUser.length == 0 && data.serviceType != service.type) {
-            const realData = dataArray.filter(item => item._id === data._id);
-            console.log(realData[0]);
-            if (!(!Array.isArray(realData) || !realData.length)) {
-                setTradeModalContent(realData[0]);
-                openTradeModal();
-            }
-        } else {
-            if (serviceTransactionUser.length > 0 && data.serviceType != service.type) {
-                // console.log("Opening cancel order modal in barchart");
-                const realData = dataArray.filter(item => item._id === data._id);
-                if (!(!Array.isArray(realData) || !realData.length)) {
-                    setCancelOrderModalContent(realData[0]);
-                    openCancelOrderModal();
-                }
-            }
+        if (modalService.length == 0 && data.service != service._id && data.serviceType != service.type) {
+            setTradeModalContent(data);
+            openTradeModal();
+        } else if(modalService && data.service != service._id && data.serviceType != service.type){
+            setCancelOrderModalContent(data);
+            openCancelOrderModal();
         }
     };
 
