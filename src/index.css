@@ -1,9 +1,3 @@
-/*
-=============== 
-Variables
-// #FFFFFF, #FFCE00, #FEB700, #0994F4, #FF7E1E
-===============
-*/
 
 :root {
   /* dark shades of primary color*/
@@ -906,7 +900,6 @@ BlockchainData
   background-image: linear-gradient(#7c8a9e, #616f83);
   border-top: 1px solid #858d99;
   cursor: pointer;
-  /* z-index: 1; */
 }
 
 .table-all-transactions th {
@@ -1088,7 +1081,6 @@ Pending transactions
 .table-pending-transactions tbody tr td {
   font-weight:400;
   color:#5f6062;
-  /*font-size:14px;*/
   padding:10px 15px 10px 15px;
   border-bottom:1px solid #e0e0e0;
   text-align: center;
@@ -1614,7 +1606,7 @@ Modal
 .trade-modal-input-alert {
   width: 90%;
   padding: 10px;
-  background-color: #f44336; /* Red */
+  background-color: #f44336; 
   color: white;
   border-radius: 4px;
   visibility: hidden;
@@ -1737,7 +1729,7 @@ Modal
 .modal-input-alert {
   width: 90%;
   padding: 10px;
-  background-color: #f44336; /* Red */
+  background-color: #f44336; 
   color: white;
   border-radius: 4px;
   visibility: hidden;
@@ -1963,7 +1955,7 @@ Login
 
 .login-alert {
   padding: 10px;
-  background-color: #f44336; /* Red */
+  background-color: #f44336; 
   color: white;
   border-radius: 4px;
   visibility: hidden;
@@ -2041,19 +2033,7 @@ Login
   margin: 10px;
 }
 
-/* .attack-card-1{
-  background-color: transparent;
-  border-radius: 8px;
-  box-shadow: var(--light-shadow);
-  /* width: 30%; */
-/* } */
 
-/* .attack-card-2{
-  background-color: rgba(222, 243, 239, 0.5) !important;
-  border-color: red !important;
-  border-radius: 8px;
-  margin: 10px;
-} */ */
 
 .attack-content{
   display: flex;
@@ -2097,7 +2077,6 @@ border-color: #aed248;
   background: white;
   padding: 1rem;
   padding-left: 1rem !important;
-  /* border: 1px solid rgb(100, 235, 10) !important; */
   justify-content: row !important;
   flex-wrap:wrap ;
   justify-items: flex-start;
