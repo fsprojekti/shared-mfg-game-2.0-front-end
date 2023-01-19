@@ -1533,7 +1533,7 @@ Modal
 .modal-confirm-container ul {
   width: 40%;
   list-style-type: none;
-  text-align: left;
+  text-align: center;
   background-color: #dddddd;
   padding: 10px;
   border-radius: 5px;

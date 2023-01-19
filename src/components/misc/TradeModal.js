@@ -1,9 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useGlobalContext } from '../../context/context';
-import { FaTimes } from 'react-icons/fa';
-import Axios from "axios/index";
 import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
-import NoteDismissible from '../notifications/NoteDismissible';
 import {motion} from 'framer-motion'
 
 const TradeModal = () => {
@@ -157,10 +154,7 @@ const TradeModal = () => {
                 
 
                 <div
-            className={
-                `${'modal-confirm-overlay show-modal-confirm'}`
-            }
-        >
+            className={`${'modal-confirm-overlay show-modal-confirm'}`}>
             <motion.div 
               className="box"
                 initial={{ opacity: 0, scale: 0.5 }}

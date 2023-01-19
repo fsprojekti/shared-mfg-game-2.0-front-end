@@ -1,25 +1,16 @@
-import React, { useEffect } from 'react'
-import { useGlobalContext } from '../../context/context';
+import React, {useEffect, useContext} from 'react';
+import { AppContext } from '../../context/context';
 import { FaTimes } from 'react-icons/fa';
-import Axios from "axios/index";
+import {motion} from 'framer-motion'
 
 const CancelOrderModal = () => {
-    const { isCancelOrderModalOpen, closeCancelOrderModal, cancelOrderModalContent } = useGlobalContext();
+    const context = useContext(AppContext);
 
     const confirm = async () => {
         try {
-            const token = localStorage.getItem("auth-token");
-            const playerId = localStorage.getItem("playerId");
 
-            const confirmRes =  await Axios.delete(`/player/cancelOrder/${playerId}`, {
-                headers: {
-                    Authorization: "Bearer " + token
-                },
-                data: {
-                    orderId: cancelOrderModalContent._id
-                }
-            });
-            closeCancelOrderModal();
+
+            context.closeCancelOrderModal();
         } catch(err) {
             console.log(err);
         }
@@ -40,27 +31,44 @@ const CancelOrderModal = () => {
         return () => {
             document.removeEventListener("keydown", e => handleKeypress(e));
         };
-    }, [cancelOrderModalContent]);
+    }, [context.cancelOrderModalContent]);
 
     return (
 
         <div>
-            {isCancelOrderModalOpen ? (
+            {context.isCancelOrderModalOpen ? (
+
+
+
+
+
             <div>CANCEL ORDER MODAL
 
                 <div className={`${'modal-confirm-overlay show-modal-confirm'}`} >
-                    <div className='modal-confirm-container'>
-                        <h3>Are you sure you want to cancel offer:</h3>
-                        <ul>
-                            <li>Player: {cancelOrderModalContent.playerName}</li>
-                            <li>typeOfService: {cancelOrderModalContent.typeOfService}</li>
-                            <li>price: {cancelOrderModalContent.price}</li>
-                        </ul>
-                        <button className='close-modal-btn' onClick={closeCancelOrderModal}>
-                            <FaTimes></FaTimes>
-                        </button>
-                        <button className='confirm-modal-btn' onClick={confirm}>Confirm</button>
-                    </div>
+                <motion.div 
+                className="box"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                        duration: 0.2,
+                        type: "spring",
+                        bounce: 0.5,
+                        ease: [0, 0.71, 0.2, 1.01]
+                    }}
+                >
+                            <div className='modal-confirm-container'>
+                                <h3>Are you sure you want to cancel offer:</h3>
+                                <ul>
+                                    <li>Player: {context.cancelOrderModalContent.playerName}</li>
+                                    <li>typeOfService: {context.cancelOrderModalContent.typeOfService}</li>
+                                    <li>price: {context.cancelOrderModalContent.price}</li>
+                                </ul>
+                                <button className='close-modal-btn' onClick={context.closeCancelOrderModal}>
+                                    <FaTimes></FaTimes>
+                                </button>
+                                <button className='confirm-modal-btn' onClick={confirm}>Confirm</button>
+                            </div>
+                    </motion.div>
                 </div>
             </div>
             ): (

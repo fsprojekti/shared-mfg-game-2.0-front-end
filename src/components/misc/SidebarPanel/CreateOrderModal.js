@@ -1,10 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import { FaTimes } from 'react-icons/fa';
-import Axios from "axios/index";
+import React, {useState} from 'react';
 import { useGlobalContext } from '../../../context/context';
-import {InputGroup, FormControl, Button, Fade, Card} from "react-bootstrap";
+import {InputGroup, FormControl, Button} from "react-bootstrap";
 import Collapse from 'react-bootstrap/Collapse';
-import NoteDismissible from '../../notifications/NoteDismissible';
 
 const CreateOrderModal = (props) => {
     const { apiUserCreateOrder, closeCreateOrderModal, user, chains, cookies, activeChain, setNote, note } = useGlobalContext();
@@ -112,8 +109,6 @@ const CreateOrderModal = (props) => {
 
         
         <div className="d-flex flew-column" >
-        {/* {props.show == true ? ( */}
-                {/* <Fade in={props.show == true }> */}
                 
                 <Collapse in={props.show == true} dimension="height">
 
@@ -157,12 +152,7 @@ const CreateOrderModal = (props) => {
                     
                 
                 </div>
-                {/* </Fade> */}
                 </Collapse>
-                    
-                {/* ) : (
-                    <></>
-                )} */}
             
         </div>
     )

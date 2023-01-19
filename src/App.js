@@ -5,13 +5,11 @@ import {AppContext} from "./context/context";
 import { SocketContext } from './context/socket';
 import {Container, Spinner, Navbar, Button, Card} from "react-bootstrap";
 import TabAdmin from './components/tabs/TabAdmin';
-import eventUpdater from './sockets/eventUpdater';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Avatar from 'react-avatar';
 
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
-import PanelAdmin from './components/panels/PanelAdmin';
 import Error from './components/panels/Error';
 import TabGame from './components/tabs/TabGame';
 import TabLogin from './components/tabs/TabLogin';
@@ -189,7 +187,7 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar style={{backgroundColor: "#272c34"}}>
+            <Navbar style={{backgroundColor: "#272c34", height: "60px"}}>
                 <Container>
                     <Navbar.Brand style={{color: "#eddeff"}} className='nav-brand' href="/">
                     <h4> Shared Manufacturing game </h4>

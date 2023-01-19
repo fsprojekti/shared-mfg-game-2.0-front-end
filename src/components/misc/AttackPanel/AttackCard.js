@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {Button, Card, Spinner, OverlayTrigger, Tooltip, Row, Container, Col, Dropdown } from "react-bootstrap";
 import { AppContext } from '../../../context/context';
 import AttacksTable from './AttacksTable';
+import CancelVoteModal from './CancelVoteModal';
 
 
 const AttackCard = () => {
@@ -39,7 +40,7 @@ const AttackCard = () => {
 
     useEffect(() => {
         const renderUserTable = async () => {
-            const usersWithoutMainPlayer = await context.users['users'].filter(user => user._id != context.user.id);
+            const usersWithoutMainPlayer = await context.users['users'].filter(user => user._id !== context.user.id);
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
@@ -104,8 +105,10 @@ const AttackCard = () => {
                 <Container>
                 <Row >
                 <Col>
-                <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
+                {context.bridges.length > 0 ? (
+                    <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
                             <Card.Body>
+                            
                             <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             <Card.Body>
                             
@@ -161,7 +164,37 @@ const AttackCard = () => {
                         </Button>
                         </Card.Body>
                         
-                    </Card>
+                    </Card>            
+
+
+                ): (
+                    <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
+                            <Card.Body>
+                            
+                            <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
+                            <Card.Body>
+                            
+                                <Card.Title style={{padding: "10px"}}> Vote To Steal From a Bridge </Card.Title>
+                                <Card.Text>
+                                <b> Create a bridge (chain) first to use this function </b> 
+                                </Card.Text>
+                                
+                                <Card.Text>
+
+                                
+                                
+                                </Card.Text>
+                                
+                            </Card.Body>
+                        
+                        </Card>
+
+                        </Card.Body>
+                        
+                    </Card>            
+                )
+                }
+                       
                     </Col>
                     <Col>
                     <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
@@ -238,6 +271,7 @@ const AttackCard = () => {
                             <h3 style={{textAlign: "center", width:"100%"}} >Attack status</h3> 
                         </div>    
                             <AttacksTable />
+                            {context.stealVotes.length > 0 ? (<CancelVoteModal />): (null)}
                     </div>
 
             {/* </div> */}

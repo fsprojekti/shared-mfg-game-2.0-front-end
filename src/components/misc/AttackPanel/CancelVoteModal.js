@@ -1,34 +1,24 @@
-import React, { useEffect } from 'react'
-import { useGlobalContext } from '../../context/context';
+import React, {useState, useEffect, useContext} from 'react';
+import { AppContext } from '../../../context/context';
 import { FaTimes } from 'react-icons/fa';
-import Axios from "axios/index";
+import {motion} from 'framer-motion'
+import { getChainsNamesFromBridgeObject } from '../HelperFunctions/functions';
+import {Button, Spinner} from "react-bootstrap";
 
-const CancelOrderModal = () => {
-    const { isCancelVoteModalOpen, cancelOrderModalContent} = useGlobalContext();
+const CancelVoteModal = () => {
+    const context = useContext(AppContext);
 
-    const confirm = async () => {
-        try {
-            const token = localStorage.getItem("auth-token");
-            const playerId = localStorage.getItem("playerId");
+    const [loading, setLoading] = useState(false);
 
-            const confirmRes =  await Axios.delete(`/player/cancelOrder/${playerId}`, {
-                headers: {
-                    Authorization: "Bearer " + token
-                },
-                data: {
-                    orderId: cancelOrderModalContent._id
-                }
-            });
-            closeCancelOrderModal();
-        } catch(err) {
-            console.log(err);
-        }
+    const cancel = async () => {
+
+        context.setIsCancelVoteModalOpen(false);
     };
 
     const handleKeypress = (e) => {
         try {
             if (e.key === 'Enter') {
-                confirm();
+                // confirm();
             }
         } catch(err) {
             console.log(err);
@@ -36,31 +26,66 @@ const CancelOrderModal = () => {
     };
 
     useEffect(() => {
-        document.addEventListener("keydown", e => handleKeypress(e));
-        return () => {
-            document.removeEventListener("keydown", e => handleKeypress(e));
-        };
-    }, [cancelOrderModalContent]);
+        // document.addEventListener("keydown", e => handleKeypress(e));
+        // return () => {
+        //     document.removeEventListener("keydown", e => handleKeypress(e));
+        // };
+
+        console.log(context.cancelVoteModalContent.bridges[0])
+    }, [context.IsCancelVoteModalOpen, context.cancelVoteModalContent]);
 
     return (
 
         <div>
-            {isCancelOrderModalOpen ? (
-            <div>CANCEL ORDER MODAL
+            {context.isCancelVoteModalOpen ? (
+            <div>
 
                 <div className={`${'modal-confirm-overlay show-modal-confirm'}`} >
-                    <div className='modal-confirm-container'>
-                        <h3>Are you sure you want to cancel offer:</h3>
-                        <ul>
-                            <li>Player: {cancelOrderModalContent.playerName}</li>
-                            <li>typeOfService: {cancelOrderModalContent.typeOfService}</li>
-                            <li>price: {cancelOrderModalContent.price}</li>
-                        </ul>
-                        <button className='close-modal-btn' onClick={closeCancelOrderModal}>
-                            <FaTimes></FaTimes>
-                        </button>
-                        <button className='confirm-modal-btn' onClick={confirm}>Confirm</button>
-                    </div>
+                    <motion.div 
+                        className="box"
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                                duration: 0.2,
+                                type: "spring",
+                                bounce: 0.5,
+                                ease: [0, 0.71, 0.2, 1.01]
+                            }}
+                    >
+                        <div className='modal-confirm-container'>
+                            <h3>Retract Steal Vote For </h3>
+                            <ul sty>
+                                <li>{getChainsNamesFromBridgeObject(context.cancelVoteModalContent.bridges[0], context.bridges, context.chains)[0]} </li>
+                                <li>🔃</li>
+                                <li>{getChainsNamesFromBridgeObject(context.cancelVoteModalContent.bridges[0], context.bridges, context.chains)[1]}</li>
+                            </ul>
+                             <b>Are you sure you want to continue?</b>
+                            <div className="d-flex justify-content-center" style={{marginBottom: "10px"}}>
+                                    <Button variant="success" onClick={console.log("confirm")}  style={{margin: "5px"}} >
+                                    
+                                    {loading ? (
+                                        <div>
+                                            <Spinner
+                                            as="span"
+                                            animation="grow"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
+                                        <text> Retracting </text>
+                                        </div>
+                                    ) : ( <text> Continue  </text>)
+                                    
+                                    }   
+                                    </Button>
+
+                                    <Button variant="danger"  onClick={() =>  context.setIsCancelVoteModalOpen(false)} style={{margin: "5px"}}>
+                                        <text> Cancel  </text>
+                                    </Button>
+                                </div>
+
+                        </div>
+                    </motion.div>
                 </div>
             </div>
             ): (
@@ -71,4 +96,4 @@ const CancelOrderModal = () => {
     )
 };
 
-export default CancelOrderModal
+export default CancelVoteModal;
