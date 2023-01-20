@@ -62,57 +62,57 @@ function App() {
         context.setActiveChain(context.cookies.activeChain);
 
         //Load game
-        context.apiGameFetch().then(game => {
-            context.setGame(game)
+        const game = context.apiGameFetch().then(game => {
+            context.setGame(game);
         })
 
         //Load all logged in users and their data
-        context.apiGameUsers().then(users => {
+        const users = context.apiGameUsers().then(users => {
             context.setUsers({users})
-            context.setLoadingMain(false);
         }).catch(e => {console.log(e); context.setLoadingMain(false);})
 
         //Load all trancactions
-        context.apiGameTransactions().then(trnsctns => {
+        const transactions = context.apiGameTransactions().then(trnsctns => {
             context.setTransactions(trnsctns);
         }).catch(e => console.log(e))   ;
 
         //Load all services
-        context.apiGameServices().then(services => {
+        const  services = context.apiGameServices().then(services => {
             context.setServicesAll(services);
         }).catch(e => console.log(e));
 
         //Load orders
-        context.apiGameOrders().then(orders => {
+        const orders = context.apiGameOrders().then(orders => {
             context.setOrders(orders);
         }).catch(e => console.log(e));
 
         //Load user agent
-        context.apiUserAgentGet().then(agent => {
+        const agent = context.apiUserAgentGet().then(agent => {
             context.setAgent(agent);
         }).catch(e => console.log(e));
 
         //Load agents
-        context.apiGameAgents().then(agents => {
+        const agents = context.apiGameAgents().then(agents => {
             // alert(JSON.stringify(agents));
             context.setAgents(agents);
+            return true;
         }).catch(e => console.log(e));
 
         //Load user service
-        context.apiUserFetchService().then(service => {
+        const service = context.apiUserFetchService().then(service => {
             // alert(JSON.stringify(service))  
             context.setService(service);
         }).catch(e => console.log(e));
 
         //Load user's purchased and active services
-        context.apiUserFetchServices().then(services => {
+        const userServices = context.apiUserFetchServices().then(services => {
             console.log("MY SERVICE ARRAY:")
             // alert(JSON.stringify(services["services"]));
             context.setServices(services["services"]);
         }).catch(e => console.log(e));
 
         //Load users balances on different chains
-        context.apiUserFetchBalance().then(balance => {
+        const balance = context.apiUserFetchBalance().then(balance => {
             console.log("BALANCE: " + JSON.stringify(balance))
             for(let i = 0; i < balance.length; i++) {
                 console.log(balance[i])
@@ -123,31 +123,31 @@ function App() {
         }).catch(e => console.log(e));
     
         //Load users stakes on different chains
-        context.apiUserFetchStake().then(stakes => {
+        const stakes = context.apiUserFetchStake().then(stakes => {
             console.log("STAKES: " + JSON.stringify(stakes))
             if(stakes[0] != undefined) context.setUsersStakes(stakes[0]);
         }).catch(e => console.log(e));
 
         //Load all chains
-        context.apiGameChains().then(chains => {
+        const chains = context.apiGameChains().then(chains => {
             console.log(JSON.stringify(chains))
             context.setChains(chains);
         }).catch(e => console.log(e))
 
         //Load all bridges
-        context.apiGameBridges().then(bridges => {
+        const bridges = context.apiGameBridges().then(bridges => {
             console.log(JSON.stringify(bridges))
             context.setBridges(bridges);
         }).catch(e => console.log(e))
 
         //Load user's steal votes
-        context.apiUserStealGet().then(stealVotes => {
+        const stealVotes = context.apiUserStealGet().then(stealVotes => {
             console.log((stealVotes))
             context.setStealVotes(stealVotes);
         }).catch(e => console.log(e))
 
         //Load user's block votes
-        context.apiUserBlockGet().then(blockVotes => {
+        const blockVotes = context.apiUserBlockGet().then(blockVotes => {
             console.log(JSON.stringify(blockVotes))
             context.setBlockVotes(blockVotes);
         }).catch(e => console.log(e))
@@ -165,6 +165,11 @@ function App() {
                 })
 
             }).catch(e => console.log(e))
+
+            Promise.all([game, chains,  agents, orders,  bridges, stealVotes, blockVotes, users, transactions, services, service, userServices,
+                balance, stakes]).then(() => {
+                context.setLoadingMain(false);
+            });
 
     }, [navigate])
 

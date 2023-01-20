@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {Alert, Button, Card, Dropdown,Form, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
+import {Button, Card, Dropdown,Form, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
 import { useGlobalContext } from '../../../context/context';
-import NoteDismissible from "../../notifications/NoteDismissible";
 
 
 //TODO: Transfer pri max value ne gre uredu skozi.
@@ -149,6 +148,7 @@ const BridgeCard = () => {
             { chains.length > 1 ? (
                 <Card.Body>
                 <Card.Title> 
+                <b>{bridges[bridge].name}</b>
                 <Dropdown style={{margin: "10px"}}>
 
                     <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" style={{borderRadius: "8px"}}>

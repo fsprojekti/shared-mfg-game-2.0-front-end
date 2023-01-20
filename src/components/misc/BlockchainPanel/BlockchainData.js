@@ -4,7 +4,6 @@ import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
 import PieChart from './PieChart';
 import TransactionsTable from './TransactionTable';
 import AllTransactionsTable from './TransactionTableAll';
-import NoteDismissible from '../../notifications/NoteDismissible';
 
 
 
@@ -17,13 +16,6 @@ const BlockchainData = () => {
     const [loadingStake, setLoadingStake] = useState(false);
     const [loadingUnstake, setLoadingUnstake] = useState(false);
 
-    // const [note, setNote] = useState({
-    //     show: false,
-    //     type: "info",
-    //     msg: "Default message",
-    //     heading: "Test"
-    // })
-
     const countDecimals = (value) => {
         if(Math.floor(value).toString() === value) return 0;
         return value.toString().split(".")[1].length || 0;
@@ -31,71 +23,51 @@ const BlockchainData = () => {
 
     const confirmStake = async () => {
         try {
-            if ((txFee === undefined || txFee === "" || txFee == 0) || (newStake === undefined || newStake === "" || newStake == 0)) {
+            let numCheck; 
+            await import('../HelperFunctions/functions')
+            .then(async({ checkNumber }) => {
+                numCheck = await checkNumber(txFee, newStake, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+            if (numCheck.state == -1) {
                 context.setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: 'You must enter a value',
+                      msg: numCheck.msg,
                       heading: 'Wrong input',
                       show: true,
                       type: 'danger'
                     });
                   });
             } else {
-                if ((isNaN(txFee) || txFee < 0) || (isNaN(newStake) || newStake < 0)) {
-                    context.setNote((prevState) => {
-                        return({
-                          ...prevState,
-                          msg: 'You must enter positive numbers',
-                          heading: 'Wrong input',
-                          show: true,
-                          type: 'danger'
-                        });
-                      });
-                } else {
-                    if (countDecimals(txFee) > 0 || countDecimals(newStake) > 0)  {
-                        context.setNote((prevState) => {
-                            return({
-                              ...prevState,
-                              msg: 'Input value must be an integer',
-                              heading: 'Wrong input',
-                              show: true,
-                              type: 'danger'
-                            });
-                          });
-                    } else {
-                        if (parseInt(newStake) + parseInt(txFee) > context.user.balance) {
-                            context.setNote((prevState) => {
-                                return({
-                                  ...prevState,
-                                  msg: 'Amount + TxFee is bigger than balance',
-                                  heading: 'Wrong input',
-                                  show: true,
-                                  type: 'danger'
-                                });
-                              });
-                        } else {
-                            setLoadingStake(true);
-                            const data = {
-                                amount: newStake,
-                                fee: txFee,
-                                chainId: context.chains[context.activeChain].id
-                            };
+                setLoadingStake(true);
 
-                            let response = await context.apiUserStake(context.cookies.userId, data);
+                const data = {
+                    amount: newStake,
+                    fee: txFee,
+                    chainId: context.chains[context.activeChain].id
+                };
 
-                            context.setNote({
-                                show: true,
-                                type: "success",
-                                msg: response,
-                                heading: "Success! "
-                            })
-                            setLoadingStake(false);
-                            setNewStake("0");
-                            setTxFee("0");
-                        }
-                    }
-                }
+                let response = await context.apiUserStake(context.cookies.userId, data);
+
+                context.setNote((prevState) => {
+                    return({
+                      ...prevState,
+                      msg: response,
+                      heading: 'Success',
+                      show: true,
+                      type: 'success'
+                    });
+                  });
+
+                setLoadingStake(false);
+                setNewStake("0");
+                setTxFee("0");
+                    
+
             }
 
         } catch(e) {
@@ -113,74 +85,55 @@ const BlockchainData = () => {
  
     const confirmUnstake = async () => {
         try {
-            if ((txFee === undefined || txFee === "" || txFee == 0) || (newStake === undefined || newStake === "" || newStake == 0)) {
+            let numCheck; 
+            await import('../HelperFunctions/functions')
+            .then(async({ checkNumber }) => {
+                numCheck = await checkNumber(txFee, newStake, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+            if (numCheck.state == -1) {
                 context.setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: 'You must enter a value',
+                      msg: numCheck.msg,
                       heading: 'Wrong input',
                       show: true,
                       type: 'danger'
                     });
                   });
             } else {
-                if ((isNaN(txFee) || txFee < 0) || (isNaN(newStake) || newStake < 0)) {
-                    context.setNote((prevState) => {
-                        return({
-                          ...prevState,
-                          msg: 'You must enter positive numbers',
-                          heading: 'Wrong input',
-                          show: true,
-                          type: 'danger'
-                        });
-                      });
-                } else {
-                    if (countDecimals(txFee) > 0 || countDecimals(newStake) > 0)  {
-                        context.setNote((prevState) => {
-                            return({
-                              ...prevState,
-                              msg: 'Input value must be an integer',
-                              heading: 'Wrong input',
-                              show: true,
-                              type: 'danger'
-                            });
-                          });
-                    } else {
-                        if (parseInt(newStake) + parseInt(txFee) > context.user.balance) {
-                            context.setNote((prevState) => {
-                                return({
-                                  ...prevState,
-                                  msg: 'Amount + TxFee is bigger than balance',
-                                  heading: 'Wrong input',
-                                  show: true,
-                                  type: 'danger'
-                                });
-                              });
-                        } else {
-                            setLoadingUnstake(true);
-                            const data = {
-                                amount: newStake,
-                                fee: txFee,
-                                chainId: context.chains[context.activeChain].id
-                            };
+                setLoadingStake(true);
 
-                            let response = await context.apiUserUnstake(context.cookies.userId, data);
-                            context.setNote({
-                                show: true,
-                                type: "success",
-                                msg: response,
-                                heading: "Success! "
-                            })
-                            setLoadingUnstake(false);
-                            setNewStake("0");
-                            setTxFee("0");
-                        }
-                    }
-                }
+                const data = {
+                    amount: newStake,
+                    fee: txFee,
+                    chainId: context.chains[context.activeChain].id
+                };
+
+                let response = await context.apiUserUnstake(context.cookies.userId, data);
+
+                context.setNote((prevState) => {
+                    return({
+                      ...prevState,
+                      msg: "Sussessfully staked",
+                      heading: 'Success',
+                      show: true,
+                      type: 'success'
+                    });
+                  });
+
+                setLoadingStake(false);
+                setNewStake("0");
+                setTxFee("0");
+                    
+
             }
 
         } catch(e) {
-            setLoadingUnstake(false);
+            setLoadingStake(false);
             context.setNote({
                 show: true,
                 type: "danger",
