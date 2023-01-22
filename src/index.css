@@ -1145,7 +1145,7 @@ Pending transactions
 
 .mining-progress-container {
   text-align: center;
-  width: 60%;
+  width: 80%;
   margin: 10px auto 10px auto;
 }
 
@@ -1160,8 +1160,8 @@ Pending transactions
 .mining-progress {
   position: relative;
   background-color: #ddd;
-  border-radius: 4px;
-  height: 16px;
+  border-radius: 8px;
+  height: 10px;
   width: 100%;
   margin: 5px 10px;
 }
@@ -1172,7 +1172,7 @@ Pending transactions
   position: absolute;
   top: 0;
   left: 0;
-  height: 16px;
+  height: 10px;
   border-radius: inherit;
   animation-name: animationGlow;
   animation-duration: 2s;
@@ -1190,6 +1190,46 @@ Pending transactions
 .mining-progress-text {
   font-size: 14px;
   opacity: 0.7;
+}
+
+.mining-progress-container-side {
+  text-align: center;
+  width: 90%;
+  margin: 10px auto 10px auto;
+}
+
+.mining-progress-flex-side {
+  display: flex;
+}
+
+.mining-progress-flex-side p {
+  height: 16px;
+}
+
+.mining-progress-side {
+  position: relative;
+  background-color: #ddd;
+  border-radius: 8px;
+  height: 3px;
+  width: 100%;
+}
+
+.mining-progress-filler-side {
+  border-radius: 8px;
+  content: '';
+  position: absolute;
+  height: 3px;
+  border-radius: inherit;
+  animation-name: animationGlow;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  background: linear-gradient(#003cfe, #0033d9);
+}
+
+@keyframes animationGlow {
+  0%   {opacity: 0.75;}
+  50%  {opacity: 1;}
+  100% {opacity: 0.75;}
 }
 
 /*

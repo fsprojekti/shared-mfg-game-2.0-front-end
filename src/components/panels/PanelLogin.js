@@ -56,8 +56,7 @@ const PanelLogin = () => {
             await context.setCookie('activeChain', 0);
 
             //Set cookies in context variables
-            context.setActiveChain(0);
-
+            context.setUserId(data.user.id);
 
             //Set user
             context.setUser({
@@ -78,8 +77,8 @@ const PanelLogin = () => {
               });
 
 
-            navigate("/", {replace: true});
-            
+            window.location.reload(true)
+
 
         } catch (e) {
             context.setNote((prevState) => {

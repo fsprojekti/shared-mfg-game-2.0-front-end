@@ -53,11 +53,11 @@ const Trades = () => {
 
 
     useEffect(() => {
-
-        const sortDataArrays = async () => { //TODO: Popravi, da se bo gledalo orderje specifičnega chaina
-           
+        console.log(orders);
+        const sortDataArrays = async () => { 
+            console.log(orders);
             const placedOrders = orders.filter(order => order.chain === chains[activeChain].id  && order.state === "PLACED");   
-            
+            console.log(placedOrders);
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll.filter(srvc=> srvc._id == ordr.service);
 
@@ -176,7 +176,7 @@ const Trades = () => {
         };
         sortDataArrays(); 
 
-    }, [game, checked1, checked2, checked3]);
+    }, [orders, checked1, checked2, checked3]);
 
     return (
         <>

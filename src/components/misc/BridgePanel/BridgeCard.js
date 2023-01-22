@@ -102,9 +102,9 @@ const BridgeCard = () => {
                             setLoading(false);
                         } else {
                             
-                            
-                            if(direction == false) await apiUserBridge(amount, fee, chains[0].id, chains[bridge].id);
-                            else await apiUserBridge(amount, fee, chains[bridge].id, chains[0].id,);  
+                            console.log(bridges[bridge])
+                            if(direction == false) await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);
+                            else await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);  
 
                             setLoading(false);
                             setAmount(0);
@@ -124,6 +124,7 @@ const BridgeCard = () => {
 
         } catch(e) {
             setLoading(false);
+            console.log(e)
             setNote({
                 show: true,
                 type: "danger",

@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { useGlobalContext } from '../../../context/context';
+import React, {useState, useEffect, useRef, useContext} from 'react';
+import { AppContext } from '../../../context/context';
 
-const MiningBar = () => {
-    const { chainMain } = useGlobalContext();
+const MiningBar = (props) => {
+    const context = useContext(AppContext);
     const [timeLeft, setTimeLeft] = useState('');
     const [width, setWidth] = useState(0);
 
@@ -34,28 +34,29 @@ const MiningBar = () => {
     }
 
     useInterval(async () => {
-        const createdMillis = await new Date(chainMain.miningTime).getTime();
+        const createdMillis = new Date(context.chains[context.activeChain].updatedAt).getTime();
         let timeLeft = 10000 - (Date.now() - createdMillis);
-        let width = await Math.floor((1 - ((Date.now() - createdMillis) / 10000)) * 100);
+        let width = Math.floor((((Date.now() - createdMillis) / 10000)) * 100);
         if (width < 0 || timeLeft < 0) {
             width = 0;
             timeLeft = 0;
         }
-        setTimeLeft(millisToMinutesAndSeconds(timeLeft));
+        setTimeLeft((timeLeft/1000).toFixed(2));
         setWidth(width);
     }, 50);
 
 
     return (
         <>
-            <div className="mining-progress-container">
-                <div className="mining-progress-flex">
-                    <p>Mining</p>
-                    <div className="mining-progress">
-                        <div className="mining-progress-filler" style={{width: `${width}%`}}></div>
+            <div className={`mining-progress-container${props.version}`}>
+                <div className={`mining-progress-flex${props.version}`}>
+                
+                    <div className={`mining-progress${props.version}`}>
+                        <div className={`mining-progress-filler${props.version}`} style={{width: `${width}%`}}></div>
                     </div>
                 </div>
-                <span className="mining-progress-text">Time left: {timeLeft}</span>
+                {props.showText === "false" ? null : <span className="mining-progress-text">Time left: {timeLeft}  s</span>}
+                
             </div>
         </>
     )

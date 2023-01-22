@@ -20,7 +20,7 @@ const ChainMesh = () => {
 
   //TODO: na Page refresh se obarva trenutni chain
   useEffect(() => {
-    
+    console.log(bridges)
 
     let nodes =  new DataSet (chains.map((item, index) => {
       let currentChain = parseInt(cookies.activeChain);
@@ -45,10 +45,10 @@ const ChainMesh = () => {
           edges: {
             color: "#411811",
             width: 2,
-            arrows: "both"
           },
           nodes: {
-            shape: 'dot' //box, database, square, circle, ellipse...
+            shape: 'dot', //box, database, square, circle, ellipse...,
+      
         },
           
 				}
@@ -119,7 +119,7 @@ const ChainMesh = () => {
 
   setNodeNetwork();
 	
-	}, [chains.length, cookies.activeChain]);
+	}, [chains.length, cookies.activeChain, bridges]);
 
 	return <div className="chain-network" ref={visJsRef} />;
 };

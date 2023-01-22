@@ -93,7 +93,7 @@ const TransactionsTable = () => {
     return (
         <>
             <div className="pending-transactions-container">
-                <MiningBar/>
+                <MiningBar version=""/>
                 <div className="table-pending-transactions-container">
                     <table className="table-pending-transactions">
                         <thead>

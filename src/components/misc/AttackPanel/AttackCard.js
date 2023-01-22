@@ -100,16 +100,14 @@ const AttackCard = () => {
 
     return (
         <>
-        {/* <div className="d-flex" style={{padding: "5px", columnGap: "20px", rowGap: "20px"}}> */}
-                <div className="d-flex align-items-start">
+            <div className="d-flex justify-content-between flex-wrap    "> 
                 <Container>
                 <Row >
                 <Col>
-                {context.bridges.length > 0 ? (
-                    <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
-                            <Card.Body>
+                    <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}> <Card.Body>
                             
-                            <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
+                            <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
+                            {context.bridges.length > 0 ? (
                             <Card.Body>
                             
                                 <Card.Title style={{padding: "10px"}}> Vote To Steal From a Bridge </Card.Title>
@@ -142,6 +140,18 @@ const AttackCard = () => {
                                 </Card.Text>
                                 
                             </Card.Body>
+                            ):
+                            (
+                                <Card.Body>
+                            
+                                    <Card.Title style={{padding: "10px"}}> Vote To Steal From a Bridge </Card.Title>
+                                    <Card.Text>
+                                        <b> Create a bridge (chain) first to use this function </b> 
+                                    </Card.Text>
+                                
+                                </Card.Body>
+                            )}
+
                         
                         </Card>
 
@@ -165,39 +175,10 @@ const AttackCard = () => {
                         </Card.Body>
                         
                     </Card>            
-
-
-                ): (
-                    <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
-                            <Card.Body>
-                            
-                            <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
-                            <Card.Body>
-                            
-                                <Card.Title style={{padding: "10px"}}> Vote To Steal From a Bridge </Card.Title>
-                                <Card.Text>
-                                <b> Create a bridge (chain) first to use this function </b> 
-                                </Card.Text>
-                                
-                                <Card.Text>
-
-                                
-                                
-                                </Card.Text>
-                                
-                            </Card.Body>
-                        
-                        </Card>
-
-                        </Card.Body>
-                        
-                    </Card>            
-                )
-                }
                        
                     </Col>
                     <Col>
-                    <Card className='attack-card-1' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
+                    <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
                             <Card.Body>
                             <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             <Card.Body>
@@ -257,8 +238,8 @@ const AttackCard = () => {
                     </Card>
                     </Col>
             </Row>
-            </Container>
-                </div>  
+            <Row>
+                <Col>
                     <div className='' style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", textAlign: "center"}}>
                         <div className='d-flex'>
                             <OverlayTrigger
@@ -266,15 +247,18 @@ const AttackCard = () => {
                                 delay={{ show: 0, hide: 400 }}
                                 overlay={renderTooltip}
                                 >
-                                <Button variant="info" size="sm" className='d-flex justify-content-start' style={{margin: "5px", position: "absolute", fontWeight: "bold"}}>i</Button>
+                                <Button variant="outline-secondary" size="sm" className='d-flex justify-content-start' style={{margin: "5px", position: "absolute", fontWeight: "bold"}}>i</Button>
                                 </OverlayTrigger>
                             <h3 style={{textAlign: "center", width:"100%"}} >Attack status</h3> 
                         </div>    
                             <AttacksTable />
                             {context.stealVotes.length > 0 ? (<CancelVoteModal />): (null)}
-                    </div>
 
-            {/* </div> */}
+                    </div>
+                </Col>
+            </Row>
+            </Container>
+            </div>
         </>
     )
 };

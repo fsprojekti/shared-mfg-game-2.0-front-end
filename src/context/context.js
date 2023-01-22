@@ -2,7 +2,6 @@ import React, {useState, useContext, useCallback} from 'react'
 import axios from "axios";
 import {useCookies} from "react-cookie";
 import config from "../config.json";
-import context from 'react-bootstrap/esm/AccordionContext';
 axios.defaults.baseURL = config.server;
 
 // /**
@@ -27,9 +26,13 @@ export const ContextWrapper = (props) => {
     //Panel navigation state variable
     const [active, setActive] = useState("home");
     //Cookies
-    const [cookies, setCookie, removeCookie] = useCookies(['authToken', 'userId', 'activeChain']);
+    const [cookies, setCookie, removeCookie] = useCookies(['authToken', 'userId', 'activeChain', 'timeDiff']);
     //Active chain
     const [activeChain, setActiveChain] = useState(0);
+    //User auth token
+    const [authToken, setAuthToken] = useState(cookies.authToken);
+    //User id
+    const [userId, setUserId] = useState(cookies.userId);
     //Loading state on page refresh
     const [loadingMain, setLoadingMain] = useState(false);
     
@@ -167,8 +170,21 @@ export const ContextWrapper = (props) => {
             if(index !== -1) {
                 oldChains[index].balance = chainObj.balance;
                 oldChains[index].stake = chainObj.stake;
-                oldChains[index].blockNumber = chainObj.blockNumber;               
-                oldChains[index].updatedAt = chainObj.updatedAt;               
+                if(chainObj.blockNumber > oldChains[index].blockNumber){
+                    if(oldChains[0].load == true) { 
+                        console.log(oldChains[index].updatedAt)
+                        setCookie('timeDiff', Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000);  
+                        console.log(Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000)
+                        oldChains[0].load = false
+                    }
+                    
+                    oldChains[index].updatedAt = Date.now() - cookies.timeDiff;
+                    
+                    oldChains[index].blockNumber = chainObj.blockNumber; 
+                    console.log("Time diff: " + cookies.timeDiff);
+                }
+
+
                 return oldChains;
             } else if(index == -1 && chainObj.id !== undefined) {
                 oldChains.push(chainObj);
@@ -187,7 +203,7 @@ export const ContextWrapper = (props) => {
             const orders = [...oldOrders];
 
             const index = orders.findIndex(c => {
-                return c.id === orderObj.id;
+                return c._id === orderObj.id;
             });
             console.log(index)
             if(index !== -1) {
@@ -195,7 +211,16 @@ export const ContextWrapper = (props) => {
                 // console.log(oldChains[index])
                 return orders;
             } else if(index == -1 && orderObj.id !== undefined) {
-                orders.push(orderObj);
+                console.log("pushing");
+                console.log(orderObj.chain._id);
+                let newOrder = {};
+                newOrder._id = orderObj.id;
+                newOrder.chain = orderObj.chain._id;
+                newOrder.state = orderObj.state;
+                newOrder.service = orderObj.service._id;
+                newOrder.price = orderObj.price;
+                orders.push(newOrder);
+                console.log(orders);
                 return orders;
             }
             
@@ -204,8 +229,12 @@ export const ContextWrapper = (props) => {
 
     }
 
+    const updateServiceState = (serviceObj) => {
+        console.log(serviceObj);
+    }
+
     const updateTransactionsState = (transObj) => {
-            console.log(transObj);
+        console.log(transObj);
           setOrders((oldTrans) => {
             const transactions = [...oldTrans];
 
@@ -395,7 +424,7 @@ export const ContextWrapper = (props) => {
             try {
                 let out = await axios.get(`user/login`, { 
                     params: { 
-                        registerNumber: registerNumber, 
+                        registerCode: registerNumber, 
                         password: password } 
                     })
                 resolve(out.data)
@@ -1064,6 +1093,9 @@ export const ContextWrapper = (props) => {
             blockVotes, setBlockVotes,
             cancelBlockMocalContent, setCancelBlockModalContent,
             isCancelBlockModalOpen, setIsCanclBlockModalOpen,
+            updateServiceState,
+            authToken, setAuthToken,
+            userId, setUserId,
         }}>
             {props.children}
         </AppContext.Provider>

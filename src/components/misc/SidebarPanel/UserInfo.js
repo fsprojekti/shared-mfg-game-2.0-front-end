@@ -9,6 +9,7 @@ import {
 
 import { AppContext } from "../../../context/context";
 import CreateOrderModal from "./CreateOrderModal";
+import MiningBar from "../BlockchainPanel/MiningBar";
 
 import {useState, useContext, useEffect, useReducer} from "react";
 
@@ -103,7 +104,7 @@ const UserInfo = () => {
        
 
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
-
+        
         {/* , boxShadow: "var(--dark-shadow)" */}
             <div className="d-flex " style={{zIndex: 2, position: "absolute", flexWrap: "wrap",  borderRadius: "10px", maxWidth: "400px", backgroundColor: "rgba(251, 170, 12)", alignSelf: "center"}}>
                 <CreateOrderModal 
@@ -115,9 +116,11 @@ const UserInfo = () => {
             </div>
 
             
-            <h4 className="d-flex flex-column" style={{backgroundColor: "#FFBF00", textAlign: "center", marginBottom: "2px", paddingBottom: "2px"}}> { chains.length < 1  ? "null" : chains[activeChain].name  } </h4> 
+            {/* <h4 className="d-flex flex-column" style={{backgroundColor: "#FFBF00", textAlign: "center", marginBottom: "2px", paddingBottom: "2px"}}> { chains.length < 1  ? "null" : chains[activeChain].name  } </h4>  */}
             
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
+            
+                <MiningBar showText="false" version="-side" />  
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>
                     <h4>{Object.keys(usersBalances).length !== 0  ?  usersBalances[activeChain][`${chains[activeChain].name}`] : 0}</h4>

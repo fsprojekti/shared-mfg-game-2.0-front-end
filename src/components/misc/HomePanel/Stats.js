@@ -43,6 +43,7 @@ const Stats = () => {
     }
 
     useEffect(() => {
+        console.log(chains)
  
         if(chains.includes("id")) {
             if (chains[cookies.activeChain].stake == 0 ||  chains[cookies.activeChain].stake == undefined) {

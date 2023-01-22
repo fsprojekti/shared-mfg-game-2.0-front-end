@@ -1,6 +1,3 @@
 {
-    "server": "http://localhost:8000",
-    "db": {
-      "url": "mongodb+srv://luka:2etNiwnHPv2zU6IJ@cluster0.8fn8h.mongodb.net/shared-mfg-game-02?retryWrites=true&w=majority"
-    }
+    "server": "http://localhost:8000"
   }

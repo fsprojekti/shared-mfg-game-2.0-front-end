@@ -17,7 +17,6 @@ import TabLogin from './components/tabs/TabLogin';
 function App() {
     const context = useContext(AppContext);
     const socket = useContext(SocketContext);
-    const [messages, setMessages] = useState({});
 
 
     const navigate = useNavigate();
@@ -25,6 +24,7 @@ function App() {
     function logOut() {
         context.removeCookie("authToken");
         context.removeCookie("userId");
+        context.removeCookie("activeChain");
     }
 
 
@@ -58,11 +58,12 @@ function App() {
     useEffect(() => {
         context.setLoadingMain(true);
 
-        //Load last active chain id from cookies
+        //Load last cookies into context state
         context.setActiveChain(context.cookies.activeChain);
 
         //Load game
         const game = context.apiGameFetch().then(game => {
+            //TODO: Reset active chain if idle game
             context.setGame(game);
         })
 
@@ -130,8 +131,14 @@ function App() {
 
         //Load all chains
         const chains = context.apiGameChains().then(chains => {
-            console.log(JSON.stringify(chains))
-            context.setChains(chains);
+            // alert(JSON.stringify(chains));
+            // console.log((new Date(chains[0].updatedAt)).getTime()); 
+            // console.log(context.cookies.timeDiff)
+            let chainsObj = chains;
+            chainsObj[0].load = true;
+            //Ni uredu! Prviš ko gre, se ne sme prištevati timeDiff. (Prvič prvič, ko se začne igra, pol vse ostale refreshe pa ja)
+            chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+            context.setChains(chainsObj);
         }).catch(e => console.log(e))
 
         //Load all bridges
@@ -180,13 +187,15 @@ function App() {
         socket.on("chain", context.updateChainsState);
         socket.on("game", context.updateGameState);
         socket.on("order", context.updateOrdersState);
-        socket.on("transactions", context.updatetransactionsState);;
+        socket.on("transactions", context.updatetransactionsState);
+        socket.on("service", context.updateServicesState);
 
         return () => {
           socket.off("chain");
           socket.off("game");
           socket.off("order");
           socket.off("transactions");
+          socket.off("service");
         };
       }, [socket]);
 

@@ -13,6 +13,7 @@ const BlockchainData = React.lazy(() => import('../misc/BlockchainPanel/Blockcha
 const Stats = React.lazy(() => import('../misc/HomePanel/Stats'));
 const RankingTable = React.lazy(() => import('../misc/RankingPanel/RankingTable'));
 const PanelChains = React.lazy(() => import('../panels/PanelChains'));
+const PanelLogin = React.lazy(() => import('../panels/PanelLogin'));
 
 
 const renderGroup = (active) => {
@@ -57,7 +58,7 @@ const TabGame = () => {
                                 <NotificationCard  heading="Please wait for the game to start" />
                             </div>
                         ) : (
-                            <NotificationCard  heading="You are not logged in" />   
+                            <PanelLogin/>
                         )
                         }
                         </div>

@@ -191,14 +191,6 @@ const PanelAdmin = () => {
                                     <Card.Body>
                                         <div className={"d-flex justify-content-between flex-wrap"}>
                                             <div className={"p-2 align-self-center"}>
-                                                State
-                                            </div>
-                                            <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
-                                                <InputGroup.Text>{context.game ? context.game.state : <text>No game</text>}</InputGroup.Text>
-                                            </div>
-                                        </div>
-                                        <div className={"d-flex justify-content-between flex-wrap"}>
-                                            <div className={"p-2 align-self-center"}>
                                                 Initialise selected game
                                             </div>
                                             <div className={"p-2 align-self-center"}>
@@ -353,12 +345,29 @@ const PanelAdmin = () => {
                                     <Card.Header className={"bg-dark text-white"}>Current status</Card.Header>
                                     <Card.Body>
                                     <div className={"d-flex justify-content-between flex-wrap"}>
+                                            <div className={"p-2 align-self-center"}>
+                                                State
+                                            </div>
+                                            <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
+                                                <InputGroup.Text>{context.game ? context.game.state : <text>No game</text>}</InputGroup.Text>
+                                            </div>
+                                        </div>
+                                    <div className={"d-flex justify-content-between flex-wrap"}>
                                         <div className={"p-2 align-self-center"}>
-                                            Logged in players
+                                            Players
                                         </div>
                                         <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
 
-                                            <InputGroup.Text>{context.users.length}</InputGroup.Text>
+                                            <InputGroup.Text>{context.users["users"].length}</InputGroup.Text>
+                                        </div>
+                                    </div>
+                                    <div className={"d-flex justify-content-between flex-wrap"}>
+                                        <div className={"p-2 align-self-center"}>
+                                            Chains created
+                                        </div>
+                                        <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
+
+                                            <InputGroup.Text>{context.chains.length}</InputGroup.Text>
                                         </div>
                                     </div>
                                     </Card.Body>

@@ -25,7 +25,6 @@ const AttacksTable = () => {
                  <Card className='attack-card-1' style={{width: "60%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", paddingRight: "5px"}}>
                     {/* <Card.Title>Bridges</Card.Title> */}
                     <Card.Body>
-                        <Card className='d-flex flex-column' style={{    borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             <table className="table-all-transactions" style={{borderCollapse: "collapse", background: "auto", float: "left", cursor: "pointer"}}>
                                 <thead>
                                 <tr>
@@ -46,7 +45,6 @@ const AttacksTable = () => {
                             }
                                 </tbody>
                             </table>      
-                        </Card>
 
                     </Card.Body>
 
@@ -55,7 +53,6 @@ const AttacksTable = () => {
             <Card className='attack-card-1' style={{width: "60%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", paddingRight: "5px"}}>
                     {/* <Card.Title>Players</Card.Title> */}
                     <Card.Body>
-                    <Card className='d-flex flex-column' style={{    borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             <table className="table-all-transactions" style={{borderCollapse: "collapse", background: "auto", float: "left", borderRadius: "8px"}}>
                                 <thead>
                                 <tr>
@@ -77,7 +74,6 @@ const AttacksTable = () => {
                                 }
                                 </tbody>
                             </table>      
-                        </Card>
 
 
                 </Card.Body>
