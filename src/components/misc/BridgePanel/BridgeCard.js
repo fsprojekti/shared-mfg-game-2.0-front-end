@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Button, Card, Dropdown,Form, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
-import { useGlobalContext } from '../../../context/context';
+import { AppContext } from '../../../context/context';
 
 
 //TODO: Transfer pri max value ne gre uredu skozi.
 const BridgeCard = () => {
-    const {chains, cookies, apiUserBridge, user, activeChain, usersBalances, bridges, setNote} = useGlobalContext();
+    const {chains, cookies, apiUserBridge, user, activeChain, usersBalances, bridges, setNote} = useContext(AppContext);
     let [amount, setAmount] = useState(null);
     let [fee, setFee] = useState(null);
     let [bridge, setBridge] = useState(0);

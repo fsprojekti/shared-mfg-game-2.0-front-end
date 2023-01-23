@@ -1,20 +1,21 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Spinner } from 'react-bootstrap';
 import balanceImg from '../../../assets/balance.png';
 import stakeImg from '../../../assets/stake.png';
 import ServiceBar from './ServiceBar';
 import ServiceLoading from './ServiceLoading';
-import { useGlobalContext } from '../../../context/context';
+import { AppContext } from '../../../context/context';
 
 
 const Stats = () => {
-    const { game, user, users, chains, cookies, activeChain, transactions, servicesAll, usersBalances, usersStakes, orders, services, agent, agents, service} = useGlobalContext();
+    const { stakeIndex, user, users, chains, cookies, activeChain, transactions, servicesAll, usersBalances, usersStakes, orders, services, agent, agents, service} = useContext(AppContext);
     const [relativeStake, setRelativeStake] = useState(0);
     const [serviceDataArray, setServiceDataArray] = useState([]);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState({num: 0});
     const [numOfService2, setNumOfService2] = useState({num: 0});
     const [userService, setUserService] = useState([]);
+
     let backColor= "#ffffff";
 
 
@@ -43,18 +44,19 @@ const Stats = () => {
     }
 
     useEffect(() => {
-        console.log(chains)
- 
-        if(chains.includes("id")) {
+        
+
+        const renderStakeData = async () => {
+            if(Object.keys(usersStakes).length == 0) return;
             if (chains[cookies.activeChain].stake == 0 ||  chains[cookies.activeChain].stake == undefined) {
                 setRelativeStake({stake: 0});
             } else {
-                let stake = ((usersStakes[chains[cookies.activeChain].name] / chains[cookies.activeChain].stake) * 100).toFixed(1)
+                console.log(((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1));
+                let stake = ((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1)
                 setRelativeStake({stake: stake});
             } 
-        } else {
-            setRelativeStake(0);
-        }
+        };
+        renderStakeData();
 
         
         const renderServiceData = async () => {
@@ -115,7 +117,7 @@ const Stats = () => {
         
 
 
-    }, [services, user, servicesAll]);
+    }, [services, activeChain, user, servicesAll, usersStakes]);
 
     return (
         <>
@@ -145,8 +147,7 @@ const Stats = () => {
                         <img src={stakeImg} alt={"stake"}/>
                     </div>
                     <div className={"stake-value"}>
-                        <p>{(Object.keys(usersStakes).length !== 0 ) ?  usersStakes[`${chains[activeChain].name}`] : 0}</p>
-                        {/* <p>Hello</p> */}
+                        <p>{ Object.keys(usersStakes).length !== 0 ?  usersStakes[stakeIndex][`${chains[activeChain].name}`] : 0}</p>
                     </div>
                     <div className={"stake-value-proc"}>
                         <p>({relativeStake.stake}%)</p>

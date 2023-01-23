@@ -1,11 +1,10 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { ResponsiveBar } from '@nivo/bar';
-import { useGlobalContext } from '../../../context/context';
+import { AppContext } from '../../../context/context';
 import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
-import { GiConsoleController } from 'react-icons/gi';
 import { Card } from 'react-bootstrap';
 const BarChart = ({dataArray, modifiedData, checked}) => {
-    const {orders, user,  transactions, servicesAll, activeChain, openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent, agents } = useGlobalContext();
+    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent, agents } = useContext(AppContext);
     const setTradeModal = (data) => {
 
         const modalService = services.filter(service => service._id  == data.service && service.state == "MARKET");

@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import { useGlobalContext } from '../../../context/context';
+import React, {useState, useEffect, useContext} from 'react';
+import { AppContext } from '../../../context/context';
 
 const RankingTable = () => {
-    const { game, users, cookies } = useGlobalContext();
+    const { game, users, cookies } = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
 
     useEffect(() => {

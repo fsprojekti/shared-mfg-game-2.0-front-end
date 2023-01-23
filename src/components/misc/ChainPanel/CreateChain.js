@@ -24,16 +24,6 @@ const CreateSideChain = () => {
             console.log(context.chains[chain].id)
             let response = await context.apiUserCreateChain(context.chains[chain].id, fee);
             console.log(response);
-            context.apiUserFetchBalance(context.game.id).then(balance => {
-                console.log(JSON.stringify(balance));
-                context.setUsersBalances(balance);
-            }).catch(e => console.log(e));
-
-            context.apiUserFetchStake(context.game.id).then(stakes => {
-                console.log("STAKES: " + stakes)
-                if(stakes[0] != undefined) context.setUsersStakes(stakes[0]);
-            }).catch(e => console.log(e));
-
 
             context.setNote({
                 show: true,

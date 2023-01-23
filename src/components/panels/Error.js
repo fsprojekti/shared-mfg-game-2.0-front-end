@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Modal from '../misc/Modal';
-import { useGlobalContext } from '../../context/context';
+import { AppContext } from '../../context/context';
 
 
 const Error = () => {
-    const {setModalContent} = useGlobalContext();
+    const {setModalContent} = useContext(AppContext);
 
     setModalContent('This page does not exist 🤯!');
 

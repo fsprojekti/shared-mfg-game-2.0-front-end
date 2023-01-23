@@ -1,11 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import ReactTooltip from 'react-tooltip';
-import { useGlobalContext } from '../../../context/context';
+import { AppContext } from '../../../context/context';
 
 const ServiceLoading = (data) => {
     const { id, consumer, provider, type, updatedAt, duration } = data.item;
 
-    const { gameData } = useGlobalContext();
     const [serviceCompleted, setServiceCompleted] = useState(0);
     const [timeLeft, setTimeLeft] = useState(0);
 

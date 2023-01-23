@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react'
-import { useGlobalContext } from '../../../context/context';
+import React, {useState, useEffect, useContext} from 'react'
+import { AppContext } from '../../../context/context';
 import BarChart from './BarChart';
 import ToggleSwitch from './ToggleSwitch';
 import TradeModal from '../TradeModal';
 import CancelOrderModal from '../CancelOrderModal';
 
 const Trades = () => {
-    const { game, users, orders, agents, servicesAll, service, chains, activeChain } = useGlobalContext();
+    const { game, users, orders, agents, servicesAll, service, chains, activeChain } = useContext(AppContext);
     const [dataArray1, setDataArray1] = useState([]);
     const [dataArray2, setDataArray2] = useState([]);
     const [dataArray3, setDataArray3] = useState([]);

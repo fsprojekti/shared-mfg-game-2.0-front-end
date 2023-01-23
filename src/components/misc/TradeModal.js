@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import { useGlobalContext } from '../../context/context';
+import React, {useState, useEffect, useContext} from 'react';
+import { AppContext } from '../../context/context';
 import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
 import {motion} from 'framer-motion'
 
 const TradeModal = () => {
-    const { transactions, user, isTradeModalOpen, usersBalances, closeTradeModal, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useGlobalContext();
+    const { transactions, user, isTradeModalOpen, usersBalances, closeTradeModal, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
     const [txFee, setTxFee] = useState("0");
     const [tableDataArray, setTableDataArray] = useState([]);
     const [provider, setProvider] = useState('');

@@ -48,6 +48,7 @@ function App() {
         context.removeCookie("authToken");
         context.removeCookie("userId");
         context.removeCookie("activeChain");
+        context.removeCookie("timeDiff");
         context.setUser({
             id: "",
             type: "",
@@ -60,6 +61,7 @@ function App() {
 
         //Load last cookies into context state
         context.setActiveChain(context.cookies.activeChain);
+        context.setTimeDiff(context.cookies.timeDiff);
 
         //Load game
         const game = context.apiGameFetch().then(game => {
@@ -107,26 +109,26 @@ function App() {
 
         //Load user's purchased and active services
         const userServices = context.apiUserFetchServices().then(services => {
-            console.log("MY SERVICE ARRAY:")
+            // console.log("MY SERVICE ARRAY:")
             // alert(JSON.stringify(services["services"]));
             context.setServices(services["services"]);
         }).catch(e => console.log(e));
 
         //Load users balances on different chains
         const balance = context.apiUserFetchBalance().then(balance => {
-            console.log("BALANCE: " + JSON.stringify(balance))
-            for(let i = 0; i < balance.length; i++) {
-                console.log(balance[i])
-            }
-            var object = balance.reduce((obj, item) => (item.key, obj) ,{});
+            // console.log("BALANCE: " + JSON.stringify(balance))
+            // for(let i = 0; i < balance.length; i++) {
+            //     console.log(balance[i])
+            // }
+            // var object = balance.reduce((obj, item) => (item.key, obj) ,{});
 
             context.setUsersBalances(balance);
         }).catch(e => console.log(e));
     
         //Load users stakes on different chains
         const stakes = context.apiUserFetchStake().then(stakes => {
-            console.log("STAKES: " + JSON.stringify(stakes))
-            if(stakes[0] != undefined) context.setUsersStakes(stakes[0]);
+            console.log(stakes)
+            context.setUsersStakes(stakes);
         }).catch(e => console.log(e));
 
         //Load all chains
@@ -135,27 +137,31 @@ function App() {
             // console.log((new Date(chains[0].updatedAt)).getTime()); 
             // console.log(context.cookies.timeDiff)
             let chainsObj = chains;
-            chainsObj[0].load = true;
-            //Ni uredu! Prviš ko gre, se ne sme prištevati timeDiff. (Prvič prvič, ko se začne igra, pol vse ostale refreshe pa ja)
-            chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+            
+            if(context.cookies.timeDiff != undefined) {
+                chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+            }else {
+                chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime();
+            }
+            
             context.setChains(chainsObj);
         }).catch(e => console.log(e))
 
         //Load all bridges
         const bridges = context.apiGameBridges().then(bridges => {
-            console.log(JSON.stringify(bridges))
+            // console.log((bridges))
             context.setBridges(bridges);
         }).catch(e => console.log(e))
 
         //Load user's steal votes
         const stealVotes = context.apiUserStealGet().then(stealVotes => {
-            console.log((stealVotes))
+            // console.log((stealVotes))
             context.setStealVotes(stealVotes);
         }).catch(e => console.log(e))
 
         //Load user's block votes
         const blockVotes = context.apiUserBlockGet().then(blockVotes => {
-            console.log(JSON.stringify(blockVotes))
+            // console.log(JSON.stringify(blockVotes))
             context.setBlockVotes(blockVotes);
         }).catch(e => console.log(e))
 

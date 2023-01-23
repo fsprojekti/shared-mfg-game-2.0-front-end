@@ -29,6 +29,11 @@ export const ContextWrapper = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies(['authToken', 'userId', 'activeChain', 'timeDiff']);
     //Active chain
     const [activeChain, setActiveChain] = useState(0);
+    //Stake index
+    //needed because of the way data is returned from api
+    const [stakeIndex, setStakeIndex] = useState(0);
+    //Time difference between server and client
+    const [timeDiff, setTimeDiff] = useState(cookies.timeDiff);
     //User auth token
     const [authToken, setAuthToken] = useState(cookies.authToken);
     //User id
@@ -159,7 +164,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateChainsState = (chainObj) => {
-        console.log(chainObj);
+        // console.log(chainObj);
           setChains((chains) => {
             const oldChains = [...chains];
 
@@ -171,17 +176,16 @@ export const ContextWrapper = (props) => {
                 oldChains[index].balance = chainObj.balance;
                 oldChains[index].stake = chainObj.stake;
                 if(chainObj.blockNumber > oldChains[index].blockNumber){
-                    if(oldChains[0].load == true) { 
+                    if(cookies.timeDiff === undefined || cookies.timeDiff == NaN) { 
                         console.log(oldChains[index].updatedAt)
-                        setCookie('timeDiff', Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000);  
-                        console.log(Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000)
-                        oldChains[0].load = false
+                        let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
+                        setCookie('timeDiff', difference);  
+                        timeDiff = difference;
                     }
                     
-                    oldChains[index].updatedAt = Date.now() - cookies.timeDiff;
-                    
+                    oldChains[index].updatedAt = Date.now() - timeDiff;
+
                     oldChains[index].blockNumber = chainObj.blockNumber; 
-                    console.log("Time diff: " + cookies.timeDiff);
                 }
 
 
@@ -720,6 +724,31 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
+
+    //User ublock a player Vote
+    const apiUserBlockOff = useCallback((userId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                // setLoading(true);
+                let out = await axios.get(`user/attack/block/vote/off`, {
+                    params: {
+                        userId: userId,
+                    },
+                    headers: {
+                        authorization: cookies.authToken
+                        }
+                });
+                // setLoading(false);
+                resolve(out.data)
+            } catch (e) {
+                // setLoading(false);
+                reject(e);
+            }
+        })
+    }, []);
+
+
     //User attack a chain function vote OFF
     const apiUserBlockGet = useCallback(() => {
         return new Promise(async (resolve, reject) => {
@@ -1096,12 +1125,11 @@ export const ContextWrapper = (props) => {
             updateServiceState,
             authToken, setAuthToken,
             userId, setUserId,
+            timeDiff, setTimeDiff,
+            stakeIndex, setStakeIndex,
+            apiUserBlockOn, apiUserBlockOff,
         }}>
             {props.children}
         </AppContext.Provider>
     )
-};
-
-export const useGlobalContext = () => {
-    return useContext(AppContext)
 };

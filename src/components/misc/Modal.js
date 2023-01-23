@@ -1,12 +1,12 @@
-import React from 'react'
-import { useGlobalContext } from '../../context/context';
+import React, {useContext} from 'react'
+import { AppContext } from '../../context/context';
 
 const Modal = () => {
-    const { modalContent } = useGlobalContext();
+    const context = useContext(AppContext);
     return (
         <div className={'modal-overlay'}>
             <div className="modal-container">
-                <h2>{modalContent}</h2>
+                <h2>{context.modalContent}</h2>
             </div>
         </div>
     )

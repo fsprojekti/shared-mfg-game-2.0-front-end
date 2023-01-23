@@ -74,6 +74,8 @@ const AttackCard = () => {
         }
     }
 
+
+
     let removeVoteStealBridge = async () => {
         try {
             setLoading(true);
@@ -93,6 +95,32 @@ const AttackCard = () => {
                 type: "danger",
                 msg: e.response.data.message,
                 heading: "Chain not created! "
+            })
+        }
+    }
+
+    let voteBlockPlayer = async () => {
+        try {
+            
+            setLoading("block");
+
+            console.log(context.bridges[0])
+            await context.apiUserBlockOn(context.bridges[bridge]._id);
+
+            context.setNote({
+                show: true,
+                type: "success",
+                msg: "Attack vote casted",
+                heading: "Success! "
+            })
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+            context.setNote({
+                show: true,
+                type: "danger",
+                msg: e.response.data.message,
+                heading: "Could not vote! "
             })
         }
     }
@@ -216,7 +244,7 @@ const AttackCard = () => {
                         
                         </Card>
 
-                        <Button variant="danger" style={{borderRadius: "8px"}} onClick={voteStealBridge}> 
+                        <Button variant="danger" style={{borderRadius: "8px"}} onClick={voteBlockPlayer}> 
                             {loading === "block" ? (
                                 <div>
                                     <Spinner

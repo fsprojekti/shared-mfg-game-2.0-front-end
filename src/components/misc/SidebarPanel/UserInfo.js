@@ -19,7 +19,7 @@ import {useState, useContext, useEffect, useReducer} from "react";
 
 const UserInfo = () => {
 
-    const { game, chains, user, activeChain, cookies, orders, usersBalances, usersStakes, servicesAll, services, service} = useContext(AppContext);
+    const { chains, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex} = useContext(AppContext);
 
 
     const [orderExists, setOrderExists] = useState(false);
@@ -63,19 +63,25 @@ const UserInfo = () => {
     };
     
     useEffect(() => {
-        //Ta render ne dela pravilno ob spremembi chaina. Moreš prešaltat na drugo stran, da je prav. 
-        // console.log(usersStakes[chains[cookies.activeChain].name])
-        // console.log(chains[cookies.activeChain])
 
-        if(chains.length > 0) { 
+        const renderStakeData = async () => {
+            if(Object.keys(usersStakes).length == 0) return;
+            let stakesKeys = [];
+            for(let i = 0; i < Object.keys(usersStakes).length; i++) {
+                stakesKeys[i] = Object.keys(usersStakes[i])[0];
+            }
+            let stakeIndex =  stakesKeys.indexOf(chains[activeChain].name);
+            setStakeIndex(stakeIndex);
+
             if (chains[cookies.activeChain].stake == 0 ||  chains[cookies.activeChain].stake == undefined) {
-                setRelativeStake(0);
+                setRelativeStake({stake: 0});
             } else {
-                setRelativeStake(((usersStakes[chains[cookies.activeChain].name] / chains[cookies.activeChain].stake) * 100).toFixed(1));
+                console.log(((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1));
+                let stake = ((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1)
+                setRelativeStake({stake: stake});
             } 
-        } else {
-            setRelativeStake(0);
-        }
+        };
+        renderStakeData();
 
         const getOtherServiceTypes = async () => {
             let uniqueService = [...new Set(servicesAll.map(item => item.type))];
@@ -116,7 +122,7 @@ const UserInfo = () => {
             </div>
 
             
-            {/* <h4 className="d-flex flex-column" style={{backgroundColor: "#FFBF00", textAlign: "center", marginBottom: "2px", paddingBottom: "2px"}}> { chains.length < 1  ? "null" : chains[activeChain].name  } </h4>  */}
+            <h4 className="d-flex flex-column" style={{backgroundColor: "#FFBF00", textAlign: "center", marginBottom: "2px", paddingBottom: "2px"}}> { chains.length < 1  ? "null" : chains[activeChain].name  } </h4> 
             
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
             
@@ -128,7 +134,7 @@ const UserInfo = () => {
                 </div>  
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaChartPie style={{color: "#ffba72", fontSize: "22px"}}/>
-                    <h4>{Object.keys(usersStakes).length !== 0  ?  usersStakes[`${chains[activeChain].name}`] : 0} ({relativeStake}%)</h4>
+                    <h4>{Object.keys(usersStakes).length !== 0 ?  usersStakes[stakeIndex][`${chains[activeChain].name}`] : 0} ({relativeStake.stake}%)</h4>
                 </div>
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaBusinessTime style={{color: "#38aaff", fontSize: "22px"}}/>
