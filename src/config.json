@@ -1,3 +1,4 @@
 {
-    "server": "http://localhost:8000"
-  }
+  "server": "http://game-api.fs-lampa.si/game/get",
+  "server-dev": "localhost:8000"
+}
