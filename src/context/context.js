@@ -33,7 +33,7 @@ export const ContextWrapper = (props) => {
     //needed because of the way data is returned from api
     const [stakeIndex, setStakeIndex] = useState(0);
     //Time difference between server and client
-    const [timeDiff, setTimeDiff] = useState(cookies.timeDiff);
+    let [timeDiff, setTimeDiff] = useState(cookies.timeDiff);
     //User auth token
     const [authToken, setAuthToken] = useState(cookies.authToken);
     //User id
@@ -181,6 +181,7 @@ export const ContextWrapper = (props) => {
                         let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
                         setCookie('timeDiff', difference);  
                         timeDiff = difference;
+
                     }
                     
                     oldChains[index].updatedAt = Date.now() - timeDiff;
@@ -188,7 +189,7 @@ export const ContextWrapper = (props) => {
                     oldChains[index].blockNumber = chainObj.blockNumber; 
                 }
 
-
+                console.log(timeDiff);
                 return oldChains;
             } else if(index == -1 && chainObj.id !== undefined) {
                 oldChains.push(chainObj);
@@ -234,7 +235,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.log(serviceObj);
+        alert(serviceObj);
     }
 
     const updateTransactionsState = (transObj) => {

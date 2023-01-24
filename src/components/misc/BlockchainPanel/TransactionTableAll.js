@@ -49,25 +49,23 @@ const AllTransactionsTable = () => {
             });
         } if (sortBy === 'typeOfService') {
             return await dataArray.sort((a, b) => {
-                let textA = a.typeOfService.toUpperCase();
-                let textB = b.typeOfService.toUpperCase();
                 if (orderOfSort === "descending") {
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                    return (a.type < b.type) ? -1 : (a.type > b.type) ? 1 : 0;
                 } if (orderOfSort === "ascending") {
-                    return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
+                    return (a.type > b.type) ? -1 : (a.type < b.type) ? 1 : 0;
                 }
             });
         } if (sortBy === 'price') {
             if (orderOfSort === "descending") {
-                return await dataArray.sort((a, b) => parseInt(b.price) - parseInt(a.price));
+                return await dataArray.sort((a, b) => parseInt(b.amount) - parseInt(a.amount));
             } if (orderOfSort === "ascending") {
-                return await dataArray.sort((a, b) => parseInt(a.price) - parseInt(b.price));
+                return await dataArray.sort((a, b) => parseInt(a.amount) - parseInt(b.amount));
             }
         } if (sortBy === 'txFee') {
             if (orderOfSort === "descending") {
-                return await dataArray.sort((a, b) => parseInt(b.txFee) - parseInt(a.txFee));
+                return await dataArray.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             } if (orderOfSort === "ascending") {
-                return await dataArray.sort((a, b) => parseInt(a.txFee) - parseInt(b.txFee));
+                return await dataArray.sort((a, b) => parseInt(a.fee) - parseInt(b.fee));
             }
         }
     };
@@ -92,8 +90,8 @@ const AllTransactionsTable = () => {
 
     useEffect(() => {
         const renderTableData = async () => {
-            console.log(transactions[chains[activeChain].name]);
-            const minedTransactions = await transactions[chains[activeChain].name].filter(transaction => transaction.state == "MINED");
+            console.log(transactions);
+            const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED" && transaction.chain == chains[activeChain].id);
             console.log(minedTransactions);
 
             const transactionsArray = await Promise.all(minedTransactions.map(async (transaction) => {
@@ -103,19 +101,22 @@ const AllTransactionsTable = () => {
                 const consumerAgent = await agents.filter(agent => agent.account === from);
 
                 
-                let consumer = "BLOCKCHAIN";
-                if(consumerAgent.length > 0) {
-                    const consumerUser = await users["users"].filter(user => user._id === consumerAgent[0].user);
+                let consumer;
+                if(consumerAgent.length) {
+                    const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                     consumer = consumerUser[0].name;
+                } else {
+                    consumer = chains[activeChain].name;
                 };
                 
                 
                 const providerAgent = await agents.filter(agent => agent.account === minedTransactions[0].to);
-                let provider = "BLOCKCHAIN";
-                if(from != undefined) {
-                    
-                    const providerUser = await users["users"].filter(user => user._id === providerAgent[0].user);
+                let provider;
+                if(providerAgent && transaction.type !== "FEE") {
+                    const providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
                     provider = providerUser[0].name;
+                } else {
+                    provider = chains[activeChain].name;
                 };
 
                 let d = new Date(transaction.createdAt);
@@ -129,8 +130,8 @@ const AllTransactionsTable = () => {
                         id: transaction._id,
                         consumer: consumer,
                         provider: provider,
-                        price: transaction.amount,
-                        fee: transaction.fee,
+                        amount: amount,
+                        fee: fee,
                         type: providerAgent[0].type,
                         createdAt: time,
                     }
@@ -142,7 +143,7 @@ const AllTransactionsTable = () => {
                         id: transaction._id,
                         consumer: consumer,
                         provider: provider,
-                        price: amount,
+                        amount: amount,
                         fee: fee,
                         type: transaction.type,
                         createdAt: time,
@@ -150,8 +151,11 @@ const AllTransactionsTable = () => {
                 )
                 
             }));
-            setTableDataArray(transactionsArray);
+            const filteredTransactionsArray = await filterDataArray(transactionsArray);
+            const dataArray = await sortDataArray(filteredTransactionsArray);
+            setTableDataArray(dataArray);
         };
+        
         renderTableData();
 
     }, [game, checkBoxes, orderOfSort]);
@@ -189,7 +193,7 @@ const AllTransactionsTable = () => {
                                 } if (orderOfSort === 'descending') {
                                     setOrderOfSort('ascending');
                                 }
-                            }}>Consumer {sortBy === 'consumer' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
+                            }}>From {sortBy === 'consumer' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
                             <th onClick={() => {
                                 setSortBy('provider');
                                 if (orderOfSort === 'ascending') {
@@ -197,7 +201,7 @@ const AllTransactionsTable = () => {
                                 } if (orderOfSort === 'descending') {
                                     setOrderOfSort('ascending');
                                 }
-                            }}>Provider {sortBy === 'provider' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
+                            }}>To {sortBy === 'provider' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
                             <th onClick={() => {
                                 setSortBy('typeOfService');
                                 if (orderOfSort === 'ascending') {
@@ -205,7 +209,7 @@ const AllTransactionsTable = () => {
                                 } if (orderOfSort === 'descending') {
                                     setOrderOfSort('ascending');
                                 }
-                            }}>Type of service {sortBy === 'typeOfService' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
+                            }}>Type {sortBy === 'typeOfService' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
                             <th onClick={() => {
                                 setSortBy('price');
                                 if (orderOfSort === 'ascending') {
@@ -221,7 +225,7 @@ const AllTransactionsTable = () => {
                                 } if (orderOfSort === 'descending') {
                                     setOrderOfSort('ascending');
                                 }
-                            }}>Tx Fee {sortBy === 'txFee' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
+                            }}>Fee {sortBy === 'txFee' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -233,7 +237,7 @@ const AllTransactionsTable = () => {
                                         <td>{item.consumer}</td>
                                         <td>{item.provider}</td>
                                         <td>{item.type}</td>
-                                        <td>{item.price}</td>
+                                        <td>{item.amount}</td>
                                         <td>{item.fee}</td>
                                     </tr>
                                 )

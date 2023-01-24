@@ -105,7 +105,7 @@ const BlockchainData = () => {
                     });
                   });
             } else {
-                setLoadingStake(true);
+                setLoadingUnstake(true);
 
                 const data = {
                     amount: newStake,
@@ -125,7 +125,7 @@ const BlockchainData = () => {
                     });
                   });
 
-                setLoadingStake(false);
+                setLoadingUnstake(false);
                 setNewStake("0");
                 setTxFee("0");
                     

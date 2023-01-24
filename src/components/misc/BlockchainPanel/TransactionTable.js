@@ -27,29 +27,27 @@ const TransactionsTable = () => {
 
     useEffect(() => {
         
-        
         const renderTableData = async () => {
-            console.log(transactions[chains[activeChain].name]);
-            const orderTransactions = await transactions[chains[activeChain].name].filter(transaction => transaction.state == "SEND");
-            console.log(orderTransactions);
+
+            const orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains[activeChain].id);
+
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
-            console.log(transactionsByFee);
+
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
-                console.log(from)
-                console.log(to)
+
                 const consumerAgent = await agents.filter(agent => agent.account === from);
 
-                const consumerUser = await users["users"].filter(user => user._id === consumerAgent[0].user);
+                const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
                 const providerAgent = await agents.filter(agent => agent.account === orderTransactions[0].to);
-                console.log(providerAgent.length == 0);
-                if(providerAgent.length == 0) {
+
+                if(!providerAgent.length) {
                     return (
                         {
                             id: transaction._id,
                             consumer: consumerUser[0].name,
-                            provider:  "Blockchain",
+                            provider:  chains[activeChain].name,
                             price: amount,
                             fee: fee,
                         }
@@ -57,7 +55,7 @@ const TransactionsTable = () => {
                 }
 
 
-                const providerUser = await users["users"].filter(user => user._id === providerAgent[0].user);
+                const providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
 
                 if(providerUser[0].name != undefined) {
                     return (
@@ -72,21 +70,11 @@ const TransactionsTable = () => {
                 }
                 
             }));
+
             setTableDataArray(transactionsArray);
         };
         renderTableData();
-        const calculateTimeLeft = async () => {
-            const createdMillis = await new Date(chainMain.miningTime).getTime();
-            let timeLeft = 10000 - (Date.now() - createdMillis);
-            let width = await Math.floor((1 - ((Date.now() - createdMillis) / 10000)) * 100);
-            if (width < 0 || timeLeft < 0) {
-                width = 0;
-                timeLeft = 0;
-            }
-            setTimeLeft(millisToMinutesAndSeconds(timeLeft));
-            setWidth(width);
-        };
-        calculateTimeLeft();
+
     }, [game]);
 
 
