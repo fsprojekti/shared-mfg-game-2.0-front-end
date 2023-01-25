@@ -201,10 +201,7 @@ const BlockchainData = () => {
                                         <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
                                         <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
                                     </InputGroup>
-
-
-                                
-                                
+               
                                 <Button variant="success"  onClick={confirmStake} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px"}}>
                                 {loadingStake ? (
                                         <div>
@@ -216,11 +213,11 @@ const BlockchainData = () => {
                                             aria-hidden="true"
                                         />
 
-                                            <text> STAKE  </text>
+                                        <text> STAKE </text> 
 
                                         </div>
                                     ) : (
-                                        <text> STAKE  </text>
+                                        <text> STAKE </text>
                                     )
                                     
                                     } 
@@ -251,15 +248,6 @@ const BlockchainData = () => {
                             </div>
                             
                         </div>
-                        {/* <div className="d-flex align-items-center justify-content-center" style={{zIndex: 2, position: "absolute"}}>
-                                    <NoteDismissible show={context.note.show}
-                                        msg={context.note.msg}
-                                        variant={context.note.type}
-                                        heading={context.note.heading}
-                                        reportHide={() => {
-                                            context.setNote({...(context.note.show = false)});
-                                        }}/>
-                                </div> */}
                     </div>
                    
                 </div>

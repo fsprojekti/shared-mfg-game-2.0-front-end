@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 
+
 const MiningBar = (props) => {
     const context = useContext(AppContext);
     const [timeLeft, setTimeLeft] = useState('');
@@ -43,15 +44,19 @@ const MiningBar = (props) => {
         }
         setTimeLeft((timeLeft/1000).toFixed(2));
         setWidth(width);
+        console.log(width)
     }, 50);
 
 
     return (
         <>
+            {/* <ProgressBar striped variant="success" now={width} style={{width: "80%"}} animated={true} /> */}
+            {/* <progress width={width} variant="success" style={{width: "80%"}}  /> */}
             <div className={`mining-progress-container${props.version}`}>
                 <div className={`mining-progress-flex${props.version}`}>
                 
                     <div className={`mining-progress${props.version}`}>
+
                         <div className={`mining-progress-filler${props.version}`} style={{width: `${width}%`}}></div>
                     </div>
                 </div>

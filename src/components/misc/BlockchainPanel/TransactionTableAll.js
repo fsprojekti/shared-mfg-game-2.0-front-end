@@ -3,11 +3,11 @@ import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 const AllTransactionsTable = () => {
-    const { game, user, users, agents,  chainMain, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain} = useContext(AppContext);
+    const { game, users, agents,  transactions, chains, activeChain} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
     const [sortBy, setSortBy] = useState('time');
     const [orderOfSort, setOrderOfSort] = useState('ascending');
-    const [checkBoxes, setCheckBoxes] = useState([{type: "Mechanical service", isChecked: false}, {type: "Electrical service", isChecked: false}, {type: "IT service", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Unstake", isChecked: false}]);
+    const [checkBoxes, setCheckBoxes] = useState([{type: "MECHANICAL", isChecked: false}, {type: "ELECTRICAL", isChecked: false}, {type: "PROGRAMMING", isChecked: false}, {type: "STAKE", isChecked: false}, {type: "UNSTAKE", isChecked: false}]);
 
     const displayTime = async (time) => {
         const createdMillis = await new Date(time);
@@ -71,9 +71,10 @@ const AllTransactionsTable = () => {
     };
 
     const selectOne = async (e) => {
+        console.debug(e)
         let itemName = e.target.name;
         let checked = e.target.checked;
-        const newArray = await checkBoxes.map(item =>
+        const newArray = checkBoxes.map(item =>
             item.type === itemName ? { ...item, isChecked: checked } : item
         );
         setCheckBoxes(newArray);
@@ -233,12 +234,12 @@ const AllTransactionsTable = () => {
                             tableDataArray.map((item) =>
                                 (
                                     <tr key={item.id}>
-                                        <td>{item.createdAt}</td>
-                                        <td>{item.consumer}</td>
-                                        <td>{item.provider}</td>
-                                        <td>{item.type}</td>
-                                        <td>{item.amount}</td>
-                                        <td>{item.fee}</td>
+                                        <td >{item.createdAt}</td>
+                                        <td >{item.consumer}</td>
+                                        <td >{item.provider}</td>
+                                        <td >{item.type}</td>
+                                        <td >{item.amount}</td>
+                                        <td >{item.fee}</td>
                                     </tr>
                                 )
                             )

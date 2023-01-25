@@ -32,8 +32,6 @@ export const ContextWrapper = (props) => {
     //Stake index
     //needed because of the way data is returned from api
     const [stakeIndex, setStakeIndex] = useState(0);
-    //Time difference between server and client
-    let [timeDiff, setTimeDiff] = useState(cookies.timeDiff);
     //User auth token
     const [authToken, setAuthToken] = useState(cookies.authToken);
     //User id
@@ -70,7 +68,12 @@ export const ContextWrapper = (props) => {
     })
 
     //User's asigned agent
-    const [agent, setAgent] = useState({});
+    const [agent, setAgent] = useState({
+        id: "FF",
+        timeForService: "000",
+        type: "TYPE",
+        upgradeLevel: 0,
+    });
 
     //All agents in the game
     const [agents, setAgents] = useState({})
@@ -155,6 +158,8 @@ export const ContextWrapper = (props) => {
     };
 
 
+
+
     const openTradeModal = () => {
         setIsTradeModalOpen(true);
     };
@@ -163,11 +168,12 @@ export const ContextWrapper = (props) => {
         setActiveChain(chainId);
     }
 
-    const updateChainsState = (chainObj) => {
+    const updateChainsState = async (chainObj) => {
         // console.log(chainObj);
           setChains((chains) => {
             const oldChains = [...chains];
 
+            //Check if chain already exists in the state
             const index = oldChains.findIndex(c => {
                 return c.id === chainObj.id;
             });
@@ -175,21 +181,24 @@ export const ContextWrapper = (props) => {
             if(index !== -1) {
                 oldChains[index].balance = chainObj.balance;
                 oldChains[index].stake = chainObj.stake;
+
+                //Check if block number is higher than the one in current state
                 if(chainObj.blockNumber > oldChains[index].blockNumber){
-                    if(cookies.timeDiff === undefined || cookies.timeDiff == NaN) { 
-                        console.log(oldChains[index].updatedAt)
+                    //Checking if this is a first run, to calculate time difference between server and client
+                    if(oldChains[index].timeDiff === undefined) { 
+                        // console.debug(Date.now() - oldChains[index].timeDiff)
                         let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
+                        // console.debug("Calculating difference between server and client: " + difference + "ms")
                         setCookie('timeDiff', difference);  
-                        timeDiff = difference;
-
-                    }
+                        oldChains[index].timeDiff = difference;
+                    }          
                     
-                    oldChains[index].updatedAt = Date.now() - timeDiff;
-
+                    oldChains[index].updatedAt = Date.now() - oldChains[index].timeDiff
                     oldChains[index].blockNumber = chainObj.blockNumber; 
                 }
+   
+                console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
 
-                console.log(timeDiff);
                 return oldChains;
             } else if(index == -1 && chainObj.id !== undefined) {
                 oldChains.push(chainObj);
@@ -203,6 +212,7 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
+        console.log("ORDER EVENT");
         console.log(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
@@ -210,14 +220,15 @@ export const ContextWrapper = (props) => {
             const index = orders.findIndex(c => {
                 return c._id === orderObj.id;
             });
-            console.log(index)
+
             if(index !== -1) {
-                orders[index] = orderObj;
-                // console.log(oldChains[index])
+                orders[index].state = orderObj.state;
+                orders[index].price = orderObj.price;
                 return orders;
             } else if(index == -1 && orderObj.id !== undefined) {
                 console.log("pushing");
                 console.log(orderObj.chain._id);
+                //The new object I get is not in the correct format, so I need to create a new one
                 let newOrder = {};
                 newOrder._id = orderObj.id;
                 newOrder.chain = orderObj.chain._id;
@@ -225,7 +236,6 @@ export const ContextWrapper = (props) => {
                 newOrder.service = orderObj.service._id;
                 newOrder.price = orderObj.price;
                 orders.push(newOrder);
-                console.log(orders);
                 return orders;
             }
             
@@ -235,7 +245,46 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        alert(serviceObj);
+        console.log("SERVICE EVENT")
+        console.debug(serviceObj);
+        setServicesAll((oldServices) => {
+            const services = [...oldServices];
+
+            const index = services.findIndex(c => {
+                return c._id === serviceObj.id;
+            });
+
+            if(index !== -1) {
+                console.debug("Updating service")
+                services[index].state = serviceObj.state;
+                services[index].updatedAt = Date.now();
+                return services;
+            } else if(index == -1) {
+                console.debug("Pushing service")
+                services.push(serviceObj);
+                return services;
+            }
+            
+            return oldServices;         
+        });
+
+        setService((oldService) => {
+            let service = oldService;
+            //TODO: fix this!!!
+            console.debug(agent);
+            console.debug(agents);
+            console.debug(user);
+            console.debug(serviceObj);
+            if(serviceObj.agent == agent.id) {
+                console.debug("Updating user service")
+                service.state = serviceObj.state;
+                service.updatedAt = Date.now();
+                service.duration = serviceObj.duration;
+                return service;
+            }             
+            return oldService;         
+        });
+        
     }
 
     const updateTransactionsState = (transObj) => {
@@ -1126,7 +1175,6 @@ export const ContextWrapper = (props) => {
             updateServiceState,
             authToken, setAuthToken,
             userId, setUserId,
-            timeDiff, setTimeDiff,
             stakeIndex, setStakeIndex,
             apiUserBlockOn, apiUserBlockOff,
         }}>

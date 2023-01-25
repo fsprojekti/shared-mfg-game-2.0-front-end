@@ -40,6 +40,7 @@
   --fixed-width: 620px;
 }
 
+
 /*
 =============== 
 Global Styles
@@ -1052,7 +1053,6 @@ Pending transactions
   background:#fff;
   border-radius: 5px;
   width: 100%;
-  height: 100%;
 }
 
 .table-pending-transactions thead {
@@ -1673,7 +1673,6 @@ Modal
   border-radius: 5px;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
   width: 100%;
-  height: 100%;
 }
 
 .modal-table-pending-transactions thead {
@@ -2128,3 +2127,4 @@ border-color: #aed248;
   margin-top: 1rem
 
 }
+

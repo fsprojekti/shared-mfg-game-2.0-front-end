@@ -135,7 +135,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             defs={[
             // using helpers (cannot be used with http rendering API)
             // will use color from current element
-            patternDotsDef('dots', { color: 'black', background: 'inherit', size: "8", padding: "4", stagger: true }),
+            patternDotsDef('dots', { color: 'black', background: 'inherit', padding: 4, stagger: true }),
             patternLinesDef('lines-pattern', {
             "spacing": 10,
             "rotation": -55,

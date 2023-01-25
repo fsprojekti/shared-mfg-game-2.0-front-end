@@ -19,7 +19,7 @@ import {useState, useContext, useEffect, useReducer} from "react";
 
 const UserInfo = () => {
 
-    const { chains, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex} = useContext(AppContext);
+    const { chains, agent, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex} = useContext(AppContext);
 
 
     const [orderExists, setOrderExists] = useState(false);
@@ -63,7 +63,8 @@ const UserInfo = () => {
     };
     
     useEffect(() => {
-
+        console.log(agent);
+        console.log(service);
         const renderStakeData = async () => {
             if(Object.keys(usersStakes).length == 0) return;
             let stakesKeys = [];
@@ -125,8 +126,10 @@ const UserInfo = () => {
             <h4 className="d-flex flex-column" style={{backgroundColor: "#FFBF00", textAlign: "center", marginBottom: "2px", paddingBottom: "2px"}}> { chains.length < 1  ? "null" : chains[activeChain].name  } </h4> 
             
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
-            
+                                
+                
                 <MiningBar showText="false" version="-side" />  
+
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>
                     <h4>{Object.keys(usersBalances).length !== 0  ?  usersBalances[activeChain][`${chains[activeChain].name}`] : 0}</h4>

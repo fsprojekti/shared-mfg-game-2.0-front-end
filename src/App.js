@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useContext, useState, useEffect, useCallback, useRef } from "react";
+import {useContext, useState, useEffect } from "react";
 import {AppContext} from "./context/context";
 import { SocketContext } from './context/socket';
 import {Container, Spinner, Navbar, Button, Card} from "react-bootstrap";
@@ -61,7 +61,7 @@ function App() {
 
         //Load last cookies into context state
         context.setActiveChain(context.cookies.activeChain);
-        context.setTimeDiff(context.cookies.timeDiff);
+        // context.setTimeDiff({difference: context.cookies.timeDiff});
 
         //Load game
         const game = context.apiGameFetch().then(game => {
@@ -90,38 +90,36 @@ function App() {
         }).catch(e => console.log(e));
 
         //Load user agent
-        const agent = context.apiUserAgentGet().then(agent => {
-            context.setAgent(agent);
+        const agent = context.apiUserAgentGet().then(agentObj => {
+            let agent = context.agent;
+            agent.id = agentObj.id;
+            agent.type = agentObj.type;
+            agent.timeForService = agentObj.timeForService;
+            agent.upgradeLevel = agentObj.upgradeLevel;
+
+            context.setAgent({ ...agent });
         }).catch(e => console.log(e));
 
         //Load agents
         const agents = context.apiGameAgents().then(agents => {
-            // alert(JSON.stringify(agents));
+            console.log(JSON.stringify(agents));
             context.setAgents(agents);
             return true;
         }).catch(e => console.log(e));
 
         //Load user service
         const service = context.apiUserFetchService().then(service => {
-            // alert(JSON.stringify(service))  
             context.setService(service);
+            return true;
         }).catch(e => console.log(e));
 
         //Load user's purchased and active services
         const userServices = context.apiUserFetchServices().then(services => {
-            // console.log("MY SERVICE ARRAY:")
-            // alert(JSON.stringify(services["services"]));
             context.setServices(services["services"]);
         }).catch(e => console.log(e));
 
         //Load users balances on different chains
         const balance = context.apiUserFetchBalance().then(balance => {
-            // console.log("BALANCE: " + JSON.stringify(balance))
-            // for(let i = 0; i < balance.length; i++) {
-            //     console.log(balance[i])
-            // }
-            // var object = balance.reduce((obj, item) => (item.key, obj) ,{});
-
             context.setUsersBalances(balance);
         }).catch(e => console.log(e));
     
@@ -133,18 +131,17 @@ function App() {
 
         //Load all chains
         const chains = context.apiGameChains().then(chains => {
-            // alert(JSON.stringify(chains));
-            // console.log((new Date(chains[0].updatedAt)).getTime()); 
-            // console.log(context.cookies.timeDiff)
+
             let chainsObj = chains;
-            
-            if(context.cookies.timeDiff != undefined) {
+            console.debug(context.cookies.timeDiff)
+            if(context.cookies.timeDiff !== undefined) {
+                console.debug("Setting time difference")
+                chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
                 chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
-            }else {
-                chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime();
             }
-            
-            context.setChains(chainsObj);
+            console.log(chains);
+
+            context.setChains( chainsObj );
         }).catch(e => console.log(e))
 
         //Load all bridges
@@ -179,12 +176,12 @@ function App() {
 
             }).catch(e => console.log(e))
 
-            Promise.all([game, chains,  agents, orders,  bridges, stealVotes, blockVotes, users, transactions, services, service, userServices,
+            Promise.all([game, chains,  agents, agent, orders,  bridges, stealVotes, blockVotes, users, transactions, services, service, userServices,
                 balance, stakes]).then(() => {
                 context.setLoadingMain(false);
             });
 
-    }, [navigate])
+    }, [navigate, context.game.state])
 
     useEffect(() => {
         console.log(socket)
@@ -194,7 +191,12 @@ function App() {
         socket.on("game", context.updateGameState);
         socket.on("order", context.updateOrdersState);
         socket.on("transactions", context.updatetransactionsState);
-        socket.on("service", context.updateServicesState);
+        socket.on("service", context.updateServiceState);
+        socket.on("agent", context.updateAgentsState);
+        socket.on("balancesAgents", context.updateBalancesState);
+        socket.on("balanceChain", context.updateBalanceChain);
+        socket.on("balanceBridge", context.updateBalanceBridge);
+        socket.on("stakesAgents", context.updateStakesState);
 
         return () => {
           socket.off("chain");
@@ -202,6 +204,11 @@ function App() {
           socket.off("order");
           socket.off("transactions");
           socket.off("service");
+          socket.off("agent");
+          socket.off("balancesAgents");
+          socket.off("balanceChain");
+          socket.off("balanceBridge");
+          socket.off("stakesAgents");
         };
       }, [socket]);
 

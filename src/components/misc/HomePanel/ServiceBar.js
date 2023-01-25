@@ -1,5 +1,6 @@
 import {useContext, useState, useEffect, useCallback, useRef } from "react";
 import { AppContext } from "../../../context/context";
+import {ProgressBar } from 'react-bootstrap';
 
 const ServiceBar = () => {
     const context = useContext(AppContext);
@@ -56,9 +57,10 @@ const ServiceBar = () => {
         <>
             <div className="time-container">
                 <div className="bar-container">
-                    <div className="bar-filler" style={{width: `${serviceCompleted}%`}}>
+                    {/* <div className="bar-filler" style={{width: `${serviceCompleted}%`}}>
                         <span className="bar-label">{`${serviceCompleted}%`}</span>
-                    </div>
+                    </div> */}
+                    <ProgressBar striped variant="success" now={serviceCompleted} label={`${serviceCompleted}%`} style={{borderRadius: "8px", height: "25px"}}/>
                     <div className="bottom">
                         {
                             (context.service.state !== "ACTIVE") ? (
