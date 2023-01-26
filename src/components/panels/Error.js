@@ -1,5 +1,4 @@
 import React, {useContext} from 'react';
-import Modal from '../misc/Modal';
 import { AppContext } from '../../context/context';
 
 
@@ -10,7 +9,7 @@ const Error = () => {
 
     return (
         <div className="d-flex flex-row justify-content-center flex-wrap">
-            <h1> This url does not exist :) </h1>
+            <h1> This page does not exist :) </h1>
         </div>
     )
 };

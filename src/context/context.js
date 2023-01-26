@@ -112,6 +112,9 @@ export const ContextWrapper = (props) => {
     //Block votes
     const [blockVotes, setBlockVotes] = useState([]);
 
+    //Ranking
+    const [ranking, setRanking] = useState([]);
+
     const [note, setNote] = useState({
         show: false,
         type: "info",
@@ -201,8 +204,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        // console.log("ORDER EVENT");
-        // console.log(orderObj);
+        console.log("ORDER EVENT");
+        console.log(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -211,6 +214,8 @@ export const ContextWrapper = (props) => {
             });
 
             if(index !== -1) {
+                console.log("updating existing")
+                console.log(orders[index]);
                 orders[index].state = orderObj.state;
                 orders[index].price = orderObj.price;
                 return orders;
@@ -234,8 +239,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        // console.log("SERVICE EVENT")
-        // console.debug(serviceObj);
+        console.log("SERVICE EVENT")
+        console.debug(serviceObj);
         setServicesAll((oldServices) => {
             const services = [...oldServices];
 
@@ -263,6 +268,7 @@ export const ContextWrapper = (props) => {
 
             if(serviceObj.agent == agent.id) {
                 console.debug("Updating user service")
+                service.stateOld = service.state;
                 service.state = serviceObj.state;
                 service.updatedAt = Date.now();
                 service.duration = serviceObj.duration;
@@ -274,25 +280,42 @@ export const ContextWrapper = (props) => {
     }
 
     const updateTransactionsState = (transObj) => {
+        console.log("TRANSACTION EVENT");
         console.log(transObj);
-          setOrders((oldTrans) => {
-            const transactions = [...oldTrans];
+        //   setOrders((oldTrans) => {
+        //     const transactions = [...oldTrans];
 
-            const index = transactions.findIndex(c => {
-                return c.id === transObj.id;
-            });
-            if(index !== -1) {
-                transactions[index] = transObj;
-                return transactions;
-            } else if(index == -1) {
-                transactions.push(transObj);
-                return transactions;
-            }
+        //     console.log(transactions)
+        //     const index = transactions.findIndex(c => {
+        //         return c.id === transObj.id;
+        //     });
+        //     console.log(index)
+        //     if(index !== -1) {
+        //         console.log("updating existing")
+        //         transactions[index].state = transObj.state;
+        //         return transactions;
+        //     } else if(index == -1) {
+        //         console.log("pushing");
+        //         console.log(transObj.chain._id)
+        //         transObj.chain = transObj.chain._id;
+        //         transactions.push(transObj);
+        //         console.log(transactions)
+        //         return transactions;
+        //     }
             
-            return oldTrans;         
-        });
+        //     return oldTrans;         
+        // });
 
     }
+
+    const updateRankingState = (rankingObj) => {
+            console.log(rankingObj);
+            setRanking((oldRanking) => {
+                let ranking = [...oldRanking];
+                ranking = rankingObj;
+                return ranking;
+            })
+        }
 
 
     //--------------------- API requests ------------------------------------------------------
@@ -1240,6 +1263,8 @@ export const ContextWrapper = (props) => {
             userId, setUserId,
             stakeIndex, setStakeIndex,
             apiUserBlockOn, apiUserBlockOff,
+            ranking, setRanking,
+            updateRankingState
         }}>
             {props.children}
         </AppContext.Provider>

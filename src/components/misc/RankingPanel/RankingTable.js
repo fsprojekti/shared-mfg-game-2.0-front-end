@@ -2,17 +2,26 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 
 const RankingTable = () => {
-    const { game, users, cookies } = useContext(AppContext);
+    const context = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
 
     useEffect(() => {
         const renderTableData = async () => { //Treba poopravit v contectu v array te playerje
-            const players = await users['users'].sort((a, b) => parseInt(b.upgradeNumber) === parseInt(a.upgradeNumber) ? (parseInt(b.balance) + parseInt(b.stake)) - (parseInt(a.balance) + parseInt(a.stake)) : parseInt(b.upgradeNumber) - parseInt(a.upgradeNumber));
-            setTableDataArray(players);
-            console.log(tableDataArray)
+            const players = await context.ranking.sort((a, b) => parseInt(b.upgrades) === parseInt(a.upgrades) ? (parseInt(b.balance) + parseInt(b.stake)) - (parseInt(a.balance) + parseInt(a.stake)) : parseInt(b.upgrades) - parseInt(a.upgrades));
+            const playersWithNames = await players.map(function(player){ 
+                const agentObject = context.agents.filter(agent => agent._id === player.agent);
+                const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
+
+                player.userName = userObject[0].name;
+
+                return player
+            })   
+
+            
+            setTableDataArray(playersWithNames);
         };
         renderTableData();
-    }, [game]);
+    }, [context.ranking]);
 
 
     return (
@@ -32,6 +41,7 @@ const RankingTable = () => {
                                 <th>Stake</th>
                                 <th>Revenue from trade</th>
                                 <th>Revenue from stake</th>
+                                <th>Revenue from attacks</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -39,16 +49,17 @@ const RankingTable = () => {
                                 tableDataArray.map((item, index) => (
                                     <tr
                                         key={item._id}
-                                        style={{background: `${item.id === cookies.userId ? '#fffd8c' : '#ffffff'}`}}
+                                        style={{background: `${item.agent === context.agent.id ? '#fffd8c' : '#ffffff'}`}}
                                     >
                                         <td><strong>{index + 1}</strong></td>
-                                        <td>{item.name}</td>
-                                        <td>{item.typeOfService}</td>
-                                        <td>{item.upgradeNumber}</td>
+                                        <td>{item.userName}</td>
+                                        <td>{item.type}</td>
+                                        <td>{item.upgrades}</td>
                                         <td>{item.balance}</td>
                                         <td>{item.stake}</td>
-                                        <td>{item.fromServiceBalance}</td>
-                                        <td>{item.fromStakeBalance}</td>
+                                        <td>{item.revenueTrade}</td>
+                                        <td>{item.revenueStake}</td>
+                                        <td>{item.revenueAttack}</td>
                                     </tr>
                                 ))
                             }

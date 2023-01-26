@@ -103,8 +103,9 @@ const BridgeCard = () => {
                         } else {
                             
                             console.log(bridges[bridge])
-                            if(direction == false) await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);
-                            else await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);  
+                            let response;
+                            if(direction == false) response= await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
+                            else response = await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  
 
                             setLoading(false);
                             setAmount(0);
@@ -112,7 +113,7 @@ const BridgeCard = () => {
                             setNote((prevState) => {
                                 return({
                                   ...prevState,
-                                  msg: 'You successfully transferred ' + amount ,
+                                  msg: response ,
                                   show: true,
                                   type: 'success'
                                 });

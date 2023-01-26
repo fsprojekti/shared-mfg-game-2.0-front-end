@@ -180,13 +180,14 @@ function App() {
         socket.on("chain", context.updateChainsState);
         socket.on("game", context.updateGameState);
         socket.on("order", context.updateOrdersState);
-        socket.on("transactions", context.updatetransactionsState);
+        socket.on("transactions", context.updateTransactionsState);
         socket.on("service", context.updateServiceState);
         socket.on("agent", context.updateAgentsState);
         socket.on("balancesAgents", context.updateBalancesState);
         socket.on("balanceChain", context.updateBalanceChain);
         socket.on("balanceBridge", context.updateBalanceBridge);
         socket.on("stakesAgents", context.updateStakesState);
+        socket.on("ranking", context.updateRankingState);
 
         return () => {
           socket.off("chain");
@@ -198,7 +199,7 @@ function App() {
           socket.off("balancesAgents");
           socket.off("balanceChain");
           socket.off("balanceBridge");
-          socket.off("stakesAgents");
+          socket.off("ranking");
         };
       }, [socket]);
 
@@ -210,19 +211,9 @@ function App() {
                     <h4> Shared Manufacturing game </h4>
                     </Navbar.Brand>
 
-                    {context.loadingMain ? (
-                            <div >
-                                <Spinner animation="border" variant="light" size="sm"/>
-                                <b className='d-flex flex-column' style={{color: "white", fontSize: "0.7rem"}}>Loading game data...</b>
-                            </div>
-
-                        ):( <div></div>)
-
-                }
-
                     {
                     //Popravi to da se gleda local id in pol al je logged al ne
-                    (context.cookies.authToken !== undefined) ? (
+
                         <div className='d-flex'  >
                             <NavDropdown title={<Avatar name={`${context.user.name}`}  round={true} size="45" />} id="navbarScrollingDropdown">
                             <p style={{fontWeight: "bold", textAlign: "center", color: "#8957e5"}}>{context.user.name}</p>
@@ -236,9 +227,7 @@ function App() {
                             </NavDropdown>
 
                         </div>
-                    ) : (
-                        <Button variant="outline-light" onClick={navigateLogin}>Log In</Button>
-                    )
+
                     }
 
                 </Container>

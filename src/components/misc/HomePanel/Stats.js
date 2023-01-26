@@ -14,7 +14,6 @@ const Stats = () => {
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState({num: 0});
     const [numOfService2, setNumOfService2] = useState({num: 0});
-    const [userService, setUserService] = useState([]);
 
     let backColor= "#ffffff";
 
@@ -61,14 +60,12 @@ const Stats = () => {
         
         const renderServiceData = async () => {
 
-            const activeServices = await services.filter(service => service.state === "ACTIVE");
-            console.log(activeServices);
-            
+            const activeServices = await services.filter(service => service.state === "ACTIVE");            
             
             const userServices = await Promise.all(activeServices.map(async (item) => {
 
                 const providerAgentObject = await agents.filter(agent => agent._id === item.agent);
-                console.log(providerAgentObject)
+
                 const providerUser = await users["users"].filter(user => user._id === providerAgentObject[0].user); 
                    
                       
@@ -90,12 +87,6 @@ const Stats = () => {
         };
         renderServiceData();
 
-        const renderService = async () => {
-            const service = await services.filter(service => service.agent === agent.id);
-            console.log("Users service is: " + JSON.stringify(service));
-            setUserService(service[0]);
-        };
-        renderService();
 
         const getOtherServiceTypes = async () => {
             let uniqueService = [...new Set(servicesAll.map(item => item.type))];

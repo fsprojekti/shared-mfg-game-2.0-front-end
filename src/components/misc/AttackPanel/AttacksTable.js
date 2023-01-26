@@ -13,10 +13,6 @@ const AttacksTable = () => {
         context.setCancelVoteModalContent(item);
     };
 
-    // useEffect(() => {
-    //     console.log(context.stealVotes);
-    // }, [context.stealVotes]);
-
 
     return (
         <>

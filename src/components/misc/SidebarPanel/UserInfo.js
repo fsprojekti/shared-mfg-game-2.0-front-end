@@ -31,7 +31,9 @@ const UserInfo = () => {
 
     const serviceState = (service) => {
         switch(service.state) {
-            case "IDLE" || "DONE":
+            case "IDLE":
+                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={openCreateOrderModal}>Set Price</Button>;
+            case "DONE":
                 return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={openCreateOrderModal}>Set Price</Button>;
             case "MARKET": 
                 return <Button class="btn btn-info btn" onClick={openCreateOrderModal}><b>UPDATE PRICE</b></Button>;
