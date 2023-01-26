@@ -1,4 +1,4 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Row, Spinner} from "react-bootstrap";
 import React, {Suspense, useContext} from "react";
 import { AppContext } from "../../context/context";
 import PanelSide from "../panels/PanelSide";
@@ -49,21 +49,25 @@ const TabGame = () => {
                 <Suspense fallback={<div className="justify-content-center" >Loading...</div>}>
                 <Col  style={{backgroundColor: "white", zIndex: 1}}>
 
-                    { (context.game.state === 'RUN' && context.cookies.userId !== undefined) ? (
-                        renderGroup(context.active)
-                    ): (
-                        <div className='d-flex flex-column'>
-                        { (context.game.state !== 'RUN' && context.cookies.userId !== undefined) ? (
-                            <div className="d-flex flex-column align-items-center justify-content-center" style={{ margin: "15px", height: "400px"}}>
-                                <NotificationCard  heading="Please wait for the game to start" />
+                    { 
+                        (context.game.state === 'RUN' && context.cookies.userId !== undefined) ? (
+                            <>
+                                {(context.loadingMain) ? (<Spinner animation="grow" style={{margin: "30%"}}></Spinner>) : 
+                                (renderGroup(context.active))}
+                            </>
+   
+                        ): (
+                            <div className='d-flex flex-column'>
+                            { (context.cookies.userId !== undefined) ? (
+                                <div className="d-flex flex-column align-items-center justify-content-center" style={{ margin: "15px", height: "400px"}}>
+                                    <NotificationCard  heading="Please wait for the game to start" />
+                                </div>
+                            ) : (
+                                <PanelLogin/>
+                            )
+                            }
                             </div>
-                        ) : (
-                            <PanelLogin/>
                         )
-                        }
-                        </div>
-
-                    )
                     }
                 </Col>
                 </Suspense>

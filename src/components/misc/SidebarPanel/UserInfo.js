@@ -21,8 +21,6 @@ const UserInfo = () => {
 
     const { chains, agent, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex} = useContext(AppContext);
 
-
-    const [orderExists, setOrderExists] = useState(false);
     const [relativeStake, setRelativeStake] = useState(0);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState(0);
@@ -44,16 +42,11 @@ const UserInfo = () => {
                     case "MECHANICAL": 
                         return <h4 style={{color: "forestgreen", fontSize: "18px", fontWeight: "bold"}}> 👩‍🔧 ACTIVE 👨‍🔧</h4>; 
                     case "ELECTRICAL": 
-                        return <h4 style={{color: "forestgreen", fontSize: "18px", fontWeight: "bold"}}> ⚡ ACTIVE 💡</h4>; 
+                        return <h4 style={{color: "forestgreen", fontSize: "18px", fontWeight: "bold"}}> ⚡ ACTIVE ⚡</h4>; 
                 }
             default:
                 return "";
         }
-    };
-
-    const orderNotExists = async () => {
-        const order = user.orders.filter(item => item.provider === user._id);
-        setOrderExists(!Array.isArray(order) || !order.length);
     };
 
     const openCreateOrderModal = () => {

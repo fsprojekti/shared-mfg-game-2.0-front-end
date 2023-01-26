@@ -125,7 +125,7 @@ const PanelLogin = () => {
                     <Card style={{width: '25rem'}} size="lg">
                         <Card.Header className={"bg-dark text-white"}><h5>Login</h5></Card.Header>
                         <InputGroup className="mb-3 p-2">
-                            <InputGroup.Text id="input-user-registration-number">Registration number</InputGroup.Text>
+                            <InputGroup.Text id="input-user-registration-number">Register code</InputGroup.Text>
                             <FormControl onChange={e => setRegisterNumberLogin(e.target.value)}></FormControl>
                         </InputGroup>
                         <InputGroup className="mb-3 p-2">

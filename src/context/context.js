@@ -119,7 +119,7 @@ export const ContextWrapper = (props) => {
         heading: "Test"
     })
 
-    const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
+
     const [modalContent, setModalContent] = useState('');
     const [confirmModalContent, setConfirmModalContent] = useState('');
     const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
@@ -141,14 +141,6 @@ export const ContextWrapper = (props) => {
     //--------------------- State updaters ------------------------------------------------------
 
 
-    const openCreateOrderModal = () => {
-        setIsCreateOrderModalOpen(true);
-    };
-
-    const closeCreateOrderModal = () => {
-        setIsCreateOrderModalOpen(false);
-    };
-
     const openCancelOrderModal = () => {
         setIsCancelOrderModalOpen(true);
     };
@@ -156,8 +148,6 @@ export const ContextWrapper = (props) => {
     const closeCancelOrderModal = () => {
         setIsCancelOrderModalOpen(false);
     };
-
-
 
 
     const openTradeModal = () => {
@@ -170,7 +160,7 @@ export const ContextWrapper = (props) => {
 
     const updateChainsState = async (chainObj) => {
         // console.log(chainObj);
-          setChains((chains) => {
+        setChains((chains) => {
             const oldChains = [...chains];
 
             //Check if chain already exists in the state
@@ -178,6 +168,7 @@ export const ContextWrapper = (props) => {
                 return c.id === chainObj.id;
             });
 
+            //If chain exists, update its state
             if(index !== -1) {
                 oldChains[index].balance = chainObj.balance;
                 oldChains[index].stake = chainObj.stake;
@@ -186,9 +177,7 @@ export const ContextWrapper = (props) => {
                 if(chainObj.blockNumber > oldChains[index].blockNumber){
                     //Checking if this is a first run, to calculate time difference between server and client
                     if(oldChains[index].timeDiff === undefined) { 
-                        // console.debug(Date.now() - oldChains[index].timeDiff)
                         let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
-                        // console.debug("Calculating difference between server and client: " + difference + "ms")
                         setCookie('timeDiff', difference);  
                         oldChains[index].timeDiff = difference;
                     }          
@@ -197,7 +186,7 @@ export const ContextWrapper = (props) => {
                     oldChains[index].blockNumber = chainObj.blockNumber; 
                 }
    
-                console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
+                // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
 
                 return oldChains;
             } else if(index == -1 && chainObj.id !== undefined) {
@@ -212,8 +201,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        console.log("ORDER EVENT");
-        console.log(orderObj);
+        // console.log("ORDER EVENT");
+        // console.log(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -245,8 +234,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.log("SERVICE EVENT")
-        console.debug(serviceObj);
+        // console.log("SERVICE EVENT")
+        // console.debug(serviceObj);
         setServicesAll((oldServices) => {
             const services = [...oldServices];
 
@@ -254,6 +243,7 @@ export const ContextWrapper = (props) => {
                 return c._id === serviceObj.id;
             });
 
+            //Have to "manually" update keys, because the obejct from event doesn't have the same structure as the one in the state
             if(index !== -1) {
                 console.debug("Updating service")
                 services[index].state = serviceObj.state;
@@ -270,11 +260,7 @@ export const ContextWrapper = (props) => {
 
         setService((oldService) => {
             let service = oldService;
-            //TODO: fix this!!!
-            console.debug(agent);
-            console.debug(agents);
-            console.debug(user);
-            console.debug(serviceObj);
+
             if(serviceObj.agent == agent.id) {
                 console.debug("Updating user service")
                 service.state = serviceObj.state;
@@ -298,7 +284,7 @@ export const ContextWrapper = (props) => {
             if(index !== -1) {
                 transactions[index] = transObj;
                 return transactions;
-            } else if(index == -1 && transObj.id !== undefined) {
+            } else if(index == -1) {
                 transactions.push(transObj);
                 return transactions;
             }
@@ -314,11 +300,7 @@ export const ContextWrapper = (props) => {
 
     /**
      * Fetches user's data
-     * @param {Object} user - User's object
-     * @param {string} user.id - User's id
-     * @param {string} user.name - User's name
-     * @param {string} user.type - "PLAYER" or "ADMIN"
-     * @param {string} user.state - "LOGGED-IN"
+     * @returns {Object} user - User's object
      * @example {id: '63a576228ac157377b59bcec', type: 'MECHANICAL', upgradeLevel: 0, timeForService: 100}
      */
     const apiUserFetch = useCallback(() => {
@@ -342,7 +324,7 @@ export const ContextWrapper = (props) => {
 
     /**
      * Fetches user's balance on all chains.
-     * @param {Object[]} balances - Array of balances on all chains .
+     * @returns {Object[]} balances - Array of balances on all chains .
      * @example [{"KingsLanding": 18}, {"Chamberpad": 100}]
      */
     const apiUserFetchBalance = useCallback(() => {
@@ -370,7 +352,7 @@ export const ContextWrapper = (props) => {
 
     /**
      * Fetches user's stake from API
-     * @param {Object[]} stakes - Array of stakes on all chains .
+     * @returns {Object[]} stakes - Array of stakes on all chains .
      * @example [{"KingsLanding": 18}, {"Chamberpad": 100}]
      */
     const apiUserFetchStake = useCallback(() => {
@@ -399,11 +381,7 @@ export const ContextWrapper = (props) => {
 
     /**
      * Fetches user's service
-     * @param {Object} service - User's service object
-     * @param {string} service.id - Id of the service
-     * @param {string} service.type - Type of the service
-     * @param {number} service.upgradeLevel - Level of the service
-     * @param {number} service.timeForService - Time to execute the service
+     * @returns {Object} service - User's service object
      * @example id: '63a576228ac157377b59bcec', 
      * type: 'MECHANICAL', 
      * upgradeLevel: 0, 
@@ -430,7 +408,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //get users purchased services in state active
+    /**
+     * Fetches user's purchased services
+     * @param {Object[]} service - Array of user's services
+     */
     const apiUserFetchServices = useCallback((gameId) => {
 
         return new Promise(async (resolve, reject) => {
@@ -451,8 +432,12 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Register user
-    // sign out the user, memoized
+    /**
+     * Register user function
+     * @param {string} registerNumber - User's register number
+     * @param {string} name - User's name
+     * @param {string} email - User's email
+     */
     const apiUserRegister = useCallback((registerNumber, name, email) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -471,14 +456,18 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //Login user
-    const apiUserLogin = useCallback((registerNumber, password) => {
+    /**
+     * Login user function
+     * @param {string} registerCode - User's register number
+     * @param {string} password - User's password
+     */
+    const apiUserLogin = useCallback((registerCode, password) => {
 
         return new Promise(async (resolve, reject) => {
             try {
                 let out = await axios.get(`user/login`, { 
                     params: { 
-                        registerCode: registerNumber, 
+                        registerCode: registerCode, 
                         password: password } 
                     })
                 resolve(out.data)
@@ -488,15 +477,16 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-     //User stake function
-     const apiUserStake = useCallback((userId, data ) => {
+     /**
+      * User's stake function
+      * @param {Object} data - User's stake data. 
+      * @param {string} data.amount - User's stake amount
+      * @param {string} data.fee - User's stake fee
+      * @param {string} data.chainId - User's stake chain id
+      */
+     const apiUserStake = useCallback((data ) => {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log("User id " + userId)
-                console.log(data.amount);
-                console.log(data.fee);
-                console.log(data.chainId);
-                
                 let out = await axios.get(`user/stake/add`,{
                     params: {
                         amount: data.amount,
@@ -514,12 +504,16 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User unstake function
-    const apiUserUnstake = useCallback((userId, data ) => {
+    /**
+     * User's unstake function
+     * @param {Object} data - User's stake data.
+     * @param {string} data.amount - User's stake amount
+     * @param {string} data.fee - User's stake fee
+     * @param {string} data.chainId - User's stake chain id
+     */
+    const apiUserUnstake = useCallback((data ) => {
         return new Promise(async (resolve, reject) => {
-            try {
-                console.log("User id " + userId)
-                
+            try {                
                 let out = await axios.get(`user/stake/remove`,{
                     params: {
                         amount: data.amount,
@@ -537,7 +531,11 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User create order function
+    /**
+     * User's create order function
+     * @param {number} price - User's order price
+     * @param {string} chainId - User's order chain id
+     */
     const apiUserCreateOrder= useCallback((price, chainId) => {
         return new Promise(async (resolve, reject) => {
             try {                
@@ -557,7 +555,11 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User create order function
+    /**
+     * User's update order function
+     * @param {number} price - User's updated order price
+     * @param {string} orderId - User's order id
+     */
     const apiUserUpdateOrder= useCallback((price, orderId) => {
         return new Promise(async (resolve, reject) => {
             try {                
@@ -577,7 +579,10 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User create order function
+    /**
+     * User's cancel order function
+     * @param {string} orderId - User's order id
+     */
     const apiUserCancelOrder= useCallback((orderId) => {
         return new Promise(async (resolve, reject) => {
             try {                
@@ -596,7 +601,11 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User bid order function
+    /**
+     * User's bid order function
+     * @param {number} fee - User's bid fee
+     * @param {string} orderId - User's order id
+     */
     const apiUserBidOrder= useCallback((fee, orderId) => {
         return new Promise(async (resolve, reject) => {
             try {                
@@ -616,8 +625,11 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User stake function
-    const apiUserAgentGet= useCallback((gameId) => {
+    /**
+     * User's get agent function
+     * @returns {Object} - User's agent data
+     */
+    const apiUserAgentGet= useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {                
                 let out = await axios.get(`user/agent`,{
@@ -635,7 +647,13 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User bridge function
+    /**
+     * Api user bridge function
+     * @param {number} amount - User's bridge amount
+     * @param {number} fee - User's bridge fee
+     * @param {string} chainIdFrom - User's bridge chain id from
+     * @param {string} chainIdTo - User's bridge chain id to
+     */
     const apiUserBridge = useCallback((amount, fee, chainIdFrom, chainIdTo ) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -657,7 +675,11 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User create sidechain function
+    /**
+     * Api user create chain function
+     * @param {string} chainId - User's chain id
+     * @param {number} fee - User's chain fee
+     */
     const apiUserCreateChain = useCallback((chainId, fee) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -681,7 +703,10 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User attack a chain function
+    /**
+     * Api user vote to attack a bridge function
+     * @param {string} bridgeId - User's bridge id
+     */
     const apiUserStealVoteON = useCallback((bridgeId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -704,7 +729,10 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User attack a chain function vote OFF
+    /**
+     * Api user retract vote to attack a bridge function
+     * @param {string} bridgeId - User's bridge id
+     */
     const apiUserStealVoteOFF = useCallback((bridgeId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -728,7 +756,10 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User attack a chain api to get all uesr's steal votes
+    /**
+     * Api user get user's steal votes function
+     * @returns {Object[]} - User's steal votes data
+     */
     const apiUserStealGet = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -751,7 +782,10 @@ export const ContextWrapper = (props) => {
         })
     }, []);
 
-    //User block a player Vote
+    /**
+     * User vote to block a player function
+     * @param {string} userId - User's id
+     */
     const apiUserBlockOn = useCallback((userId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -775,7 +809,10 @@ export const ContextWrapper = (props) => {
     }, []);
 
 
-    //User ublock a player Vote
+    /**
+     * User retract vote to block a player function
+     * @param {string} userId - User's id
+     */
     const apiUserBlockOff = useCallback((userId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -799,7 +836,10 @@ export const ContextWrapper = (props) => {
     }, []);
 
 
-    //User attack a chain function vote OFF
+    /**
+     * Api user get user's block votes function
+     * @returns {Object[]} - User's block votes data
+     */
     const apiUserBlockGet = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -824,7 +864,10 @@ export const ContextWrapper = (props) => {
 
 
 
-    //Fetch data of the latest game
+    /**
+     * Api get game data function
+     * @returns {Object} - Game data
+     */
     const apiGameFetch = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -841,8 +884,11 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Fetch data of the latest game
-    const apiGameChains = useCallback((gameId) => {
+    /**
+     * Api get chains function
+     * @returns {Object[]} - Chains data
+     */
+    const apiGameChains = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let chains = await axios.get('/game/chains/get', {
@@ -859,8 +905,11 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Fetch data of all the logged in players
-    const apiGameUsers = useCallback((gameId) => {
+    /**
+     * Api get users function
+     * @returns {Object[]} - Users data
+     */
+    const apiGameUsers = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
 
@@ -877,7 +926,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Fetch data of all agents in the game
+    /**
+     * Api get agents function
+     * @returns {Object[]} - Agents data
+     */
     const apiGameAgents = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -895,7 +947,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Fetch data of the latest game
+    /**
+     * Api get orders function
+     * @returns {Object[]} - Orders data
+     */
     const apiGameOrders = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -911,8 +966,11 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Fetch data of the latest game
-    const apiGameTransactions = useCallback((gameId) => {
+    /**
+     * Api get transactions function
+     * @returns {Object[]} - Transactions data
+     */
+    const apiGameTransactions = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get('/game/transactions/get', { 
@@ -928,7 +986,10 @@ export const ContextWrapper = (props) => {
     }, [])
 
 
-    //Create new game
+    /**
+     * Admin create game function.
+     * Only admin can use it.
+     */
     const apiGameCreate = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             
@@ -945,7 +1006,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Initialize new game
+    /**
+     * Admin initialize game function.
+     * Only admin can use it.
+     */
     const apiGameInitialize = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -965,7 +1029,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Start the game
+    /**
+     * Admin start game function.
+     * Only admin can use it.
+    */
     const apiGameStart = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -985,7 +1052,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Pauset the game
+    /**
+     * Admin pause game function.
+     * Only admin can use it.
+     */
     const apiGamePause= useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -1005,7 +1075,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //End the game
+    /**
+     * Admin stop game function.
+     * Only admin can use it.
+     */
     const apiGameStop = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -1025,7 +1098,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    //Resume the game
+    /**
+     * Admin resume game function.
+     * Only admin can use it.
+     */
     const apiGameResume= useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -1045,31 +1121,16 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
-    
-
-    // //End game
-    // const apiGameEnd = useCallback(() => {
-    //     return new Promise(async (resolve, reject) => {
-    //         try {
-    //             let data = await axios.get('game/end', {
-    //                 headers: {
-    //                     authorization: cookies.authToken
-    //                 }
-    //               });
-    //             resolve(data.data);
-    //         } catch (e) {
-    //             console.log(e);
-    //             reject(e);
-    //         }
-    //     })
-    // }, [])
-
+    /**
+     * Api get services function
+     * @returns {Object[]} - Services data
+     */
     const apiGameServices = useCallback((gameId) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get('game/services/get', { 
                     params: { 
-                        gameId: gameId,
+                        // gameId: gameId,
                     }
                     });
                 resolve(data.data);
@@ -1080,6 +1141,10 @@ export const ContextWrapper = (props) => {
         })
     }, [])
 
+    /**
+     * Api get bridges function
+     * @returns {Object[]} - Bridges data
+     */
     const apiGameBridges = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -1103,8 +1168,6 @@ export const ContextWrapper = (props) => {
             users, setUsers,
             game, setGame,
             chains, setChains,
-            openCreateOrderModal,
-            closeCreateOrderModal,
             openCancelOrderModal,
             confirmModalContent,
             modalContent, setModalContent,

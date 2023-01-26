@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {Card, OverlayTrigger } from "react-bootstrap";
+import React, {useContext} from 'react';
+import {Card} from "react-bootstrap";
 import { AppContext } from '../../../context/context';
 import { getChainsNamesFromBridgeObject } from '../HelperFunctions/functions';
 
@@ -13,9 +13,9 @@ const AttacksTable = () => {
         context.setCancelVoteModalContent(item);
     };
 
-    useEffect(() => {
-        console.log(context.stealVotes);
-    }, [context.stealVotes]);
+    // useEffect(() => {
+    //     console.log(context.stealVotes);
+    // }, [context.stealVotes]);
 
 
     return (

@@ -9,13 +9,9 @@ const Error = () => {
     setModalContent('This page does not exist 🤯!');
 
     return (
-        // <div className="d-flex flex-row justify-content-center flex-wrap">
-        //     <h1> </h1>
-        // </div>
-
-        <>
-            <Modal/>
-        </>
+        <div className="d-flex flex-row justify-content-center flex-wrap">
+            <h1> This url does not exist :) </h1>
+        </div>
     )
 };
 

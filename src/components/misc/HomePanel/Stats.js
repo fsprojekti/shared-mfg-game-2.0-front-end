@@ -60,8 +60,7 @@ const Stats = () => {
 
         
         const renderServiceData = async () => {
-            // console.log(services);
-            // // console.log(agent);
+
             const activeServices = await services.filter(service => service.state === "ACTIVE");
             console.log(activeServices);
             
@@ -92,7 +91,6 @@ const Stats = () => {
         renderServiceData();
 
         const renderService = async () => {
-            //TODO: Services popravi, da jih pravilno vleče vn
             const service = await services.filter(service => service.agent === agent.id);
             console.log("Users service is: " + JSON.stringify(service));
             setUserService(service[0]);

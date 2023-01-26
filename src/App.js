@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import {useContext, useState, useEffect } from "react";
+import {useContext, useEffect } from "react";
 import {AppContext} from "./context/context";
 import { SocketContext } from './context/socket';
-import {Container, Spinner, Navbar, Button, Card} from "react-bootstrap";
+import {Container, Spinner, Navbar, Button} from "react-bootstrap";
 import TabAdmin from './components/tabs/TabAdmin';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Avatar from 'react-avatar';
@@ -12,20 +12,11 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 
 import Error from './components/panels/Error';
 import TabGame from './components/tabs/TabGame';
-import TabLogin from './components/tabs/TabLogin';
 
 function App() {
     const context = useContext(AppContext);
     const socket = useContext(SocketContext);
-
-
     const navigate = useNavigate();
-
-    function logOut() {
-        context.removeCookie("authToken");
-        context.removeCookie("userId");
-        context.removeCookie("activeChain");
-    }
 
 
     async function navigateLogin(event) {
@@ -35,16 +26,15 @@ function App() {
 
 
     async function navigateAdmin(event) {
-        //TODO: Kaj je preventDefault?
         event.preventDefault();
         navigate("/admin", {replace: true});
-        console.log("navigated admin")
+        // console.log("navigated admin")
     }
 
     async function navigateLogout(event) {
         event.preventDefault();
         navigate("/", {replace: true});
-        console.log("logged out")
+        console.log("Logging out")
         context.removeCookie("authToken");
         context.removeCookie("userId");
         context.removeCookie("activeChain");
@@ -152,7 +142,7 @@ function App() {
 
         //Load user's steal votes
         const stealVotes = context.apiUserStealGet().then(stealVotes => {
-            // console.log((stealVotes))
+            console.log((stealVotes))
             context.setStealVotes(stealVotes);
         }).catch(e => console.log(e))
 
@@ -256,7 +246,6 @@ function App() {
             <div>
 
             <Routes>
-                <Route exact path={"/login"} element={<TabLogin />}/>
                 <Route exact path={"/admin"} element={<TabAdmin/>}/>
                 <Route exact path={"/"} element={<TabGame/>}/>
                 <Route exact path={"/home"} element={<TabGame/>}/>

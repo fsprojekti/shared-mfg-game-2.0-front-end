@@ -9,6 +9,32 @@ const CancelVoteModal = () => {
 
     const [loading, setLoading] = useState(false);
 
+    const confirmVoteOff = async () => {
+        try {
+            console.log("clicked");
+            console.log(context.cancelVoteModalContent)
+            setLoading(true);
+            const res = await context.apiUserStealVoteOFF(context.cancelVoteModalContent._id);
+            setLoading(false);
+            context.setNote({
+                show: true,
+                type: "success",
+                msg: res,
+                heading: "Success! "
+            })
+            context.setCancelVoteModalOpen(false);
+        } catch(e) {
+            setLoading(false);
+            console.log(e)
+            context.setNote({
+                show: true,
+                type: "danger",
+                msg: e.message,
+                heading: "Could not retract! "
+            })
+        }
+    };
+
     return (
 
         <div>
@@ -36,7 +62,7 @@ const CancelVoteModal = () => {
                             </ul>
                              <b>Are you sure you want to continue?</b>
                             <div className="d-flex justify-content-center" style={{marginBottom: "10px"}}>
-                                    <Button variant="success" onClick={console.log("confirm")}  style={{margin: "5px"}} >
+                                    <Button variant="success" onClick={confirmVoteOff}  style={{margin: "5px"}} >
                                     
                                     {loading ? (
                                         <div>

@@ -1,7 +1,6 @@
 import {React, useContext} from "react";
 import { AppContext } from "../../../context/context";
 import { ResponsivePie } from '@nivo/pie'
-import AutoSizer from "react-virtualized-auto-sizer";
 
 const CenteredMetric = ({ centerX, centerY }) => {
     const { chains, cookies } = useContext(AppContext);
@@ -23,28 +22,6 @@ const CenteredMetric = ({ centerX, centerY }) => {
         </text>
     )
 };
-
-// const PieChart = ({ data }) => (
-//     <ResponsivePie
-//         data={data}
-//         theme={{ "fontSize": 16, fontFamily: "Roboto, sans-serif", axis: { legend: { text: { fontSize: "16px", fontWeight: "bold", fontFamily: "Roboto, sans-serif" } } } }}
-//         margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-//         innerRadius={0.3}
-//         padAngle={1}
-//         cornerRadius={3}
-//         // colors={{ scheme: 'yellow_orange_red' }}
-//         borderWidth={1}
-//         borderColor={{ from: 'color', modifiers: [ [ 'darker', 0.2 ] ] }}
-//         enableRadialLabels={false}
-//         sliceLabelsSkipAngle={10}
-//         sliceLabelsTextColor="#333333"
-//         sortByValue={true}
-//         layers={['slices', 'sliceLabels', CenteredMetric]}
-//     />
-// );
-
-
-
 
 const PieChart = ({ data}) => {
     const context = useContext(AppContext);
@@ -114,31 +91,7 @@ const PieChart = ({ data}) => {
                 id: 'dots'
             }
         ]}
-        // legends={[
-        //     {
-        //         anchor: 'bottom',
-        //         direction: 'row',
-        //         justify: false,
-        //         translateX: 0,
-        //         translateY: 56,
-        //         itemsSpacing: 0,
-        //         itemWidth: 100,
-        //         itemHeight: 18,
-        //         itemTextColor: '#999',
-        //         itemDirection: 'left-to-right',
-        //         itemOpacity: 1,
-        //         symbolSize: 18,
-        //         symbolShape: 'circle',
-        //         effects: [
-        //             {
-        //                 on: 'hover',
-        //                 style: {
-        //                     itemTextColor: '#000'
-        //                 }
-        //             }
-        //         ]
-        //     }
-        // ]}
+
     /> 
     )
 }

@@ -60,7 +60,7 @@ const ServiceBar = () => {
                     {/* <div className="bar-filler" style={{width: `${serviceCompleted}%`}}>
                         <span className="bar-label">{`${serviceCompleted}%`}</span>
                     </div> */}
-                    <ProgressBar striped variant="success" now={serviceCompleted} label={`${serviceCompleted}%`} style={{borderRadius: "8px", height: "25px"}}/>
+                    <ProgressBar striped variant="success" now={serviceCompleted} label={`${serviceCompleted}%`} animated={(serviceCompleted < 100 ? true : false)} style={{borderRadius: "8px", height: "35px"}}/>
                     <div className="bottom">
                         {
                             (context.service.state !== "ACTIVE") ? (

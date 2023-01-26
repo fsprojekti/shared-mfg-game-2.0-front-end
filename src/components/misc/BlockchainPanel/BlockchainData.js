@@ -51,7 +51,7 @@ const BlockchainData = () => {
                     chainId: context.chains[context.activeChain].id
                 };
 
-                let response = await context.apiUserStake(context.cookies.userId, data);
+                let response = await context.apiUserStake(data);
 
                 context.setNote((prevState) => {
                     return({
@@ -113,12 +113,12 @@ const BlockchainData = () => {
                     chainId: context.chains[context.activeChain].id
                 };
 
-                let response = await context.apiUserUnstake(context.cookies.userId, data);
+                let response = await context.apiUserUnstake(data);
 
                 context.setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: "Sussessfully staked",
+                      msg: response,
                       heading: 'Success',
                       show: true,
                       type: 'success'

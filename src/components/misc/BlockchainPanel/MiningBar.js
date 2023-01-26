@@ -25,15 +25,6 @@ const MiningBar = (props) => {
         }, [delay]);
     }
 
-    function millisToMinutesAndSeconds(millis) {
-        let d = new Date(1000*Math.round(millis/1000));
-        if (d.getUTCMinutes() === 0) {
-            return ( d.getUTCSeconds() + 's' );
-        } else {
-            return ( d.getUTCMinutes() + 'min ' + d.getUTCSeconds() + 's' );
-        }
-    }
-
     useInterval(async () => {
         const createdMillis = new Date(context.chains[context.activeChain].updatedAt).getTime();
         let timeLeft = 10000 - (Date.now() - createdMillis);
@@ -42,9 +33,8 @@ const MiningBar = (props) => {
             width = 0;
             timeLeft = 0;
         }
-        setTimeLeft((timeLeft/1000).toFixed(2));
+        setTimeLeft((timeLeft/1000).toFixed(1));
         setWidth(width);
-        console.log(width)
     }, 50);
 
 

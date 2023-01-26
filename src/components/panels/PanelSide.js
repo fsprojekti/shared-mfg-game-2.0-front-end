@@ -1,4 +1,4 @@
-import {Col, Container, ListGroup, Row} from "react-bootstrap";
+import {Col, Container, ListGroup, Row, Spinner} from "react-bootstrap";
 
 import {IconContext} from "react-icons";
 import {
@@ -108,7 +108,10 @@ const PanelSide = () => {
             </IconContext.Provider>
 
             { ((context.user.type == "PLAYER") && context.game.state == "RUN") ? ( 
-                <UserInfo/>
+                <>
+                    {(context.loadingMain) ? (<Spinner animation="grow" style={{margin: "30%"}}></Spinner>):(<UserInfo/>)}
+                </>
+                
             ) : (
                 <></>
             ) 

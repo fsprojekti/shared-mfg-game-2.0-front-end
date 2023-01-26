@@ -40,7 +40,7 @@ const AttackCard = () => {
 
     useEffect(() => {
         const renderUserTable = async () => {
-            const usersWithoutMainPlayer = await context.users['users'].filter(user => user._id !== context.user.id);
+            const usersWithoutMainPlayer = await context.users['users'].filter(user => user.id !== context.user.id);
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
@@ -53,7 +53,7 @@ const AttackCard = () => {
             
             setLoading("steal");
 
-            console.log(context.bridges[0])
+            // console.log(context.bridges[0])
             await context.apiUserStealVoteON(context.bridges[bridge]._id);
 
             context.setNote({
@@ -74,30 +74,6 @@ const AttackCard = () => {
         }
     }
 
-
-
-    let removeVoteStealBridge = async () => {
-        try {
-            setLoading(true);
-            await context.apiUserStealVoteOFF(context.bridges[bridge].id);
-
-            context.setNote({
-                show: true,
-                type: "success",
-                msg: "Attack vote removed",
-                heading: "Success!"
-            })
-            setLoading("");
-        } catch (e) {
-            setLoading("");
-            context.setNote({
-                show: true,
-                type: "danger",
-                msg: e.response.data.message,
-                heading: "Chain not created! "
-            })
-        }
-    }
 
     let voteBlockPlayer = async () => {
         try {

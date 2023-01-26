@@ -8,8 +8,6 @@ import MiningBar from './MiningBar';
 const TransactionsTable = () => {
     const { game, user, users, agents,  chainMain, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [timeLeft, setTimeLeft] = useState('');
-    const [width, setWidth] = useState(0);
 
     function millisToMinutesAndSeconds(millis) {
         let d = new Date(1000*Math.round(millis/1000));
