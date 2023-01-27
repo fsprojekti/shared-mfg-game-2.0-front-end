@@ -221,13 +221,13 @@ export const ContextWrapper = (props) => {
                 return orders;
             } else if(index == -1 && orderObj.id !== undefined) {
                 console.log("pushing");
-                console.log(orderObj.chain._id);
+                // console.log(orderObj.chain._id);
                 //The new object I get is not in the correct format, so I need to create a new one
                 let newOrder = {};
                 newOrder._id = orderObj.id;
-                newOrder.chain = orderObj.chain._id;
+                newOrder.chain = orderObj.chain;
                 newOrder.state = orderObj.state;
-                newOrder.service = orderObj.service._id;
+                newOrder.service = orderObj.service;
                 newOrder.price = orderObj.price;
                 orders.push(newOrder);
                 return orders;
@@ -282,29 +282,37 @@ export const ContextWrapper = (props) => {
     const updateTransactionsState = (transObj) => {
         console.log("TRANSACTION EVENT");
         console.log(transObj);
-        //   setOrders((oldTrans) => {
-        //     const transactions = [...oldTrans];
+          setTransactions((oldTrans) => {
+            const transactions = [...oldTrans];
 
-        //     console.log(transactions)
-        //     const index = transactions.findIndex(c => {
-        //         return c.id === transObj.id;
-        //     });
-        //     console.log(index)
-        //     if(index !== -1) {
-        //         console.log("updating existing")
-        //         transactions[index].state = transObj.state;
-        //         return transactions;
-        //     } else if(index == -1) {
-        //         console.log("pushing");
-        //         console.log(transObj.chain._id)
-        //         transObj.chain = transObj.chain._id;
-        //         transactions.push(transObj);
-        //         console.log(transactions)
-        //         return transactions;
-        //     }
+            console.log(transactions)
+            const index = transactions.findIndex(c => {
+                return c.id === transObj[0].id;
+            });
+            console.log(index)
+            if(index !== -1) {
+                console.log("updating existing")
+                transactions[index].state = transObj[0].state;
+                return transactions;
+            } else if(index == -1) {
+                console.log("pushing");
+                console.log(transObj[0].chain._id)
+                let newTrans = {};
+                newTrans.id = transObj[0].id;
+                newTrans.chain = transObj[0].chain;
+                newTrans.fee = transObj[0].fee;
+                newTrans.amount = transObj[0].amount;
+                newTrans.state = transObj[0].state;
+                newTrans.from  = transObj[0].from;
+                newTrans.to = transObj[0].to;
+
+                transactions.push(newTrans);
+                console.log(newTrans)
+                return transactions;
+            }
             
-        //     return oldTrans;         
-        // });
+            return oldTrans;         
+        });
 
     }
 

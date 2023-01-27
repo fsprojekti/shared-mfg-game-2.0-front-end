@@ -24,13 +24,13 @@ const TransactionsTable = () => {
     };
 
     useEffect(() => {
-        
+        console.log(chains);
         const renderTableData = async () => {
-
+            console.log(transactions)
             const orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains[activeChain].id);
-
+            console.log(orderTransactions)
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
-
+            console.log(transactionsByFee)
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
@@ -73,7 +73,7 @@ const TransactionsTable = () => {
         };
         renderTableData();
 
-    }, [game]);
+    }, [transactions]);
 
 
     return (
