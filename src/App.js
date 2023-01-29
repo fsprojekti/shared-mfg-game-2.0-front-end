@@ -188,6 +188,7 @@ function App() {
         socket.on("balanceBridge", context.updateBalanceBridge);
         socket.on("stakesAgents", context.updateStakesState);
         socket.on("ranking", context.updateRankingState);
+        socket.on("bridge", context.updateBridgesState);
 
         return () => {
           socket.off("chain");
@@ -200,6 +201,7 @@ function App() {
           socket.off("balanceChain");
           socket.off("balanceBridge");
           socket.off("ranking");
+          socket.off("bridge");
         };
       }, [socket]);
 

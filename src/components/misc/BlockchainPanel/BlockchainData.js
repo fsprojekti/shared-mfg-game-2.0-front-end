@@ -9,6 +9,7 @@ import AllTransactionsTable from './TransactionTableAll';
 
 const BlockchainData = () => {
     const context = useContext(AppContext);
+    
     const [chartDataArray, setChartDataArray] = useState([]);
     const [relativeStake, setRelativeStake] = useState(0);
     const [newStake, setNewStake] = useState("0");
@@ -16,17 +17,12 @@ const BlockchainData = () => {
     const [loadingStake, setLoadingStake] = useState(false);
     const [loadingUnstake, setLoadingUnstake] = useState(false);
 
-    const countDecimals = (value) => {
-        if(Math.floor(value).toString() === value) return 0;
-        return value.toString().split(".")[1].length || 0;
-    };
-
     const confirmStake = async () => {
         try {
             let numCheck; 
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(txFee, newStake, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
             })
             .catch(err => {
                 console.log(err);
@@ -156,13 +152,9 @@ const BlockchainData = () => {
 
 
         const createDataArray = async () => { 
-            const dataArray = await context.users["users"].map((item) => {
-                return({
-                    id: item.name,
-                    label: item.name,
-                    value: item.stake
-                });
-            });
+            let dataArray = [2];
+            dataArray[0] = {id: "You", label: "user", value: context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`]};
+            dataArray[1] = {id: "Other players", label: "chain", value: (context.chains[context.activeChain].stake - context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`]) };
             // console.log("USERS:  " + users);
             setChartDataArray(dataArray);
             console.log(dataArray);

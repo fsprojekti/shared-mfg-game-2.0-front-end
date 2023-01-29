@@ -58,8 +58,8 @@ const UserInfo = () => {
     };
     
     useEffect(() => {
-        console.log(agent);
-        console.log(service);
+        // console.log(agent);
+        // console.log(service);
         const renderStakeData = async () => {
             if(Object.keys(usersStakes).length == 0) return;
             let stakesKeys = [];
@@ -72,7 +72,7 @@ const UserInfo = () => {
             if (chains[cookies.activeChain].stake == 0 ||  chains[cookies.activeChain].stake == undefined) {
                 setRelativeStake({stake: 0});
             } else {
-                console.log(((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1));
+                // console.log(((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1));
                 let stake = ((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1)
                 setRelativeStake({stake: stake});
             } 

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useContext, useState } from 'react';
 import { AppContext } from '../../../context/context';
 import { Network } from "vis-network";
 import { DataSet } from 'vis-data'
@@ -9,7 +9,8 @@ import 'vis/dist/vis-network.min.css';
 const ChainMesh = () => {
   const { chains, cookies, bridges } = useContext(AppContext);
 
-  
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
 
 	const visJsRef = useRef(null);
 
@@ -17,21 +18,23 @@ const ChainMesh = () => {
     nodes.update(chain);
   }
 
+  //TODO: Fix, so there is a addNode/Edge function that is run on every new chain/bridge in the state
+  useEffect(() => {
+    setNodes(new DataSet (chains.map((item, index) => {
+      let currentChain = parseInt(cookies.activeChain);
+      return { id: item.id, label:item.name, color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+    })))
+
+
+    setEdges(new DataSet (bridges.map(item => {
+      return { from: item.chainSource, to:item.chainTarget, title: `🔁Bridge: ${item.name}`};
+    }))) 
+
+  }, [bridges])
+
 
   //TODO: na Page refresh se obarva trenutni chain
   useEffect(() => {
-    console.log(bridges)
-
-    let nodes =  new DataSet (chains.map((item, index) => {
-      let currentChain = parseInt(cookies.activeChain);
-      return { id: item.id, label:item.name, color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
-    }));
-
-
-    let edges =  new DataSet (bridges.map(item => {
-      return { from: item.chainSource, to:item.chainTarget, title: `🔁Bridge: ${item.name}`};
-    }));
-
 
     const setNodeNetwork = async () => {
       const network = await
@@ -119,7 +122,7 @@ const ChainMesh = () => {
 
   setNodeNetwork();
 	
-	}, [chains.length, cookies.activeChain, bridges]);
+	}, [cookies.activeChain, nodes, edges]);
 
 	return <div className="chain-network" ref={visJsRef} />;
 };

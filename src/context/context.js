@@ -323,7 +323,22 @@ export const ContextWrapper = (props) => {
                 ranking = rankingObj;
                 return ranking;
             })
-        }
+    }
+
+    const updateBridgesState = (bridgeObj) => {
+        console.log((bridgeObj));
+        //Bridge object is returned with whole chain objects
+        setBridges((oldBridges) => {
+            let bridges = [...oldBridges];
+            let newBridge = {};
+            newBridge.id = bridgeObj.id;
+            newBridge.chainSource = bridgeObj.chainSource._id;
+            newBridge.chainTarget = bridgeObj.chainTarget._id;
+            newBridge.name = bridgeObj.name;
+            bridges.push(newBridge);
+            return bridges;     
+        });
+}
 
 
     //--------------------- API requests ------------------------------------------------------
@@ -1272,7 +1287,8 @@ export const ContextWrapper = (props) => {
             stakeIndex, setStakeIndex,
             apiUserBlockOn, apiUserBlockOff,
             ranking, setRanking,
-            updateRankingState
+            updateRankingState,
+            updateBridgesState
         }}>
             {props.children}
         </AppContext.Provider>
