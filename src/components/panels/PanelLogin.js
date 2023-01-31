@@ -27,13 +27,15 @@ const PanelLogin = () => {
 
     let register = async () => {
         try {
-            await context.apiUserRegister(registerNumberLogin, name, email);
+            let data = await context.apiUserRegister(registerNumberLogin, name, email);
+            console.log(data)
         } catch (e) {
+            console.log(e)
             context.setNote((prevState) => {
                 return({
                   ...prevState,
                   msg: e.response.data.message,
-                  heading: 'Wrong input',
+                  heading: 'Error',
                   show: true,
                   type: 'danger'
                 });
@@ -101,8 +103,8 @@ const PanelLogin = () => {
                         <Form>
                             <Card.Header className={"bg-dark text-white"}><h5>Register</h5></Card.Header>
                             <InputGroup className="mb-3 p-2">
-                                <InputGroup.Text id="input-user-registration-number">Registration
-                                    number</InputGroup.Text>
+                                <InputGroup.Text id="input-user-registration-number">Player
+                                    id</InputGroup.Text>
                                 <FormControl onChange={e => setRegisterNumberLogin(e.target.value)}></FormControl>
                             </InputGroup>
                             <InputGroup className="mb-3 p-2">

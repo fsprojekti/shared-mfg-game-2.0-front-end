@@ -476,10 +476,12 @@ export const ContextWrapper = (props) => {
     const apiUserRegister = useCallback((registerNumber, name, email) => {
         return new Promise(async (resolve, reject) => {
             try {
-                let out = await axios.get('user/create', {
-                    playerId: registerNumber,
-                    name: name,
-                    email: email
+                let out = await axios.get(`user/create`,{
+                    params: {
+                        playerId: registerNumber,
+                        name: name,
+                        email: email
+                    }
                 })
                 resolve(out)
             } catch (e) {
