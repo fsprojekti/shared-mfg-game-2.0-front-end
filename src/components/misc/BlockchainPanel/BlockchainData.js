@@ -22,7 +22,7 @@ const BlockchainData = () => {
             let numCheck; 
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`], context.transactions, context.agent, context.chains[context.activeChain]);
             })
             .catch(err => {
                 console.log(err);
@@ -84,7 +84,7 @@ const BlockchainData = () => {
             let numCheck; 
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(txFee, newStake, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
             })
             .catch(err => {
                 console.log(err);

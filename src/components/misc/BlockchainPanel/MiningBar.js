@@ -26,7 +26,7 @@ const MiningBar = (props) => {
     }
 
     useInterval(async () => {
-        const createdMillis = new Date(context.chains[context.activeChain].updatedAt).getTime();
+        const createdMillis = new Date(context.chains[context.activeChain].blockTimestamp).getTime();
         let timeLeft = 10000 - (Date.now() - createdMillis);
         let width = Math.floor((((Date.now() - createdMillis) / 10000)) * 100);
         if (width < 0 || timeLeft < 0) {

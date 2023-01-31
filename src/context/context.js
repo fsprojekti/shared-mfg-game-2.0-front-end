@@ -73,6 +73,7 @@ export const ContextWrapper = (props) => {
         timeForService: "000",
         type: "TYPE",
         upgradeLevel: 0,
+        account: "0x0000000000000000000000000000000000000000",
     });
 
     //All agents in the game
@@ -162,7 +163,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateChainsState = async (chainObj) => {
-        // console.log(chainObj);
+        console.log(chainObj);
         setChains((chains) => {
             const oldChains = [...chains];
 
@@ -179,13 +180,14 @@ export const ContextWrapper = (props) => {
                 //Check if block number is higher than the one in current state
                 if(chainObj.blockNumber > oldChains[index].blockNumber){
                     //Checking if this is a first run, to calculate time difference between server and client
-                    if(oldChains[index].timeDiff === undefined) { 
+                    if(oldChains[0].timeDiff === undefined) { 
                         let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
                         setCookie('timeDiff', difference);  
-                        oldChains[index].timeDiff = difference;
+                        oldChains[0].timeDiff = difference;
+                        console.log("time difference: " + difference + "ms")
                     }          
                     
-                    oldChains[index].updatedAt = Date.now() - oldChains[index].timeDiff
+                    oldChains[index].blockTimestamp = chainObj.blockTimestamp- oldChains[0].timeDiff
                     oldChains[index].blockNumber = chainObj.blockNumber; 
                 }
    
@@ -204,8 +206,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        console.log("ORDER EVENT");
-        console.log(orderObj);
+        // console.log("ORDER EVENT");
+        // console.log(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -239,8 +241,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.log("SERVICE EVENT")
-        console.debug(serviceObj);
+        // console.log("SERVICE EVENT")
+        // console.debug(serviceObj);
         setServicesAll((oldServices) => {
             const services = [...oldServices];
 
@@ -280,7 +282,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateTransactionsState = (transObj) => {
-        console.log("TRANSACTION EVENT");
+        // console.log("TRANSACTION EVENT");
         console.log(transObj);
           setTransactions((oldTrans) => {
             const transactions = [...oldTrans];
@@ -296,16 +298,8 @@ export const ContextWrapper = (props) => {
                 return transactions;
             } else if(index == -1) {
                 console.log("pushing");
-                console.log(transObj[0].chain._id)
                 let newTrans = {};
-                newTrans.id = transObj[0].id;
-                newTrans.chain = transObj[0].chain;
-                newTrans.fee = transObj[0].fee;
-                newTrans.amount = transObj[0].amount;
-                newTrans.state = transObj[0].state;
-                newTrans.from  = transObj[0].from;
-                newTrans.to = transObj[0].to;
-
+                newTrans = transObj[0];
                 transactions.push(newTrans);
                 console.log(newTrans)
                 return transactions;
@@ -330,12 +324,7 @@ export const ContextWrapper = (props) => {
         //Bridge object is returned with whole chain objects
         setBridges((oldBridges) => {
             let bridges = [...oldBridges];
-            let newBridge = {};
-            newBridge.id = bridgeObj.id;
-            newBridge.chainSource = bridgeObj.chainSource._id;
-            newBridge.chainTarget = bridgeObj.chainTarget._id;
-            newBridge.name = bridgeObj.name;
-            bridges.push(newBridge);
+            bridges.push(bridgeObj);
             return bridges;     
         });
 }
@@ -487,14 +476,11 @@ export const ContextWrapper = (props) => {
     const apiUserRegister = useCallback((registerNumber, name, email) => {
         return new Promise(async (resolve, reject) => {
             try {
-                let out = await axios.post('player/createPlayer', {
+                let out = await axios.get('user/create', {
                     playerId: registerNumber,
                     name: name,
                     email: email
                 })
-                // user.id=out.id;
-                // //Update user id
-                // setUser(user);
                 resolve(out)
             } catch (e) {
                 reject(e);
@@ -943,7 +929,7 @@ export const ContextWrapper = (props) => {
                          }
                 });
                 // alert(JSON.stringify(chains))
-                console.log(chains)
+                // console.log(chains)
                 resolve(chains.data['chains']);
             } catch (e) {
                 reject(e);

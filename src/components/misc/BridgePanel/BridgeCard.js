@@ -6,8 +6,8 @@ import { AppContext } from '../../../context/context';
 //TODO: Transfer pri max value ne gre uredu skozi.
 const BridgeCard = () => {
     const {chains, cookies, apiUserBridge, user, activeChain, usersBalances, bridges, setNote} = useContext(AppContext);
-    let [amount, setAmount] = useState(null);
-    let [fee, setFee] = useState(null);
+    let [amount, setAmount] = useState(0);
+    let [fee, setFee] = useState(0);
     let [bridge, setBridge] = useState(0);
 
     const [loading, setLoading] = useState(false);
@@ -30,14 +30,15 @@ const BridgeCard = () => {
     function maxTransferInput(){
         if (direction == "1") {
             let chainIndex = chains.findIndex(item => item.id === bridges[bridge].chainSource);
-            setAmount(usersBalances[chainIndex][`${chains[chainIndex].name}`]);
+            setAmount((usersBalances[chainIndex][`${chains[chainIndex].name}`]).toString());
         } else {
             let chainIndex = chains.findIndex(item => item.id === bridges[bridge].chainTarget);
-            setAmount(usersBalances[chainIndex][`${chains[chainIndex].name}`]);
+            setAmount((usersBalances[chainIndex][`${chains[chainIndex].name}`]).toString());
         }  
     }
 
     const countDecimals = (value) => {
+        console.log(typeof(value))
         if(Math.floor(value).toString() === value) return 0;
         return value.toString().split(".")[1].length || 0;
     };
@@ -104,8 +105,8 @@ const BridgeCard = () => {
                             
                             console.log(bridges[bridge])
                             let response;
-                            if(direction == false) response= await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
-                            else response = await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  
+                            if(direction == '2') response= await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
+                            else if(direction == '1') response = await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  
 
                             setLoading(false);
                             setAmount(0);
@@ -113,9 +114,10 @@ const BridgeCard = () => {
                             setNote((prevState) => {
                                 return({
                                   ...prevState,
-                                  msg: response ,
+                                  msg: response.message,
                                   show: true,
-                                  type: 'success'
+                                  type: 'success',
+                                  heading: "Success"
                                 });
                               });
                         }
@@ -126,12 +128,12 @@ const BridgeCard = () => {
         } catch(e) {
             setLoading(false);
             console.log(e)
-            setNote({
-                show: true,
-                type: "danger",
-                msg: e.response.data.message,
-                heading: "Transfer failed! "
-        })
+        //     setNote({
+        //         show: true,
+        //         type: "danger",
+        //         msg: e.response.data.message,
+        //         heading: "Transfer failed! "
+        // })
         }
     };
 
@@ -150,25 +152,26 @@ const BridgeCard = () => {
             { chains.length > 1 ? (
                 <Card.Body>
                 <Card.Title> 
-                <b>{bridges[bridge].name}</b>
                 <Dropdown style={{margin: "10px"}}>
 
                     <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" style={{borderRadius: "8px"}}>
-                        <b> <span style={{color: (direction === "1" ? `red` : `green`)}}> {getChainsNamesFromBridgeObject(bridge)[0]} </span> {direction === "1" ? `➡` : `⬅`} <span style={{color: (direction === "2" ? `red` : `green`)}}>  {getChainsNamesFromBridgeObject(bridge)[1]}  </span>  </b> 
+                        <b> {bridges[bridge].name}  </b> 
                     </Dropdown.Toggle>
                     
                     <Dropdown.Menu>
                     {
                         bridges.map((item, index) => (
-                            <Dropdown.Item onClick={(item) => (setBridge(index))} > {getChainsNamesFromBridgeObject(index)[0]}  {getChainsNamesFromBridgeObject(index)[1]} </Dropdown.Item>
+                            <Dropdown.Item onClick={(item) => (setBridge(index))} > {bridges[index].name} </Dropdown.Item>
                         ))
                     }
                     </Dropdown.Menu>
                             
                 </Dropdown>
+ 
                 </Card.Title>
-
-                
+                <Card.Subtitle className="mb-2 text-muted">
+                <b><span style={{color: (direction === "1" ? `red` : `green`)}}> {getChainsNamesFromBridgeObject(bridge)[0]} </span> {direction === "1" ? `➡` : `⬅`} <span style={{color: (direction === "2" ? `red` : `green`)}}>  {getChainsNamesFromBridgeObject(bridge)[1]}  </span></b>
+                </Card.Subtitle>
 
                         <Card className='d-flex' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderRadius: "8px", margin: "10px"}}>
                     

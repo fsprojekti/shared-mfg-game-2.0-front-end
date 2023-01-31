@@ -81,11 +81,14 @@ function App() {
 
         //Load user agent
         const agent = context.apiUserAgentGet().then(agentObj => {
+            console.log(agentObj)
             let agent = context.agent;
             agent.id = agentObj.id;
             agent.type = agentObj.type;
             agent.timeForService = agentObj.timeForService;
+            agent.timeForServiceNext = agentObj.timeForServiceNext;
             agent.upgradeLevel = agentObj.upgradeLevel;
+            agent.account = agentObj.account;
 
             context.setAgent({ ...agent });
         }).catch(e => console.log(e));
@@ -121,7 +124,7 @@ function App() {
 
         //Load all chains
         const chains = context.apiGameChains().then(chains => {
-
+            console.log(chains)
             let chainsObj = chains;
             console.debug(context.cookies.timeDiff)
             if(context.cookies.timeDiff !== undefined) {
