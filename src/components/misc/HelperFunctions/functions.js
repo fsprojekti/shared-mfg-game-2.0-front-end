@@ -7,6 +7,11 @@ export const getChainsNamesFromBridgeObject = (bridgeId, bridges, chains) => {
    return names;
 };
 
+export const getBridgeName = (bridgeId, bridges) => {
+   let bridge = bridges.filter(item => item._id === bridgeId);
+   return bridge[0].name;
+};
+
 
     
 export const justAnAlert = () => {

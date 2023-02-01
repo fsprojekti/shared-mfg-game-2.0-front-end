@@ -140,15 +140,17 @@ const BlockchainData = () => {
     };
 
     useEffect(() => {
-        if(context.chains[0].name !== "NULL") {
+        const renderStakeData = async () => {
+            if(Object.keys(context.usersStakes).length == 0) return;
             if (context.chains[context.cookies.activeChain].stake == 0 ||  context.chains[context.cookies.activeChain].stake == undefined) {
-                setRelativeStake(0);
+                setRelativeStake({stake: 0});
             } else {
-                setRelativeStake(((context.usersStakes[context.chains[context.cookies.activeChain].name] / context.chains[context.cookies.activeChain].stake) * 100).toFixed(1));
+                console.log(((context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`] / context.chains[context.cookies.activeChain].stake) * 100).toFixed(1));
+                let stake = ((context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`] / context.chains[context.cookies.activeChain].stake) * 100).toFixed(1)
+                setRelativeStake({stake: stake});
             } 
-        } else {
-            setRelativeStake(0);
-        }
+        };
+        renderStakeData();
 
 
         const createDataArray = async () => { 
@@ -174,7 +176,7 @@ const BlockchainData = () => {
                         
                         <div className="d-flex flex-column"  style={{textAlign: "center", paddingTop: "7px"}}>
                             <h3> Stake on <span style={{color: 'red'}}> {context.chains[context.cookies.activeChain].name} </span> Chain </h3>
-                            <h4>Your stake: {context.usersStakes[context.chains[context.cookies.activeChain].name]} ({relativeStake}%)</h4>         
+                            <h4>Your stake: {context.usersStakes[context.chains[context.cookies.activeChain].name]} ({relativeStake.stake}%)</h4>         
                         </div>
 
                         <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "20%"}}>

@@ -61,12 +61,16 @@ const Stats = () => {
         const renderServiceData = async () => {
 
             const activeServices = await services.filter(service => service.state === "ACTIVE");            
-            
+            console.log(activeServices)
             const userServices = await Promise.all(activeServices.map(async (item) => {
 
-                const providerAgentObject = await agents.filter(agent => agent._id === item.agent);
+                console.log(item)
 
-                const providerUser = await users["users"].filter(user => user._id === providerAgentObject[0].user); 
+                const providerAgentObject = await agents.filter(agent => agent._id === item.agent);
+                console.log(providerAgentObject)
+
+                const providerUser = await users["users"].filter(user => user.id === providerAgentObject[0].user); 
+                console.log(providerUser)
                    
                       
                 return ( 
@@ -159,7 +163,7 @@ const Stats = () => {
                     </div>
                     <div className="upgrade-container">
                         <div className="upgrade-container-formula">
-                            <p>{`${otherServices.service1}`} + {`${otherServices.service2}`} = &#8681; {millisToMinutesAndSeconds(user.timeForService - user.nextTimeForService)}</p>
+                            <p>{`${otherServices.service1}`} + {`${otherServices.service2}`} = &#8681; {agent.timeForService - agent.timeForServiceNext} s</p>
                         </div>
                     </div>
                 </div>

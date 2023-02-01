@@ -96,8 +96,9 @@ function App() {
         //Load agents
         const agents = context.apiGameAgents().then(agents => {
             console.log(JSON.stringify(agents));
-            context.setAgents(agents);
-            return true;
+            context.setAgents(
+                agents.filter(agent => agent._id !== "")
+              );
         }).catch(e => console.log(e));
 
         //Load user service
@@ -108,6 +109,7 @@ function App() {
 
         //Load user's purchased and active services
         const userServices = context.apiUserFetchServices().then(services => {
+            console.log(services)
             context.setServices(services["services"]);
         }).catch(e => console.log(e));
 
@@ -145,7 +147,7 @@ function App() {
 
         //Load user's steal votes
         const stealVotes = context.apiUserStealGet().then(stealVotes => {
-            console.log((stealVotes))
+            console.debug((stealVotes))
             context.setStealVotes(stealVotes);
         }).catch(e => console.log(e))
 
@@ -186,12 +188,13 @@ function App() {
         socket.on("transactions", context.updateTransactionsState);
         socket.on("service", context.updateServiceState);
         socket.on("agent", context.updateAgentsState);
-        socket.on("balancesAgents", context.updateBalancesState);
+        socket.on("balancesAgent", context.updateBalancesState);
         socket.on("balanceChain", context.updateBalanceChain);
         socket.on("balanceBridge", context.updateBalanceBridge);
         socket.on("stakesAgents", context.updateStakesState);
         socket.on("ranking", context.updateRankingState);
         socket.on("bridge", context.updateBridgesState);
+        socket.on("attack", context.updateAttackState);
 
         return () => {
           socket.off("chain");
@@ -201,10 +204,12 @@ function App() {
           socket.off("service");
           socket.off("agent");
           socket.off("balancesAgents");
+          socket.off("stakesAgents");
           socket.off("balanceChain");
           socket.off("balanceBridge");
           socket.off("ranking");
           socket.off("bridge");
+          socket.off("attack");
         };
       }, [socket]);
 

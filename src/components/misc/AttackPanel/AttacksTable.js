@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Card} from "react-bootstrap";
 import { AppContext } from '../../../context/context';
-import { getChainsNamesFromBridgeObject } from '../HelperFunctions/functions';
+import { getBridgeName } from '../HelperFunctions/functions';
 
 const AttacksTable = () => {
     const context = useContext(AppContext);
@@ -31,11 +31,12 @@ const AttacksTable = () => {
                                 <tbody>
                                 {
                                     context.stealVotes.map((item, index) => (
+                                       
                                     <tr
                                         key={item._id} 
                                         onClick={(index) => (openCancelVoteModal(item))} 
                                     >
-                                        <td>{getChainsNamesFromBridgeObject(item.bridges[0], context.bridges, context.chains)[0]} - {getChainsNamesFromBridgeObject(item.bridges[0], context.bridges, context.chains)[1]} </td>
+                                        <td>{getBridgeName(item.bridges[0], context.bridges)} </td>
                                     </tr>
                                 ))
                             }
@@ -61,8 +62,6 @@ const AttacksTable = () => {
                                     context.blockVotes.map((item) =>
                                         (
                                             <tr key={item.bridge}>
-                                                <td>{item.votes}</td>
-                                                <td>{item.percentage}</td>
                                                 <td>{item.status}</td>
                                             </tr>
                                         )

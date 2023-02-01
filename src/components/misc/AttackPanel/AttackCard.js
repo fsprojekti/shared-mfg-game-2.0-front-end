@@ -39,6 +39,7 @@ const AttackCard = () => {
     
 
     useEffect(() => {
+        console.log(context.stealVotes)
         const renderUserTable = async () => {
             const usersWithoutMainPlayer = await context.users['users'].filter(user => user.id !== context.user.id);
             setUsers(usersWithoutMainPlayer);
@@ -108,7 +109,7 @@ const AttackCard = () => {
                 <Container>
                 <Row >
                 <Col>
-                    <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}> <Card.Body>
+                    <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}> <Card.Body>
                             
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
@@ -123,8 +124,8 @@ const AttackCard = () => {
 
                                 <Dropdown  className='d-flex' style={{justifyContent: "center", width: "auto", wordBreak: "break-all"}}>
                             
-                                <Dropdown.Toggle className='d-flex'  variant="outline-secondary" id="dropdown-basic" >
-                                 <b> {getChainsNamesFromBridgeObject(bridge)[0]} 🌉 {getChainsNamesFromBridgeObject(bridge)[1]} </b> 
+                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" >
+                                 <b>{context.bridges[bridge].name} </b> 
                                 </Dropdown.Toggle>
                                 
                                 <Dropdown.Menu>
@@ -132,7 +133,7 @@ const AttackCard = () => {
                                 {
                                     context.bridges.map((item, index) => (
                                         
-                                        <Dropdown.Item onClick={(item) => (attackbridge(index))} > {getChainsNamesFromBridgeObject(index)[0]} - {getChainsNamesFromBridgeObject(index)[1]} </Dropdown.Item>
+                                        <Dropdown.Item onClick={(item) => (attackbridge(index))} > {context.bridges[index].name} </Dropdown.Item>
 
                                     ))
                                 }
@@ -196,7 +197,7 @@ const AttackCard = () => {
 
                                 <Dropdown  className='d-flex' style={{justifyContent: "center"}}>
                             
-                                <Dropdown.Toggle className='d-flex' style={{justifyContent: "center"}} variant="outline-secondary" id="dropdown-basic" >
+                                <Dropdown.Toggle style={{justifyContent: "center"}} variant="outline-secondary" id="dropdown-basic" >
                                     <b> {users.length > 0 ? users[user].name : "player"} </b> 
                                 </Dropdown.Toggle>
                                 

@@ -162,8 +162,16 @@ export const ContextWrapper = (props) => {
         setActiveChain(chainId);
     }
 
+    const updateGameState = (game) => {
+        console.log("GAME EVENT")
+        console.log(game)
+        setGame((oldGame) => {
+            return {...oldGame, state: game.state}
+        });
+    }
+
     const updateChainsState = async (chainObj) => {
-        console.log(chainObj);
+        // console.log(chainObj);
         setChains((chains) => {
             const oldChains = [...chains];
 
@@ -206,8 +214,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        // console.log("ORDER EVENT");
-        // console.log(orderObj);
+        console.log("ORDER EVENT");
+        console.log(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -241,8 +249,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        // console.log("SERVICE EVENT")
-        // console.debug(serviceObj);
+        console.log("SERVICE EVENT")
+        console.debug(serviceObj);
         setServicesAll((oldServices) => {
             const services = [...oldServices];
 
@@ -264,25 +272,23 @@ export const ContextWrapper = (props) => {
             
             return oldServices;         
         });
+        if(serviceObj.agent == agent.id) {
+            setService((oldService) => {
+                let service = oldService;
 
-        setService((oldService) => {
-            let service = oldService;
-
-            if(serviceObj.agent == agent.id) {
                 console.debug("Updating user service")
                 service.stateOld = service.state;
                 service.state = serviceObj.state;
                 service.updatedAt = Date.now();
                 service.duration = serviceObj.duration;
                 return service;
-            }             
-            return oldService;         
-        });
+            });
+        }         
         
     }
 
     const updateTransactionsState = (transObj) => {
-        // console.log("TRANSACTION EVENT");
+        console.log("TRANSACTION EVENT");
         console.log(transObj);
           setTransactions((oldTrans) => {
             const transactions = [...oldTrans];
@@ -307,6 +313,22 @@ export const ContextWrapper = (props) => {
             
             return oldTrans;         
         });
+        console.log(agents)
+        console.log(orders)
+        console.log(users)
+        if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
+            setServices((oldServices) => {
+                console.log("Updating users services state")
+                let service = [...oldServices];
+                let newObj = {};
+                
+                // const providerAgentObject = agents["agents"].filter(agent => agent._id === transObj[0].to);
+                // console.log(providerAgentObject);
+
+                // newObj._id = transObj[0].id;
+                // return service;
+            });
+        }
 
     }
 
@@ -327,7 +349,13 @@ export const ContextWrapper = (props) => {
             bridges.push(bridgeObj);
             return bridges;     
         });
-}
+    }
+
+
+    const updateBalancesState = (balanceObj) => {
+        console.debug((balanceObj));
+        //Bridge object is returned with whole chain objects
+    }
 
 
     //--------------------- API requests ------------------------------------------------------
@@ -1276,7 +1304,9 @@ export const ContextWrapper = (props) => {
             apiUserBlockOn, apiUserBlockOff,
             ranking, setRanking,
             updateRankingState,
-            updateBridgesState
+            updateBridgesState,
+            updateGameState,
+            updateBalancesState
         }}>
             {props.children}
         </AppContext.Provider>

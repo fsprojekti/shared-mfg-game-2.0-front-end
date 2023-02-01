@@ -54,7 +54,8 @@ const Trades = () => {
 
     useEffect(() => {
         console.log(orders);
-        console.log(agents);
+        console.log((agents));
+        console.log(users);
         const sortDataArrays = async () => { 
             console.log(orders);
             const placedOrders = orders.filter(order => order.chain === chains[activeChain].id  && order.state === "PLACED");   
