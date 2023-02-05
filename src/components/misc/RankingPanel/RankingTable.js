@@ -9,7 +9,7 @@ const RankingTable = () => {
         const renderTableData = async () => { //Treba poopravit v contectu v array te playerje
             const players = await context.ranking.sort((a, b) => parseInt(b.upgrades) === parseInt(a.upgrades) ? (parseInt(b.balance) + parseInt(b.stake)) - (parseInt(a.balance) + parseInt(a.stake)) : parseInt(b.upgrades) - parseInt(a.upgrades));
             const playersWithNames = await players.map(function(player){ 
-                const agentObject = context.agents.filter(agent => agent._id === player.agent);
+                const agentObject = context.agents["agents"].filter(agent => agent._id === player.agent);
                 const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
 
                 player.userName = userObject[0].name;

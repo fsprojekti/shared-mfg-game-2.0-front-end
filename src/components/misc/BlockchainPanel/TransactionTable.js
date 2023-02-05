@@ -24,28 +24,28 @@ const TransactionsTable = () => {
     };
 
     useEffect(() => {
-        console.log(chains);
+        console.log(chains["chains"]);
         const renderTableData = async () => {
             console.log(transactions)
-            const orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains[activeChain].id);
+            const orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains["chains"][activeChain].id);
             console.log(orderTransactions)
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             console.log(transactionsByFee)
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
-                const consumerAgent = await agents.filter(agent => agent.account === from);
+                const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
 
                 const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
-                const providerAgent = await agents.filter(agent => agent.account === orderTransactions[0].to);
+                const providerAgent = await agents["agents"].filter(agent => agent.account === orderTransactions[0].to);
 
                 if(!providerAgent.length) {
                     return (
                         {
                             id: transaction._id,
                             consumer: consumerUser[0].name,
-                            provider:  chains[activeChain].name,
+                            provider:  chains["chains"][activeChain].name,
                             price: amount,
                             fee: fee,
                         }
@@ -85,7 +85,7 @@ const TransactionsTable = () => {
                         <thead>
                         <tr>
                             <th className="table-pending-transactions-head">No.</th>
-                            <th className="table-pending-transactions-head">Pending transactions on {chains[activeChain].name} chain</th>
+                            <th className="table-pending-transactions-head">Pending transactions on {chains["chains"][activeChain].name} chain</th>
                             <th className="table-pending-transactions-head">Tx Fee</th>
                         </tr>
                         </thead>

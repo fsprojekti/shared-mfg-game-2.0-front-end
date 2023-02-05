@@ -367,7 +367,7 @@ const PanelAdmin = () => {
                                         </div>
                                         <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
 
-                                            <InputGroup.Text>{context.chains.length}</InputGroup.Text>
+                                            {/* <InputGroup.Text>{context.chains["chains"].length}</InputGroup.Text> */}
                                         </div>
                                     </div>
                                     </Card.Body>

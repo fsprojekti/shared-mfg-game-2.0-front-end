@@ -20,9 +20,9 @@ const CreateSideChain = () => {
         try {
             setLoading(true);
             console.log("Chain to create from:")
-            console.log(context.chains[chain].name)
-            console.log(context.chains[chain].id)
-            let response = await context.apiUserCreateChain(context.chains[chain].id, fee);
+            console.log(context.chains.chains[chain].name)
+            console.log(context.chains.chains[chain].id)
+            let response = await context.apiUserCreateChain(context.chains.chains[chain].id, fee);
             console.log(response);
 
             context.setNote({
@@ -70,11 +70,11 @@ const CreateSideChain = () => {
                                     <p> You are about to create a new sidechain of </p>
                                     <Dropdown style={{margin: "10px"}}>
                                     <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" >
-                                        <b> <span style={{color: 'green'}}> {context.chains[chain].name} </span>  </b> 
+                                        <b> <span style={{color: 'green'}}> {context.chains.chains[chain].name} </span>  </b> 
                                     </Dropdown.Toggle>
                                         <Dropdown.Menu>
                                         {
-                                            context.chains.map((item, index) => (
+                                            context.chains.chains.map((item, index) => (
                                                 <Dropdown.Item onClick={(item) => (setChain(index))} > {item.name} </Dropdown.Item>
                                             ))
                                         }

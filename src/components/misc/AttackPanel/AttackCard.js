@@ -23,13 +23,6 @@ const AttackCard = () => {
         console.log(user);
     }
 
-    const getChainsNamesFromBridgeObject = (index) => {
-        let chainsArr = context.chains;
-        // console.log(context.bridges[index])
-        let bridgeChains = chainsArr.filter(item => item.id === context.bridges[index].chainSource || item.id === context.bridges[index].chainTarget);
-        let names = bridgeChains.map(item => item.name);
-        return names;
-    };
 
     const renderTooltip = (props) => (
         <Tooltip id="button-tooltip" {...props}>

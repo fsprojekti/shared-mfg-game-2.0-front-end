@@ -46,7 +46,7 @@ const ServiceLoading = (data) => {
             // let timeLeft = timeForService - (Date.now() - serviceTimestamp);
             let timeLeft = (duration*1000) - (Date.now() - timestamp);
 
-            let relativeTime = await Math.floor(((Date.now() - timestamp) / (duration*1000)) * 100);
+            let relativeTime = Math.floor(((Date.now() - timestamp) / (duration*1000)) * 100);
 
             if (relativeTime < 0 || timeLeft < 0) {
                 relativeTime = 100;

@@ -22,7 +22,7 @@ const ChainMesh = () => {
   useEffect(() => {
     
 
-    let nodes =  new DataSet (chains.map((item, index) => {
+    let nodes =  new DataSet (chains.chains.map((item, index) => {
       let currentChain = parseInt(activeChain);
       return { id: item.id, label:item.name, color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
@@ -119,7 +119,7 @@ const ChainMesh = () => {
 
   setNodeNetwork();
 	
-	}, [chains.length, activeChain, bridges.length]);
+	}, [chains.chains.length, activeChain, bridges.length]);
 
 	return <div className="chain-network" ref={visJsRef} />;
 };

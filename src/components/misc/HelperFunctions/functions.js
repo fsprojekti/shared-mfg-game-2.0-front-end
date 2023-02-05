@@ -19,9 +19,11 @@ export const justAnAlert = () => {
 };
 
 
+
 export const checkNumber = async (input1, input2, balance, transactions, agent, chain) => {
    const userTransactions = transactions.filter(item => item.state === "SEND" && item.from == agent.account && item.chain == chain.id);
    var sumOfTransactions = 0;
+
    if(userTransactions.length != 0) {
       userTransactions.forEach(function(obj){
          sumOfTransactions += obj.amount + obj.fee;
@@ -30,6 +32,7 @@ export const checkNumber = async (input1, input2, balance, transactions, agent, 
    }
    console.debug("SUM OF TRANSACTIONS:")
    console.log(sumOfTransactions);
+   console.log(isNaN(input1))
    
    if ((input1 === undefined || input1 === "" || input1 == 0)) {
    return ({state: -1, msg:"You must enter a value"});
@@ -37,8 +40,8 @@ export const checkNumber = async (input1, input2, balance, transactions, agent, 
       if ((isNaN(input1) || input1 < 0) || (isNaN(input2) || input2 < 0)) {
          return ({state: -1, msg: "You must enter positive numbers"});
       } else {
-         if (countDecimals(input1) > 0)  {
-               return ({state: -1,msg:"Amount must be an integer"});
+         if (countDecimals(input1) > 0 || countDecimals(input2) > 0)  {
+               return ({state: -1,msg:"Values must be an integers"});
          } else {
                if (parseInt(input1) + parseInt(input2) + parseInt(sumOfTransactions) > balance) {
                   return ({state: -1, msg:"Balance to low"});
@@ -52,6 +55,7 @@ export const checkNumber = async (input1, input2, balance, transactions, agent, 
 };
 
 const countDecimals = (value) => {
-   if(Math.floor(value).toString() === value) return 0;
+   console.log("Count decimals " + Math.floor(value).toString() )
+   if(Math.floor(value).toString() === value.toString()) return 0;
    return value.toString().split(".")[1].length || 0;
 };

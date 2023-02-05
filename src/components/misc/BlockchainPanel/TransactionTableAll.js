@@ -92,14 +92,14 @@ const AllTransactionsTable = () => {
     useEffect(() => {
         const renderTableData = async () => {
             console.log(transactions);
-            const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED" && transaction.chain == chains[activeChain].id);
+            const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED" && transaction.chain == chains["chains"][activeChain].id);
             console.log(minedTransactions);
 
             const transactionsArray = await Promise.all(minedTransactions.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
 
-                const consumerAgent = await agents.filter(agent => agent.account === from);
+                const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
 
                 
                 let consumer;
@@ -107,17 +107,17 @@ const AllTransactionsTable = () => {
                     const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                     consumer = consumerUser[0].name;
                 } else {
-                    consumer = chains[activeChain].name;
+                    consumer = chains["chains"][activeChain].name;
                 };
                 
                 
-                const providerAgent = await agents.filter(agent => agent.account === minedTransactions[0].to);
+                const providerAgent = await agents["agents"].filter(agent => agent.account === minedTransactions[0].to);
                 let provider;
                 if(providerAgent && transaction.type !== "FEE") {
                     const providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
                     provider = providerUser[0].name;
                 } else {
-                    provider = chains[activeChain].name;
+                    provider = chains["chains"][activeChain].name;
                 };
 
                 let d = new Date(transaction.createdAt);
@@ -154,12 +154,12 @@ const AllTransactionsTable = () => {
             }));
             const filteredTransactionsArray = await filterDataArray(transactionsArray);
             const dataArray = await sortDataArray(filteredTransactionsArray);
-            setTableDataArray(dataArray);
+            setTableDataArray(dataArray.reverse());
         };
         
         renderTableData();
 
-    }, [game, checkBoxes, orderOfSort]);
+    }, [game, checkBoxes, orderOfSort, transactions]);
 
 
     return (

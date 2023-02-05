@@ -47,11 +47,11 @@ const Stats = () => {
 
         const renderStakeData = async () => {
             if(Object.keys(usersStakes).length == 0) return;
-            if (chains[cookies.activeChain].stake == 0 ||  chains[cookies.activeChain].stake == undefined) {
+            if (chains["chains"][cookies.activeChain].stake == 0 ||  chains["chains"][cookies.activeChain].stake == undefined) {
                 setRelativeStake({stake: 0});
             } else {
-                console.log(((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1));
-                let stake = ((usersStakes[stakeIndex][`${chains[activeChain].name}`] / chains[cookies.activeChain].stake) * 100).toFixed(1)
+                console.log(((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1));
+                let stake = ((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1)
                 setRelativeStake({stake: stake});
             } 
         };
@@ -66,7 +66,7 @@ const Stats = () => {
 
                 console.log(item)
 
-                const providerAgentObject = await agents.filter(agent => agent._id === item.agent);
+                const providerAgentObject = await agents["agents"].filter(agent => agent._id === item.agent);
                 console.log(providerAgentObject)
 
                 const providerUser = await users["users"].filter(user => user.id === providerAgentObject[0].user); 
@@ -93,7 +93,7 @@ const Stats = () => {
 
 
         const getOtherServiceTypes = async () => {
-            let uniqueService = [...new Set(servicesAll.map(item => item.type))];
+            let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices({service1: uniqueService[0], service2: uniqueService[1]});
             const filledOrders = await services.filter(service => service.state === "DONE");
@@ -110,7 +110,7 @@ const Stats = () => {
         
 
 
-    }, [services, activeChain, user, servicesAll, usersStakes]);
+    }, [services, activeChain, user, servicesAll["services"], usersStakes, stakeIndex]);
 
     return (
         <>
@@ -121,7 +121,7 @@ const Stats = () => {
                         <img src={balanceImg} alt={"balance"}/>
                     </div>
                     <div className={"stats-value"}>
-                        <p>{ Object.keys(usersBalances).length !== 0 ?  usersBalances[activeChain][`${chains[activeChain].name}`] : 0}</p>
+                        <p>{ Object.keys(usersBalances).length !== 0 ?  usersBalances[activeChain][`${chains["chains"][activeChain].name}`] : 0}</p>
                     </div>
                 </div>
                 <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", background: (getColor(service.type))}}>
@@ -140,7 +140,7 @@ const Stats = () => {
                         <img src={stakeImg} alt={"stake"}/>
                     </div>
                     <div className={"stake-value"}>
-                        <p>{ Object.keys(usersStakes).length !== 0 ?  usersStakes[stakeIndex][`${chains[activeChain].name}`] : 0}</p>
+                        <p>{ Object.keys(usersStakes).length !== 0 ?  usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] : 0}</p>
                     </div>
                     <div className={"stake-value-proc"}>
                         <p>({relativeStake.stake}%)</p>

@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useContext, useEffect } from "react";
+import {useContext, useEffect, useCallback } from "react";
 import {AppContext} from "./context/context";
 import { SocketContext } from './context/socket';
 import {Container, Spinner, Navbar, Button} from "react-bootstrap";
@@ -46,6 +46,7 @@ function App() {
         })
     }
 
+
     useEffect(() => {
         context.setLoadingMain(true);
 
@@ -70,8 +71,10 @@ function App() {
         }).catch(e => console.log(e))   ;
 
         //Load all services
-        const  services = context.apiGameServices().then(services => {
-            context.setServicesAll(services);
+        const  services = context.apiGameServices().then(servicesObj => {
+            let contextServicesAll = context.servicesAll;
+            contextServicesAll.services = servicesObj;
+            context.setServicesAll({ ...contextServicesAll });
         }).catch(e => console.log(e));
 
         //Load orders
@@ -94,11 +97,13 @@ function App() {
         }).catch(e => console.log(e));
 
         //Load agents
-        const agents = context.apiGameAgents().then(agents => {
-            console.log(JSON.stringify(agents));
-            context.setAgents(
-                agents.filter(agent => agent._id !== "")
-              );
+        const agents = context.apiGameAgents().then(agentsObj => {
+            console.log(JSON.stringify(agentsObj));
+            let contextAgents = context.agents;
+            contextAgents.agents = agentsObj;
+            
+            context.setAgents({ ...contextAgents })
+
         }).catch(e => console.log(e));
 
         //Load user service
@@ -125,18 +130,22 @@ function App() {
         }).catch(e => console.log(e));
 
         //Load all chains
-        const chains = context.apiGameChains().then(chains => {
-            console.log(chains)
-            let chainsObj = chains;
+        const chains = context.apiGameChains().then(chainsObj => {
+            console.log(chainsObj)
             console.debug(context.cookies.timeDiff)
             if(context.cookies.timeDiff !== undefined) {
                 console.debug("Setting time difference")
                 chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
-                chainsObj[0].updatedAt = (new Date(chains[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+                chainsObj[0].updatedAt = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
             }
-            console.log(chains);
 
-            context.setChains( chainsObj );
+
+
+            let contextChains = context.chains;
+            contextChains.chains = chainsObj;
+            
+            context.setChains({ ...contextChains })
+
         }).catch(e => console.log(e))
 
         //Load all bridges
@@ -188,10 +197,10 @@ function App() {
         socket.on("transactions", context.updateTransactionsState);
         socket.on("service", context.updateServiceState);
         socket.on("agent", context.updateAgentsState);
-        socket.on("balancesAgent", context.updateBalancesState);
+        socket.on("balanceAgents", context.updateBalancesState);
         socket.on("balanceChain", context.updateBalanceChain);
         socket.on("balanceBridge", context.updateBalanceBridge);
-        socket.on("stakesAgents", context.updateStakesState);
+        socket.on("stakeAgent", context.updateStakesState);
         socket.on("ranking", context.updateRankingState);
         socket.on("bridge", context.updateBridgesState);
         socket.on("attack", context.updateAttackState);
@@ -203,8 +212,8 @@ function App() {
           socket.off("transactions");
           socket.off("service");
           socket.off("agent");
-          socket.off("balancesAgents");
-          socket.off("stakesAgents");
+          socket.off("balanceAgents");
+          socket.off("stakeAgent");
           socket.off("balanceChain");
           socket.off("balanceBridge");
           socket.off("ranking");

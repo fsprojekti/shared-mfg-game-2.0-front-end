@@ -72,7 +72,29 @@ const CreateOrderModal = (props) => {
                             } else {
 
                                 console.log("ORDER")
-                                await context.apiUserCreateOrder(price, context.chains[context.activeChain].id);
+                                console.log(props)
+                                if(props.mode == "SET") {
+                                    console.log("SET")
+                                    await context.apiUserCreateOrder(price, context.chains["chains"][context.activeChain].id);
+                                } else { 
+                                    console.log(context.orders)
+                                    let userOrder;
+                                    const placedOrders = context.orders.filter(order => order.chain === context.chains["chains"][context.activeChain].id  && order.state === "PLACED")
+                                    const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
+                                        let service=context.servicesAll.filter(srvc=> srvc._id == ordr.service);
+                                        const providerAgentObject = context.agents.filter(agent => agent._id === service[0].agent);
+                                        const providerClient = context.users["users"].filter(user => user.id === providerAgentObject[0].user);
+
+                                        if (providerClient[0].id == context.user.id) {
+                                            console.log("Im in")
+                                            userOrder = ordr;
+                                        }
+                                        return ordr;
+                                    })   
+                                    
+                                    console.log(userOrder)
+                                    await context.apiUserUpdateOrder(price, userOrder._id);
+                                }
                                 props.reportHide();
                                 setPrice("0");
                             }
@@ -81,17 +103,16 @@ const CreateOrderModal = (props) => {
                 }
             }
         } catch(err) {
-            if (err.response !== undefined && err.response.data.message === "Trade already exists") {
+            console.log(err)
                 context.setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: 'Trade with this person already exists',
+                      msg: err.response.data.message,
                       heading: 'Error',
                       show: true,
                       type: 'danger'
                     });
                   });
-            }
         }
     };
 
@@ -115,12 +136,12 @@ const CreateOrderModal = (props) => {
                 <div >       
                 
                     <div>   
-                        <h4 className="d-flex flex-column" style={{backgroundColor: "rgba(251, 191, 12)", textAlign: "center", marginBottom: "2px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px"}}>  { context.chains.length < 1  ? "null" : context.chains[context.activeChain].name  }  </h4> 
+                        <h4 className="d-flex flex-column" style={{backgroundColor: "rgba(251, 191, 12)", textAlign: "center", marginBottom: "2px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px"}}>  { context.chains["chains"].length < 1  ? "null" : context.chains["chains"][context.activeChain].name  }  </h4> 
                     </div>
 
                 
                     <div style={{text: "blue", marginTop: "1%"}}>
-                        <h4>Set <span style={{color: 'red'}}> {context.user.typeOfService} </span> price</h4>
+                        <h4>{props.mode == "SET" ? "NEW PRICE" : "UPDATE PRICE"}</h4>
                     </div>
 
                   <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>

@@ -4,7 +4,7 @@ import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
 import {motion} from 'framer-motion'
 
 const TradeModal = () => {
-    const { transactions, user, isTradeModalOpen, usersBalances, closeTradeModal, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
+    const { transactions, user, isTradeModalOpen, usersBalances, agent, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
     const [txFee, setTxFee] = useState("0");
     const [tableDataArray, setTableDataArray] = useState([]);
     const [provider, setProvider] = useState('');
@@ -29,60 +29,35 @@ const TradeModal = () => {
 
     const confirm = async () => {
         try {
-            if (txFee === undefined || txFee === "") {
+            let numCheck; 
+            console.log(tradeModalContent.price)
+            await import('./HelperFunctions/functions')
+            .then(async({ checkNumber }) => {
+                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[activeChain][`${chains["chains"][activeChain].name}`], transactions, agent, chains["chains"][activeChain]);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+            if (numCheck.state == -1) {
                 setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: 'You must enter a value',
+                      msg: numCheck.msg,
+                      heading: 'Wrong input',
                       show: true,
-                      heading: 'Error',
                       type: 'danger'
                     });
                   });
             } else {
-                if (isNaN(txFee) || txFee < 0) {
-                    setNote((prevState) => {
-                        return({
-                          ...prevState,
-                          msg: 'Input value must be an integer',
-                          show: true,
-                          heading: 'Error',
-                          type: 'danger'
-                        });
-                      });
-                } else {
-                    if (countDecimals(txFee) > 0) {
-                        setNote((prevState) => {
-                            return({
-                              ...prevState,
-                              msg: 'Input value must be an integer',
-                              heading: 'Error',
-                              show: true,
-                              type: 'danger'
-                            });
-                          });
-                    } else {
-                        if (parseInt((tradeModalContent.price) + parseInt(txFee)) > parseInt(usersBalances[`${chains[activeChain].name}`])) {
-                            setNote((prevState) => {
-                                return({
-                                  ...prevState,
-                                  msg: 'Price and TxFee is higher than balance',
-                                  heading: 'Error',
-                                  show: true,
-                                  type: 'danger'
-                                });
-                              });
-                        } else {
-                            console.log(tradeModalContent);
-                            await apiUserBidOrder(txFee, tradeModalContent._id);
-                            setIsTradeModalOpen(false);
 
-                            setNote({...(note.show = false)});
-                            setTxFee();
+                    console.log(tradeModalContent);
+                    await apiUserBidOrder(txFee, tradeModalContent._id);
+                    setIsTradeModalOpen(false);
+
+                    setNote({...(note.show = false)});
+                    setTxFee();
                         }
-                    }
-                }
-            }
         } catch(err) {
             if (err.response !== undefined && err.response.data.message === "Trade already exists") {
                 // setAlertContent('Trade with this person already exists');
@@ -97,12 +72,12 @@ const TradeModal = () => {
         console.log(transactions);
 
         const renderTableData = async () => {
-            const orderTransactions = await transactions.filter(transaction => transaction.chain == chains[activeChain].id && transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
+            const orderTransactions = await transactions.filter(transaction => transaction.chain == chains["chains"][activeChain].id && transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
             const transactionsInOrder = await orderTransactions.sort((a, b) => b.fee - a.fee);
 
             const transactionsArray = await Promise.all(transactionsInOrder.map(async (item) => {
                 let { from, fee, amount} = item;
-                const consumerAgent = await agents.filter(agent => agent.account === from);
+                const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
                 
                 const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 console.log(consumerUser);

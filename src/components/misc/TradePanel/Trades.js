@@ -6,7 +6,7 @@ import TradeModal from '../TradeModal';
 import CancelOrderModal from '../CancelOrderModal';
 
 const Trades = () => {
-    const { game, users, orders, agents, servicesAll, service, chains, activeChain } = useContext(AppContext);
+    const { agent, users, orders, agents, servicesAll, service, chains, activeChain } = useContext(AppContext);
     const [dataArray1, setDataArray1] = useState([]);
     const [dataArray2, setDataArray2] = useState([]);
     const [dataArray3, setDataArray3] = useState([]);
@@ -54,19 +54,20 @@ const Trades = () => {
 
     useEffect(() => {
         console.log(orders);
-        console.log((agents));
+        console.log((agents["agents"]));
         console.log(users);
+        console.log(agent)
         const sortDataArrays = async () => { 
             console.log(orders);
-            const placedOrders = orders.filter(order => order.chain === chains[activeChain].id  && order.state === "PLACED");   
+            const placedOrders = orders.filter(order => order.chain === chains["chains"][activeChain].id  && order.state === "PLACED");   
             console.log(placedOrders);
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
-                let service=servicesAll.filter(srvc=> srvc._id == ordr.service);
-
+                let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
+                console.log(service)
                 ordr.serviceType=service[0].type;
                 ordr.serviceDuration=service[0].duration;
 
-                const providerAgentObject = agents.filter(agent => agent._id === service[0].agent);
+                const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
                 console.log(providerAgentObject[0])
                 ordr.providerName = providerClient[0].name;
@@ -78,7 +79,7 @@ const Trades = () => {
             })   
                 
 
-            let uniqueService = [...new Set(servicesAll.map(item => item.type))];
+            let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices(uniqueService)
 

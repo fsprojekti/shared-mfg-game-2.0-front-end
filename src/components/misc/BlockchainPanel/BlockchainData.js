@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
+import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstrap";
 import PieChart from './PieChart';
 import TransactionsTable from './TransactionTable';
 import AllTransactionsTable from './TransactionTableAll';
@@ -16,13 +16,15 @@ const BlockchainData = () => {
     const [txFee, setTxFee] = useState("0");
     const [loadingStake, setLoadingStake] = useState(false);
     const [loadingUnstake, setLoadingUnstake] = useState(false);
+    const [stakeChain, setStakeChain] = useState(0)
+    const [stakeIndex, setStakeIndex] = useState(0)
 
     const confirmStake = async () => {
         try {
             let numCheck; 
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`], context.transactions, context.agent, context.chains[context.activeChain]);
+                numCheck = await checkNumber(newStake, txFee, context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`], context.transactions, context.agent, context.chains["chains"][stakeChain]);
             })
             .catch(err => {
                 console.log(err);
@@ -44,7 +46,7 @@ const BlockchainData = () => {
                 const data = {
                     amount: newStake,
                     fee: txFee,
-                    chainId: context.chains[context.activeChain].id
+                    chainId: context.chains["chains"][stakeChain].id
                 };
 
                 let response = await context.apiUserStake(data);
@@ -84,7 +86,7 @@ const BlockchainData = () => {
             let numCheck; 
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(newStake, txFee, context.usersBalances[context.activeChain][`${context.chains[context.activeChain].name}`])
+                numCheck = await checkNumber(newStake, txFee, context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`])
             })
             .catch(err => {
                 console.log(err);
@@ -106,7 +108,7 @@ const BlockchainData = () => {
                 const data = {
                     amount: newStake,
                     fee: txFee,
-                    chainId: context.chains[context.activeChain].id
+                    chainId: context.chains["chains"][stakeChain].id
                 };
 
                 let response = await context.apiUserUnstake(data);
@@ -142,11 +144,17 @@ const BlockchainData = () => {
     useEffect(() => {
         const renderStakeData = async () => {
             if(Object.keys(context.usersStakes).length == 0) return;
-            if (context.chains[context.cookies.activeChain].stake == 0 ||  context.chains[context.cookies.activeChain].stake == undefined) {
+            let stakesKeys = [];
+            for(let i = 0; i < Object.keys(context.usersStakes).length; i++) {
+                stakesKeys[i] = Object.keys(context.usersStakes[i])[0];
+            }
+            let stakeIndex =  stakesKeys.indexOf(context.chains["chains"][stakeChain].name);
+            setStakeIndex(stakeIndex);
+
+            if (context.chains["chains"][stakeChain].stake == 0 ||  context.chains["chains"][stakeChain].stake == undefined) {
                 setRelativeStake({stake: 0});
             } else {
-                console.log(((context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`] / context.chains[context.cookies.activeChain].stake) * 100).toFixed(1));
-                let stake = ((context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`] / context.chains[context.cookies.activeChain].stake) * 100).toFixed(1)
+                let stake = ((context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`] / context.chains["chains"][stakeChain].stake) * 100).toFixed(1)
                 setRelativeStake({stake: stake});
             } 
         };
@@ -155,15 +163,14 @@ const BlockchainData = () => {
 
         const createDataArray = async () => { 
             let dataArray = [2];
-            dataArray[0] = {id: "You", label: "user", value: context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`]};
-            dataArray[1] = {id: "Other players", label: "chain", value: (context.chains[context.activeChain].stake - context.usersStakes[context.stakeIndex][`${context.chains[context.activeChain].name}`]) };
-            // console.log("USERS:  " + users);
+            dataArray[0] = {id: "You", label: "user", value: context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]};
+            dataArray[1] = {id: "Other players", label: "chain", value: (context.chains["chains"][stakeChain].stake - context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]) };
             setChartDataArray(dataArray);
             console.log(dataArray);
         };
         createDataArray();
 
-    }, [context.users]);
+    }, [context.usersStakes, context.chains, stakeChain, stakeIndex]);
 
 
     return (
@@ -171,13 +178,40 @@ const BlockchainData = () => {
             <div className="d-flex flex-column" style={{padding: "5px"}}>
                 <div className="d-flex">
                     <TransactionsTable/>
-                    <div className="d-flex flex-column align-items-center justify-content-center" style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", paddingRight: "5px", zIndex: 1}}>
+                    <div className="d-flex flex-column" style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", paddingRight: "5px", zIndex: 1}}>
                     
                         
-                        <div className="d-flex flex-column"  style={{textAlign: "center", paddingTop: "7px"}}>
-                            <h3> Stake on <span style={{color: 'red'}}> {context.chains[context.cookies.activeChain].name} </span> Chain </h3>
-                            <h4>Your stake: {context.usersStakes[context.chains[context.cookies.activeChain].name]} ({relativeStake.stake}%)</h4>         
+                        <div className="d-flex-row d-inline-block" >
+                            <h3 className="d-inline-block"> Stake on 
+
+
+                            {/* {context.chains["chains"][context.cookies.activeChain].name}  */}
+                            <Dropdown className="d-flex-row d-inline-block" style={{margin: "10px"}}>
+                
+                            <Dropdown.Toggle  variant="outline-danger" style={{height: "40px", borderRadius: "8px"}}>
+                                <b>{ context.chains["chains"].length < 1  ? "null" : context.chains["chains"][stakeChain].name  }  </b>
+                            </Dropdown.Toggle>
+                            
+                            <Dropdown.Menu>
+
+                            {
+                                context.chains["chains"].map((item, index) => (
+                                    
+                                    <Dropdown.Item onClick={() =>  setStakeChain(index)} > {context.chains["chains"][index].name} </Dropdown.Item>
+
+                                ))
+                            }
+                            </Dropdown.Menu>
+                            
+                            </Dropdown>
+                            
+                            
+                            
+                            Chain </h3>
+                            
                         </div>
+
+                        <h4>Your stake: {context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]} ({relativeStake.stake}%)</h4>         
 
                         <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "20%"}}>
 

@@ -21,6 +21,8 @@ export const AppContext = React.createContext(null);
 
 export const ContextWrapper = (props) => {
 
+    
+
     //--------------------- STATE VARIABLES ------------------------------------------------------
 
     //Panel navigation state variable
@@ -55,7 +57,7 @@ export const ContextWrapper = (props) => {
     const [usersBalances, setUsersBalances] = useState({});
     
     //User's stake on all chains
-    const [usersStakes, setUsersStakes] = useState({});
+    const [usersStakes, setUsersStakes] = useState([]);
 
 
     //Users
@@ -77,7 +79,7 @@ export const ContextWrapper = (props) => {
     });
 
     //All agents in the game
-    const [agents, setAgents] = useState({})
+    const [agents, setAgents] = useState([])
 
     //User's service
     const [service, setService] = useState({
@@ -97,6 +99,9 @@ export const ContextWrapper = (props) => {
 
     //Chains
     const [chains, setChains] = useState([]);
+
+    //Chains test
+    const [chainsTest, setChainsTest] = useState({});
 
     //Bridges
     const [bridges, setBridges] = useState([]);
@@ -172,43 +177,45 @@ export const ContextWrapper = (props) => {
 
     const updateChainsState = async (chainObj) => {
         // console.log(chainObj);
-        setChains((chains) => {
-            const oldChains = [...chains];
+        if(chains["chains"].length != 0) {
+            setChains((chains) => {
+                const oldChains = chains;
 
-            //Check if chain already exists in the state
-            const index = oldChains.findIndex(c => {
-                return c.id === chainObj.id;
-            });
+                //Check if chain already exists in the state
+                const index = oldChains["chains"].findIndex(c => {
+                    return c.id === chainObj.id;
+                });
 
-            //If chain exists, update its state
-            if(index !== -1) {
-                oldChains[index].balance = chainObj.balance;
-                oldChains[index].stake = chainObj.stake;
+                //If chain exists, update its state
+                if(index !== -1) {
+                    oldChains.chains[index].balance = chainObj.balance;
+                    oldChains.chains[index].stake = chainObj.stake;
 
-                //Check if block number is higher than the one in current state
-                if(chainObj.blockNumber > oldChains[index].blockNumber){
-                    //Checking if this is a first run, to calculate time difference between server and client
-                    if(oldChains[0].timeDiff === undefined) { 
-                        let difference = Date.now() - (new Date(oldChains[index].updatedAt)).getTime() - 10000;
-                        setCookie('timeDiff', difference);  
-                        oldChains[0].timeDiff = difference;
-                        console.log("time difference: " + difference + "ms")
-                    }          
-                    
-                    oldChains[index].blockTimestamp = chainObj.blockTimestamp- oldChains[0].timeDiff
-                    oldChains[index].blockNumber = chainObj.blockNumber; 
+                    //Check if block number is higher than the one in current state
+                    if(chainObj.blockNumber > oldChains.chains[index].blockNumber){
+                        //Checking if this is a first run, to calculate time difference between server and client
+                        if(oldChains.chains[0].timeDiff === undefined) { 
+                            let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
+                            setCookie('timeDiff', difference);  
+                            oldChains.chains[0].timeDiff = difference;
+                            console.log("time difference: " + difference + "ms")
+                        }          
+                        
+                        oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
+                        oldChains.chains[index].blockNumber = chainObj.blockNumber; 
+                    }
+    
+                    // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
+
+                    return oldChains;
+                } else if(index == -1 && chainObj.id !== undefined) {
+                    oldChains.chains.push(chainObj);
+                    return oldChains;
                 }
-   
-                // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
-
-                return oldChains;
-            } else if(index == -1 && chainObj.id !== undefined) {
-                oldChains.push(chainObj);
-                return oldChains;
-            }
-            
-            return chains;         
-        });
+                
+                return chains;         
+            });
+        }
 
     }
 
@@ -252,27 +259,31 @@ export const ContextWrapper = (props) => {
         console.log("SERVICE EVENT")
         console.debug(serviceObj);
         setServicesAll((oldServices) => {
-            const services = [...oldServices];
+            const services = oldServices;
 
-            const index = services.findIndex(c => {
+            const index = services["services"].findIndex(c => {
                 return c._id === serviceObj.id;
             });
 
-            //Have to "manually" update keys, because the obejct from event doesn't have the same structure as the one in the state
+           
             if(index !== -1) {
                 console.debug("Updating service")
-                services[index].state = serviceObj.state;
-                services[index].updatedAt = Date.now();
+                services["services"][index].state = serviceObj.state;
+                services["services"][index].updatedAt = Date.now();
                 return services;
             } else if(index == -1) {
                 console.debug("Pushing service")
-                services.push(serviceObj);
+                let newService = {};
+                newService = serviceObj;
+                newService._id = serviceObj.id;
+                services["services"].push(newService);
                 return services;
             }
             
             return oldServices;         
         });
-        if(serviceObj.agent == agent.id) {
+
+        if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
             setService((oldService) => {
                 let service = oldService;
 
@@ -281,6 +292,7 @@ export const ContextWrapper = (props) => {
                 service.state = serviceObj.state;
                 service.updatedAt = Date.now();
                 service.duration = serviceObj.duration;
+                service.type = agent.type;
                 return service;
             });
         }         
@@ -316,17 +328,23 @@ export const ContextWrapper = (props) => {
         console.log(agents)
         console.log(orders)
         console.log(users)
+        console.log(servicesAll)
         if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
-            setServices((oldServices) => {
+            setServices(async(oldServices) => {
                 console.log("Updating users services state")
-                let service = [...oldServices];
-                let newObj = {};
+                let services = [...oldServices];
                 
-                // const providerAgentObject = agents["agents"].filter(agent => agent._id === transObj[0].to);
-                // console.log(providerAgentObject);
+                let agent= await agents["agents"].filter(agent=> agent.account == transObj[0].to);
+                let service= await servicesAll["services"].filter(srvc=> srvc.agent == agent._id);
+                console.log(service)
+                console.log(agent)
 
-                // newObj._id = transObj[0].id;
-                // return service;
+                let newObj = {};
+                newObj.state = "ACTIVE"
+                newObj.agent = transObj[0].to;
+                newObj.updatedAt = transObj[0].updatedAt;
+                services.push(newObj);
+                return services;
             });
         }
 
@@ -353,8 +371,89 @@ export const ContextWrapper = (props) => {
 
 
     const updateBalancesState = (balanceObj) => {
+        console.debug("BALANCE EVENT")
         console.debug((balanceObj));
-        //Bridge object is returned with whole chain objects
+
+        if(balanceObj.agent == agent.id) {
+            console.log("Updating user balance")
+            const index = chains["chains"].findIndex(c => {
+                return c.id === balanceObj.chain;
+            });
+
+            console.log(index)
+            console.log(chains["chains"][index].name)
+            
+            setUsersBalances((oldBalances) => {
+                let balances = [...oldBalances];
+                console.log(balances)
+                if(balances[index] !== undefined) {
+                    balances[index][chains["chains"][index].name] = balanceObj.amount;
+                    return balances;
+                }
+                else {
+                    setUsersStakes((oldStakes) => {
+                        let stakes = [...oldStakes];
+                        let newStake = {};
+                        newStake[[chains["chains"][index].name]] = 0;
+                        stakes.push(newStake);
+                        return stakes;
+                    });
+                    let newBalance = {};
+                    newBalance[[chains["chains"][index].name]] = balanceObj.amount;
+                    balances.push(newBalance);
+                    return balances;
+                }
+            });
+
+
+        }
+
+    }
+
+    const updateStakesState = (stakeObj) => {
+        console.debug("STAKE EVENT")
+        console.debug((stakeObj));
+
+        if(stakeObj.agent == agent.id) {
+            console.log("Updating user stake")
+            const index = chains["chains"].findIndex(c => {
+                return c.id === stakeObj.chain;
+            });
+
+            console.log(index)
+            console.log(chains["chains"][index].name)
+
+            
+            
+            setUsersStakes((oldStakes) => {
+                let stakes = [...oldStakes];
+
+                let stakesKeys = [];
+            
+                for(let i = 0; i < Object.keys(stakes).length; i++) {
+                    stakesKeys[i] = Object.keys(stakes[i])[0];
+                }
+                console.log(stakesKeys)
+                let stakeIndex =  stakesKeys.indexOf(chains["chains"][index].name);
+                console.log(stakeIndex)
+
+
+                console.log(stakes)
+                if(stakes[stakeIndex] !== undefined) {
+                    stakes[stakeIndex][chains["chains"][index].name] = stakeObj.stake;
+                    console.log("New array:")
+                    console.log(stakes)
+                    return stakes;
+                }
+                else {
+                    let newStake = {};
+                    newStake[[chains["chains"][index].name]] = stakeObj.stake;
+                    stakes.push(newStake);
+                    return stakes;
+                }
+            });
+        }
+
     }
 
 
@@ -1306,7 +1405,9 @@ export const ContextWrapper = (props) => {
             updateRankingState,
             updateBridgesState,
             updateGameState,
-            updateBalancesState
+            updateBalancesState,
+            updateStakesState,
+            chainsTest, setChainsTest,
         }}>
             {props.children}
         </AppContext.Provider>
