@@ -99,7 +99,7 @@ const UserInfo = () => {
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices(uniqueService)
-            const filledOrders = await services.filter(service => service.state === "DONE");
+            const filledOrders = await services["services"].filter(service => service.state === "DONE");
 
 
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);

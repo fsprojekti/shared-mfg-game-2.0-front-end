@@ -2,6 +2,7 @@ import React, {useState, useContext, useCallback} from 'react'
 import axios from "axios";
 import {useCookies} from "react-cookie";
 import config from "../config.json";
+import { GiConsoleController } from 'react-icons/gi';
 axios.defaults.baseURL = config.server;
 
 // /**
@@ -177,7 +178,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateChainsState = async (chainObj) => {
-        // console.log(chainObj);
+        console.debug("CHAIN EVENT")
+        console.debug(chainObj);
         if(chains["chains"].length != 0) {
             setChains((chains) => {
                 const oldChains = chains;
@@ -222,8 +224,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        console.log("ORDER EVENT");
-        console.log(orderObj);
+        console.debug("ORDER EVENT");
+        console.debug(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -257,28 +259,29 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.log("SERVICE EVENT")
+        console.debug("SERVICE EVENT")
         console.debug(serviceObj);
         setServicesAll((oldServices) => {
-            const services = oldServices;
+            const servicesArray = oldServices;
 
-            const index = services["services"].findIndex(c => {
+            const index = servicesArray["services"].findIndex(c => {
                 return c._id === serviceObj.id;
             });
 
            
             if(index !== -1) {
                 console.debug("Updating service")
-                services["services"][index].state = serviceObj.state;
-                services["services"][index].updatedAt = Date.now();
-                return services;
+                console.debug(servicesArray["services"][index])
+                servicesArray["services"][index].state = serviceObj.state;
+                servicesArray["services"][index].updatedAt = Date.now();
+                return servicesArray;
             } else if(index == -1) {
                 console.debug("Pushing service")
                 let newService = {};
                 newService = serviceObj;
                 newService._id = serviceObj.id;
-                services["services"].push(newService);
-                return services;
+                servicesArray["services"].push(newService);
+                return servicesArray;    
             }
             
             return oldServices;         
@@ -296,13 +299,43 @@ export const ContextWrapper = (props) => {
                 service.type = agent.type;
                 return service;
             });
-        }         
+        }        
+
+        console.log(services)
+        // let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
+
+        // if(purchasedService.length > 0) {
+        //     setServices((oldServices) => {
+        //         console.log("Updating users services state in SERVICE EVENT")
+        //         let services = oldServices;
+                
+        //         let serviceIndex = servicesAll["services"].map((service) => service._id).indexOf(purchasedService._id);
+        //         console.log(serviceIndex)
+        //         console.log(servicesAll["services"][serviceIndex])
+        //         // console.log(agent[0]._id)
+
+        //         // let newObj = {};
+        //         // console.log(service.length);
+        //         // if(service.length == 0) {
+        //         //     console.log("No service found")
+        //         //     return services;
+        //         // }
+        //         // newObj = {...service[0]};
+        //         // newObj.state = "ACTIVE";
+        //         // newObj.stateOld = "MARKET";
+        //         // newObj.updatedAt = Date.now();
+        //         // services.push(newObj);
+        //         return services;
+        //     });
+        // }
+        
+        
         
     }
 
     const updateTransactionsState = (transObj) => {
-        console.log("TRANSACTION EVENT");
-        console.log(transObj);
+        console.debug("TRANSACTION EVENT");
+        console.debug(transObj);
           setTransactions((oldTrans) => {
             const transactions = [...oldTrans];
 
@@ -326,25 +359,35 @@ export const ContextWrapper = (props) => {
             
             return oldTrans;         
         });
-        console.log(agents)
-        console.log(orders)
-        console.log(users)
-        console.log(servicesAll)
+
+
         if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
-            setServices(async(oldServices) => {
+            setServices((oldServices) => {
                 console.log("Updating users services state")
-                let services = [...oldServices];
+                let services = oldServices;
                 
-                let agent= await agents["agents"].filter(agent=> agent.account == transObj[0].to);
-                let service= await servicesAll["services"].filter(srvc=> srvc.agent == agent.account);
+                let agent= agents["agents"].filter(agent=> agent.account == transObj[0].to );
+                let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld === "IDLE");
                 console.log(service)
-                console.log(agent)
+                console.log(agent[0]._id)
 
                 let newObj = {};
-                newObj.state = "ACTIVE"
-                newObj.agent = transObj[0].to;
-                newObj.updatedAt = transObj[0].updatedAt;
-                services.push(newObj);
+                console.log(service.length);
+                if(service.length == 0 || services["services"][services["services"].length - 1]._id == service[0]._id) {
+                    console.log("No service found")
+                    return services;
+                }
+
+                 
+
+                newObj = {...service[0]};
+                newObj.state = "ACTIVE";
+                newObj.stateOld = "MARKET";
+                console.log(Date.now())
+                let time = new Date();
+                newObj.updatedAt = time.toISOString();
+                console.log(time.toISOString());
+                services["services"].push(newObj);
                 return services;
             });
         }
@@ -352,7 +395,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateRankingState = (rankingObj) => {
-            console.log(rankingObj);
+            console.debug("RANKIN EVENT")
+            console.debug(rankingObj);
             setRanking((oldRanking) => {
                 let ranking = [...oldRanking];
                 ranking = rankingObj;
@@ -361,6 +405,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateBridgesState = (bridgeObj) => {
+        console.debug("BRIDGE EVENT")
         console.log((bridgeObj));
         //Bridge object is returned with whole chain objects
         setBridges((oldBridges) => {

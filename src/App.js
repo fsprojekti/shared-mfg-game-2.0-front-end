@@ -115,7 +115,11 @@ function App() {
         //Load user's purchased and active services
         const userServices = context.apiUserFetchServices().then(services => {
             console.log(services)
-            context.setServices(services["services"]);
+
+            let contextServices = context.services;
+            contextServices.services = services["services"];
+            
+            context.setServices({ ...contextServices })
         }).catch(e => console.log(e));
 
         //Load users balances on different chains

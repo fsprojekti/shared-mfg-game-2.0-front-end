@@ -7,7 +7,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
     const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent, agents } = useContext(AppContext);
     const setTradeModal = (data) => {
 
-        const modalService = services.filter(service => service._id  == data.service && service.state == "MARKET");
+        const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
         console.log(data)
 
         if (modalService.length == 0 && data.service != service._id && data.serviceType != service.type) {

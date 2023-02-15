@@ -4,7 +4,7 @@ import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstra
 import {motion} from 'framer-motion'
 
 const CreateOrderModal = () => {
-    const { transactions, user, isTradeModalUserOpen, usersBalances, agent, isCreateOrderModalOpen, setIsCreateOrderModalOpen, apiUserBidOrder, users, service, chains, cookies, agents, note, setNote} = useContext(AppContext);
+    const { transactions, users, isTradeModalUserOpen, usersBalances, servicesAll, isCreateOrderModalOpen, setIsCreateOrderModalOpen, service, chains, cookies, agents, note, setNote} = useContext(AppContext);
     const [txFee, setTxFee] = useState("0");
     const [tableDataArray, setTableDataArray] = useState([]);
     const [provider, setProvider] = useState('');
@@ -86,10 +86,11 @@ const CreateOrderModal = () => {
                                     console.log(context.orders)
                                     let userOrder;
                                     const placedOrders = context.orders.filter(order => order.chain === context.chains["chains"][chain].id  && order.state === "PLACED")
+                                    console.log(servicesAll["services"]);
                                     const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
-                                        let service=context.servicesAll.filter(srvc=> srvc._id == ordr.service);
-                                        const providerAgentObject = context.agents.filter(agent => agent._id === service[0].agent);
-                                        const providerClient = context.users["users"].filter(user => user.id === providerAgentObject[0].user);
+                                        let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
+                                        const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
+                                        const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
 
                                         if (providerClient[0].id == context.user.id) {
                                             // console.log("Im in")
@@ -111,7 +112,7 @@ const CreateOrderModal = () => {
             }
         } catch(err) {
             console.log(err)
-                context.setNote((prevState) => {
+                setNote((prevState) => {
                     return({
                       ...prevState,
                       msg: err.response.data.message,

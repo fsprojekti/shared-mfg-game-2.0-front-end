@@ -32,16 +32,6 @@ const Stats = () => {
     };
 
 
-    //TODO: To popravi/odstrani:
-    function millisToMinutesAndSeconds(millis) {
-        let d = new Date(1000*Math.round(millis/1000));
-        if (d.getUTCMinutes() === 0) {
-            return ( d.getUTCSeconds() + 's' );
-        } else {
-            return ( d.getUTCMinutes() + 'min ' + d.getUTCSeconds() + 's' );
-        }
-    }
-
     useEffect(() => {
         
 
@@ -59,8 +49,8 @@ const Stats = () => {
 
         
         const renderServiceData = async () => {
-
-            const activeServices = await services.filter(service => service.state === "ACTIVE");            
+            console.log(services)
+            const activeServices = await services["services"].filter(service => service.state === "ACTIVE");            
             console.log(activeServices)
             const userServices = await Promise.all(activeServices.map(async (item) => {
 
@@ -96,7 +86,7 @@ const Stats = () => {
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices({service1: uniqueService[0], service2: uniqueService[1]});
-            const filledOrders = await services.filter(service => service.state === "DONE");
+            const filledOrders = await services["services"].filter(service => service.state === "DONE");
 
 
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
