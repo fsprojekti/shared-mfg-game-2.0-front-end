@@ -67,11 +67,11 @@ const PanelSide = () => {
                                 <FaConnectdevelop/>
                             </div>
                             <div>
-                                <h6 className={"mb-0 p-1"}>Chains</h6>
+                                <h6 className={"mb-0 p-1"}>Chains & Bridges</h6>
                             </div>
                         </div>
                     </ListGroup.Item>
-                    <ListGroup.Item tag='button' action={true}  type='button' onClick={() => context.setActive("bridge")} className={classNames({active: context.active === "bridge"})}>
+                    {/* <ListGroup.Item tag='button' action={true}  type='button' onClick={() => context.setActive("bridge")} className={classNames({active: context.active === "bridge"})}>
                         <div className={"d-flex w-100 justify-content-center align-items-center"}>
                             <div className={"p-1"}>
                                 <GiStoneBridge/>
@@ -80,8 +80,8 @@ const PanelSide = () => {
                                 <h6 className={"mb-0 p-1"}>Bridge</h6>
                             </div>
                         </div>
-                    </ListGroup.Item>
-                    <ListGroup.Item tag='button' action={true}  type='button' onClick={() => context.setActive("attack")} className={classNames({active: context.active === "attack"})}>
+                    </ListGroup.Item> */}
+                    {/* <ListGroup.Item tag='button' action={true}  type='button' onClick={() => context.setActive("attack")} className={classNames({active: context.active === "attack"})}>
                         <div className={"d-flex w-100 justify-content-center align-items-center"}>
                             <div className={"p-1"}>
                                 <GiTakeMyMoney/>
@@ -90,7 +90,7 @@ const PanelSide = () => {
                                 <h6 className={"mb-0 p-1"}>Attack</h6>
                             </div>
                         </div>
-                    </ListGroup.Item>
+                    </ListGroup.Item> */}
                     <ListGroup.Item tag='button' action={true}  type='button' onClick={() => context.setActive("ranking")} className={classNames({active: context.active === "ranking"})} >
                         <div className={"d-flex w-100 justify-content-center align-items-center"}>
                             <div className={"p-1"}>

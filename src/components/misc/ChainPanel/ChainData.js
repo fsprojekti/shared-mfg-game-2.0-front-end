@@ -1,8 +1,9 @@
 import React, {useContext} from 'react';
 import {AppContext} from "../../../context/context";
 
+
 const ChainData = () => {
-    const { chains, cookies, setCookie, setUser, apiUserFetch, updateActiveChain, user, setUsersBalances, userBalances, apiUserFetchBalance, game} = useContext(AppContext);
+    const { chains, cookies, setCookie, updateActiveChain} = useContext(AppContext);
 
 
     async function changeChain(chainId){
@@ -15,10 +16,9 @@ const ChainData = () => {
 
     return (
         <>
-            <div className="d-flex justify-content-space-evenly flex-column" style={{boxShadow: "var(--light-shadow)", borderRadius: "8px", width:"100%", margin: "5x"}}>
+            <div className="d-flex justify-content-space-evenly flex-column" style={{boxShadow: "var(--light-shadow)", margin: "5px"}}>
                 <div>
-                    <h2>Chains</h2>
-                    <div style={{height: "auto", overflow: "auto"}}>
+                    <div style={{height: "auto", overflow: "auto", border: '1px solid rgb(211, 211, 211)', borderRadius: "8px 8px 8px 8px"}}>
                         <table className="table-all-rankings">
                             <thead>
                             <tr>

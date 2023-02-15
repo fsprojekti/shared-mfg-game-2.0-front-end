@@ -12,7 +12,6 @@ import CreateOrderModal from "./CreateOrderModal";
 import MiningBar from "../BlockchainPanel/MiningBar";
 
 import {useState, useContext, useEffect, useReducer} from "react";
-import context from "react-bootstrap/esm/AccordionContext";
 
 
 
@@ -20,7 +19,7 @@ import context from "react-bootstrap/esm/AccordionContext";
 
 const UserInfo = () => {
 
-    const { chains, setCookie, updateActiveChain, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex} = useContext(AppContext);
+    const { chains, setCookie, updateActiveChain, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen} = useContext(AppContext);
 
     const [relativeStake, setRelativeStake] = useState(0);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
@@ -34,11 +33,11 @@ const UserInfo = () => {
     const serviceState = (service) => {
         switch(service.state) {
             case "IDLE":
-                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={openCreateOrderModal}>Set Price</Button>;
+                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button>;
             case "DONE":
-                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={openCreateOrderModal}>Set Price</Button>;
+                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button>;
             case "MARKET": 
-                return <Button class="btn btn-info btn" onClick={openUpdateOrderModal}><b>UPDATE PRICE</b></Button>;
+                return <Button class="btn btn-info btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>;
             case "ACTIVE": 
                 switch(service.type) {
                     case "PROGRAMMING":
@@ -168,7 +167,7 @@ const UserInfo = () => {
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>
                     <h4>{Object.keys(usersBalances).length !== 0  ?  usersBalances[activeChain][`${chains["chains"][activeChain].name}`] : 0}</h4>
-                    {/* {console.log(user.balance)} */}
+
                 </div>  
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaChartPie style={{color: "#ffba72", fontSize: "22px"}}/>
@@ -208,6 +207,8 @@ const UserInfo = () => {
         </div>
         </IconContext.Provider>
 
+        
+
         </div>
         
 
@@ -215,3 +216,5 @@ const UserInfo = () => {
 }
 
 export default UserInfo;
+
+

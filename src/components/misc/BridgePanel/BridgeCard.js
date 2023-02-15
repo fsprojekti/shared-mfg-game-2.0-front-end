@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Button, Card, Dropdown,Form, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
+import {IconContext} from "react-icons";
+import {GiStoneBridge} from "react-icons/gi";
 import { AppContext } from '../../../context/context';
 
 
@@ -132,12 +134,14 @@ const BridgeCard = () => {
 
     return (
         <>
-        <div className='d-flex' style={{paddingTop: "10%", justifyContent: "center"}}>
-            <Card style={{backgroundColor: "transparent", borderRadius: "8px", boxShadow: "var(--light-shadow)"}}>
+        <div className='d-flex' style={{justifyContent: "center", alignItems: "center", padding: "5px"}}>
+            <Card className='d-flex' style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", height: "24rem", backgroundColor: "(255, 255, 255, 0.8)" }}>
             { chains["chains"].length > 1 ? (
                 <Card.Body>
                 <Card.Title> 
-                <Dropdown style={{margin: "10px"}}>
+                <h3> <GiStoneBridge/>  {bridges[0].name} <GiStoneBridge/> </h3>
+
+                {/* <Dropdown style={{margin: "10px"}}>
 
                     <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" style={{borderRadius: "8px"}}>
                         <b> {bridges[bridge].name}  </b> 
@@ -151,7 +155,7 @@ const BridgeCard = () => {
                     }
                     </Dropdown.Menu>
                             
-                </Dropdown>
+                </Dropdown> */}
  
                 </Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">

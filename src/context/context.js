@@ -132,6 +132,7 @@ export const ContextWrapper = (props) => {
     const [modalContent, setModalContent] = useState('');
     const [confirmModalContent, setConfirmModalContent] = useState('');
     const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+    const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState({open: false, mode: "set"});
     const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false);
     
     const [tradeModalContent, setTradeModalContent] = useState({})
@@ -335,7 +336,7 @@ export const ContextWrapper = (props) => {
                 let services = [...oldServices];
                 
                 let agent= await agents["agents"].filter(agent=> agent.account == transObj[0].to);
-                let service= await servicesAll["services"].filter(srvc=> srvc.agent == agent._id);
+                let service= await servicesAll["services"].filter(srvc=> srvc.agent == agent.account);
                 console.log(service)
                 console.log(agent)
 
@@ -1408,6 +1409,7 @@ export const ContextWrapper = (props) => {
             updateBalancesState,
             updateStakesState,
             chainsTest, setChainsTest,
+            isCreateOrderModalOpen, setIsCreateOrderModalOpen,
         }}>
             {props.children}
         </AppContext.Provider>

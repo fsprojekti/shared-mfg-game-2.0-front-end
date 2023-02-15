@@ -3,6 +3,7 @@ import {Button, Card, Spinner, OverlayTrigger, Tooltip, Row, Container, Col, Dro
 import { AppContext } from '../../../context/context';
 import AttacksTable from './AttacksTable';
 import CancelVoteModal from './CancelVoteModal';
+import {GiTakeMyMoney} from "react-icons/gi";
 
 
 const AttackCard = () => {
@@ -98,12 +99,13 @@ const AttackCard = () => {
 
     return (
         <>
-            <div className="d-flex justify-content-between flex-wrap    "> 
-                <Container>
+            <div className="d-flex "> 
+                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", margin: "5px", border: '1px solid rgb(211, 211, 211)'}}>
+               
                 <Row >
                 <Col>
-                    <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}> <Card.Body>
-                            
+                    
+                    <h3> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
                             <Card.Body>
@@ -115,7 +117,7 @@ const AttackCard = () => {
                                 
                                 <Card.Text>
 
-                                <Dropdown  className='d-flex' style={{justifyContent: "center", width: "auto", wordBreak: "break-all"}}>
+                                {/* <Dropdown  className='d-flex' style={{justifyContent: "center", width: "auto", wordBreak: "break-all"}}>
                             
                                 <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" >
                                  <b>{context.bridges[bridge].name} </b> 
@@ -132,7 +134,7 @@ const AttackCard = () => {
                                 }
                                 </Dropdown.Menu>
                                 
-                                </Dropdown>
+                                </Dropdown> */}
                                 
                                 
                                 </Card.Text>
@@ -150,10 +152,7 @@ const AttackCard = () => {
                                 </Card.Body>
                             )}
 
-                        
-                        </Card>
-
-                        <Button variant="danger" style={{borderRadius: "8px"}} onClick={voteStealBridge}> 
+                            <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center"}} onClick={voteStealBridge} > 
                             {loading === "steal" ? (
                                 <div>
                                     <Spinner
@@ -169,13 +168,15 @@ const AttackCard = () => {
                             
                             }   
                             
-                        </Button>
-                        </Card.Body>
+                            </Button>    
+
                         
-                    </Card>            
+                        </Card>
+
+                             
                        
                     </Col>
-                    <Col>
+                    {/* <Col>
                     <Card className='p-2 align-self-center' style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh" }}>
                             <Card.Body>
                             <Card className='d-flex flex-column' style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
@@ -234,7 +235,7 @@ const AttackCard = () => {
                         </Card.Body>
                         
                     </Card>
-                    </Col>
+                    </Col> */}
             </Row>
             <Row>
                 <Col>
@@ -247,7 +248,7 @@ const AttackCard = () => {
                                 >
                                 <Button variant="outline-secondary" size="sm" className='d-flex justify-content-start' style={{margin: "5px", position: "absolute", fontWeight: "bold"}}>i</Button>
                                 </OverlayTrigger>
-                            <h3 style={{textAlign: "center", width:"100%"}} >Attack status</h3> 
+                            <h3 style={{textAlign: "center", width:"100%"}} >Status</h3> 
                         </div>    
                             <AttacksTable />
                             {context.stealVotes.length > 0 ? (<CancelVoteModal />): (null)}

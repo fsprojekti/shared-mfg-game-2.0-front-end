@@ -1,9 +1,15 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, FormControl, Button} from "react-bootstrap";
-import Collapse from 'react-bootstrap/Collapse';
+import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstrap";
+import {motion} from 'framer-motion'
 
-const CreateOrderModal = (props) => {
+const CreateOrderModal = () => {
+    const { transactions, user, isTradeModalUserOpen, usersBalances, agent, isCreateOrderModalOpen, setIsCreateOrderModalOpen, apiUserBidOrder, users, service, chains, cookies, agents, note, setNote} = useContext(AppContext);
+    const [txFee, setTxFee] = useState("0");
+    const [tableDataArray, setTableDataArray] = useState([]);
+    const [provider, setProvider] = useState('');
+    const [chain, setChain]  = useState(0);
+
     const context = useContext(AppContext);
     const [price, setPrice] = useState("0");
 
@@ -72,21 +78,21 @@ const CreateOrderModal = (props) => {
                             } else {
 
                                 console.log("ORDER")
-                                console.log(props)
-                                if(props.mode == "SET") {
+
+                                if(isCreateOrderModalOpen.mode == "set") {
                                     console.log("SET")
-                                    await context.apiUserCreateOrder(price, context.chains["chains"][context.activeChain].id);
+                                    await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
                                 } else { 
                                     console.log(context.orders)
                                     let userOrder;
-                                    const placedOrders = context.orders.filter(order => order.chain === context.chains["chains"][context.activeChain].id  && order.state === "PLACED")
+                                    const placedOrders = context.orders.filter(order => order.chain === context.chains["chains"][chain].id  && order.state === "PLACED")
                                     const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                                         let service=context.servicesAll.filter(srvc=> srvc._id == ordr.service);
                                         const providerAgentObject = context.agents.filter(agent => agent._id === service[0].agent);
                                         const providerClient = context.users["users"].filter(user => user.id === providerAgentObject[0].user);
 
                                         if (providerClient[0].id == context.user.id) {
-                                            console.log("Im in")
+                                            // console.log("Im in")
                                             userOrder = ordr;
                                         }
                                         return ordr;
@@ -95,8 +101,9 @@ const CreateOrderModal = (props) => {
                                     console.log(userOrder)
                                     await context.apiUserUpdateOrder(price, userOrder._id);
                                 }
-                                props.reportHide();
                                 setPrice("0");
+                                setIsCreateOrderModalOpen({open: false})
+
                             }
                         }
                     }
@@ -126,27 +133,70 @@ const CreateOrderModal = (props) => {
         }
     };
 
+
     return (
+        <div style={{alignItems: "center", justifyContent: "center"}}>
+            {isCreateOrderModalOpen.open == true ? (
 
-        
-        <div className="d-flex flex-column" >
                 
-                <Collapse in={props.show == true}>
 
-                <div >       
+            <div
+            className={`${'modal-confirm-overlay show-modal-confirm'}`} >
+            <motion.div 
+              className="box"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                    duration: 0.2,
+                    type: "spring",
+                    bounce: 0.5,
+                    ease: [0, 0.71, 0.2, 1.01]
+                }}
+            >
+            <div className='modal-confirm-container'>
+            <div className="d-flex flex-column" >
+                
+
+                <div style={{padding: "1rem", justifyContent : "center", alignItemes: "center"}}>       
                 
                     <div>   
-                        <h4 className="d-flex flex-column" style={{backgroundColor: "rgba(251, 191, 12)", textAlign: "center", marginBottom: "2px", borderTopLeftRadius: "5px", borderTopRightRadius: "5px"}}>  { context.chains["chains"].length < 1  ? "null" : context.chains["chains"][context.activeChain].name  }  </h4> 
+                        <h4 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} price for your Service </h4> 
                     </div>
 
+                    {isCreateOrderModalOpen.mode == "set" ? (
+                    <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
+                  
+                        <InputGroup style={{marginTop: "5%"}}>
+                        
+                            <InputGroup.Text >CHAIN</InputGroup.Text>
+                            <Dropdown >
+                            <Dropdown.Toggle variant="outline-secondary"  >
+                                <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
+                            </Dropdown.Toggle>
                 
-                    <div style={{text: "blue", marginTop: "1%"}}>
-                        <h4>{props.mode == "SET" ? "NEW PRICE" : "UPDATE PRICE"}</h4>
+                            <Dropdown.Menu>
+
+                            {
+                                chains["chains"].map((item, index) => (
+                                    
+                                    <Dropdown.Item onClick={(item) => (setChain(index))} > {chains["chains"][index].name} </Dropdown.Item>
+
+                                ))
+                            }
+                            </Dropdown.Menu>
+                            
+                            </Dropdown>
+                        </InputGroup>
                     </div>
+                    ):(null)
+                    }
+
+                        
+                 
 
                   <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
                   
-                        <InputGroup style={{marginTop: "5%"}}>
+                        <InputGroup style={{marginTop: "5%", width: "15rem"}}>
                             <InputGroup.Text >NEW PRICE</InputGroup.Text>
                             <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
                         </InputGroup>
@@ -154,29 +204,35 @@ const CreateOrderModal = (props) => {
                         
                   </div>
                     
-                    <div >  
-                        <Button class="btn btn-success active" style={{padding: "0.375rem 0.75rem", margin: "1rem"}} onClick={confirm}>Confirm</Button>
-
-                        <Button class="btn btn-danger active" style={{padding: "0.375rem 0.75rem", margin: "1rem"}} onClick={() => {
-                            props.reportHide();
-                            context.setNote({...(context.note.show = false)});
-                            setPrice(0);
-                            document.getElementById("priceInput").value= "";
-                        }}>
-                            Cancel
-                        </Button>
-
-                        
-                    </div>
+                  <div className='d-flex'>
+                    <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                    <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                        setIsCreateOrderModalOpen({open: false})
+                        setNote({...(note.show = false)});
+                        setTxFee();
+                    }}>
+                    Cancel
+                    </Button>
+                    
+                </div>
                     
 
                     
                 
                 </div>
-                </Collapse>
             
         </div>
+                
+            </div>
+            </motion.div>
+        </div>
+
+            ): (
+                <div></div>
+            )}
+        </div>
+        
     )
 };
 
-export default CreateOrderModal;
+export default CreateOrderModal

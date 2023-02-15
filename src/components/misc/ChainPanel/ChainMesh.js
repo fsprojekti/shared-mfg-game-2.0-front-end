@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useContext } from 'react';
 import { AppContext } from '../../../context/context';
 import { Network } from "vis-network";
 import { DataSet } from 'vis-data'
+import ChainData from './ChainData';
 import 'vis/dist/vis-network.min.css';
 
 
@@ -48,7 +49,9 @@ const ChainMesh = () => {
             arrows: "middle"
           },
           nodes: {
-            shape: 'dot' //box, database, square, circle, ellipse...
+            shape: 'dot', //box, database, square, circle, ellipse...
+            physics:true,
+
         },
           
 				}
@@ -107,7 +110,15 @@ const ChainMesh = () => {
       
       network.on("blurEdge", function (params) {
         network.canvas.body.container.style.cursor = 'default';
-      });   
+      });  
+      
+      // network.on('afterDrawing', function(){
+      // 	let data = new DataSet (chains.chains.map((item, index) => {
+      //     let currentChain = parseInt(activeChain);
+      //     return { id: item.id, x:100*index, y:0};
+      //   }));
+      //   nodes.update(data);
+      // })
 
 
       
@@ -121,7 +132,12 @@ const ChainMesh = () => {
 	
 	}, [chains.chains.length, activeChain, bridges.length]);
 
-	return <div className="chain-network" ref={visJsRef} />;
+	return (
+    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", border: '1px solid rgb(	211, 211, 211)', margin: "5px", width: "100%"}}>
+      <div style={{maxHeight: "16rem", height: "100rem", width: "100%"}} ref={visJsRef} />
+      <ChainData />
+    </div>
+)
 };
 
 export default ChainMesh
