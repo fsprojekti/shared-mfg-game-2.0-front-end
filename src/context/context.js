@@ -235,7 +235,7 @@ export const ContextWrapper = (props) => {
 
             if(index !== -1) {
                 console.log("updating existing")
-                console.log(orders[index]);
+                console.log(orders[index]); 
                 orders[index].state = orderObj.state;
                 orders[index].price = orderObj.price;
                 return orders;
@@ -302,32 +302,26 @@ export const ContextWrapper = (props) => {
         }        
 
         console.log(services)
-        // let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
+        let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
 
-        // if(purchasedService.length > 0) {
-        //     setServices((oldServices) => {
-        //         console.log("Updating users services state in SERVICE EVENT")
-        //         let services = oldServices;
+        if(purchasedService.length > 0) {
+            setServices((oldServices) => {
+                console.log("Updating users services state in SERVICE EVENT")
+                let services = oldServices;
                 
-        //         let serviceIndex = servicesAll["services"].map((service) => service._id).indexOf(purchasedService._id);
-        //         console.log(serviceIndex)
-        //         console.log(servicesAll["services"][serviceIndex])
-        //         // console.log(agent[0]._id)
+                let serviceIndex = services["services"].findIndex((s) => s._id === serviceObj.id);
 
-        //         // let newObj = {};
-        //         // console.log(service.length);
-        //         // if(service.length == 0) {
-        //         //     console.log("No service found")
-        //         //     return services;
-        //         // }
-        //         // newObj = {...service[0]};
-        //         // newObj.state = "ACTIVE";
-        //         // newObj.stateOld = "MARKET";
-        //         // newObj.updatedAt = Date.now();
-        //         // services.push(newObj);
-        //         return services;
-        //     });
-        // }
+                if(serviceIndex == -1) {
+                    console.log("No service found")
+                    return services;
+                }
+
+                services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
+                services["services"][serviceIndex].state = serviceObj.state;
+
+                return services;
+            });
+        }
         
         
         
@@ -373,12 +367,10 @@ export const ContextWrapper = (props) => {
 
                 let newObj = {};
                 console.log(service.length);
-                if(service.length == 0 || services["services"][services["services"].length - 1]._id == service[0]._id) {
-                    console.log("No service found")
+                if(service == undefined ||service.length == 0 || services["services"][services["services"].length - 1]._id == service[0]._id) {
+                    console.log("No new service")
                     return services;
-                }
-
-                 
+                }             
 
                 newObj = {...service[0]};
                 newObj.state = "ACTIVE";

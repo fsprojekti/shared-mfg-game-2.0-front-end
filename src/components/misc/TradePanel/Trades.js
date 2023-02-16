@@ -59,13 +59,16 @@ const Trades = () => {
         console.log(agent)
         const sortDataArrays = async () => { 
             console.log(orders);
-            const placedOrders = orders.filter(order => order.chain === chains["chains"][activeChain].id  && order.state === "PLACED");   
+            const placedOrders = orders.filter(order => order.state === "PLACED");   
             console.log(placedOrders);
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
                 console.log(service)
                 ordr.serviceType=service[0].type;
                 ordr.serviceDuration=service[0].duration;
+
+                let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
+                console.debug(chain)
 
                 const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
@@ -74,6 +77,7 @@ const Trades = () => {
                 ordr.agentId = providerAgentObject[0]._id;
                 ordr.agentAccount = providerAgentObject[0].account;
                 ordr.providerId = providerClient[0].id;
+                ordr.chainName = chain[0].name;
 
                 return ordr
             })   
@@ -179,7 +183,7 @@ const Trades = () => {
         };
         sortDataArrays(); 
 
-    }, [orders, checked1, checked2, checked3]);
+    }, [orders, checked1, checked2, checked3, activeChain]);
 
     return (
         <>

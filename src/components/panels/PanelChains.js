@@ -16,10 +16,10 @@ const PanelChains = () => {
             <div className="d-flex flex-column">
             <Row>
             <Col className='d-flex'>
-                {/* <div className="d-flex flex-column" style={{zIndex: 2, position: "absolute", borderRadius: "8px", margin: "15px", textAlign: "center", alignSelf: "end"}}>  */}
+                <div className="d-flex flex-column" style={{zIndex: 2, position: "absolute", borderRadius: "8px", margin: "15px", textAlign: "center", alignSelf: "end"}}> 
                     {/* <CreateSideChain /> */}
                     {/* <ChainData /> */}
-                {/* </div>  */}
+                </div> 
                         <ChainMesh />
                         {/* <Row>
                             <ChainData />

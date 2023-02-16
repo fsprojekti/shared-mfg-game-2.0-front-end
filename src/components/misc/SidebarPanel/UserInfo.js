@@ -105,13 +105,23 @@ const UserInfo = () => {
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
 
-            setNumOfService1(numOfFirst.length);
-            setNumOfService2(numOfSecond.length);
+            if(numOfFirst.length > 0 && numOfSecond.length > 0) {
+                if(numOfFirst.length < numOfSecond.length || numOfFirst.length === numOfSecond.length) {
+                    setNumOfService1(numOfSecond.length - numOfFirst.length);
+                    setNumOfService2(numOfFirst.length - numOfFirst.length);
+                } else {
+                    setNumOfService1(numOfFirst.length - numOfSecond.length);
+                    setNumOfService2(numOfSecond.length - numOfSecond.length);
+                }
+            } else {
+                setNumOfService1(numOfFirst.length);
+                setNumOfService2( numOfSecond.length);
+            }
 
         };
         getOtherServiceTypes();
 
-    }, [user, chains, activeChain]);
+    }, [user, chains, activeChain, services["services"]]);
 
     return (
 
@@ -162,7 +172,7 @@ const UserInfo = () => {
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
                                 
                 
-                <MiningBar showText="false" version="-side" />  
+                <MiningBar showText="true" version="-side" />  
 
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>

@@ -92,15 +92,18 @@ const Stats = () => {
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
 
-            setNumOfService1({num: numOfFirst.length});
-            setNumOfService2({num: numOfSecond.length});
+            let sum = numOfFirst.length + numOfSecond.length;
+            let upgrades = Math.floor(sum / 2); 
+
+            setNumOfService1({num: numOfFirst.length - upgrades});
+            setNumOfService2({num: numOfSecond.length - upgrades});
 
         };
         getOtherServiceTypes();
         
 
 
-    }, [services, activeChain, user, servicesAll["services"], usersStakes, stakeIndex]);
+    }, [services["services"], activeChain, user, servicesAll["services"], usersStakes, stakeIndex]);
 
     return (
         <>
@@ -153,7 +156,7 @@ const Stats = () => {
                     </div>
                     <div className="upgrade-container">
                         <div className="upgrade-container-formula">
-                            <p>{`${otherServices.service1}`} + {`${otherServices.service2}`} = &#8681; {agent.timeForService - agent.timeForServiceNext} s</p>
+                            <p>{`${otherServices.service1}`} + {`${otherServices.service2}`} = &#8681; {(agent.timeForService - agent.timeForServiceNext).toFixed(2)} s</p>
                         </div>
                     </div>
                 </div>

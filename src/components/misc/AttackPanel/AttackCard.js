@@ -237,8 +237,8 @@ const AttackCard = () => {
                     </Card>
                     </Col> */}
             </Row>
-            <Row>
-                <Col>
+            {/* <Row> */}
+                {/* <Col>
                     <div className='' style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", textAlign: "center"}}>
                         <div className='d-flex'>
                             <OverlayTrigger
@@ -247,15 +247,15 @@ const AttackCard = () => {
                                 overlay={renderTooltip}
                                 >
                                 <Button variant="outline-secondary" size="sm" className='d-flex justify-content-start' style={{margin: "5px", position: "absolute", fontWeight: "bold"}}>i</Button>
-                                </OverlayTrigger>
-                            <h3 style={{textAlign: "center", width:"100%"}} >Status</h3> 
-                        </div>    
-                            <AttacksTable />
+                                </OverlayTrigger> */}
+                            {/* <h3 style={{textAlign: "center", width:"100%"}} >Status</h3>  */}
+                        {/* </div>     */}
+                            {/* <AttacksTable /> */}
                             {context.stealVotes.length > 0 ? (<CancelVoteModal />): (null)}
 
-                    </div>
-                </Col>
-            </Row>
+                    {/* </div>
+                </Col> */}
+            {/* </Row> */}
             </Container>
             </div>
         </>

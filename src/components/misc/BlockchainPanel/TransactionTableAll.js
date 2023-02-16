@@ -7,12 +7,14 @@ const AllTransactionsTable = () => {
     const [tableDataArray, setTableDataArray] = useState([]);
     const [sortBy, setSortBy] = useState('time');
     const [orderOfSort, setOrderOfSort] = useState('ascending');
-    const [checkBoxes, setCheckBoxes] = useState([{type: "MECHANICAL", isChecked: false}, {type: "ELECTRICAL", isChecked: false}, {type: "PROGRAMMING", isChecked: false}, {type: "STAKE", isChecked: false}, {type: "UNSTAKE", isChecked: false}]);
+    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Unstake", isChecked: false},{type: "Bridge", isChecked: false}]);
+    const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
     const displayTime = async (time) => {
         const createdMillis = await new Date(time);
         return createdMillis.toLocaleTimeString('it-IT');
     };
+
 
     const sortDataArray = async (dataArray) => {
         if (sortBy === 'time') {
@@ -80,41 +82,80 @@ const AllTransactionsTable = () => {
         setCheckBoxes(newArray);
     };
 
-    const filterDataArray = async (dataArray) => {
-        const checkedBoxes = await checkBoxes.filter(item => item.isChecked);
-        const selectedTypes = await checkedBoxes.map(item => item.type);
+    const selectOneChain = async (e) => {
+        console.debug(e)
+        let itemName = e.target.name;
+        let checked = e.target.checked;
+
+        let newArray = chainCheckBoxes.map(item =>
+            item.chain.name === itemName ? { ...item, isChecked: checked } : item
+        );
+
+        let index = newArray.find((c) => c.isChecked == true);
+        console.log(index)
+        if(index == -1) {
+            newArray = chainCheckBoxes.map((item) =>
+
+                {return { ...item, isChecked: true }}
+            );
+        }
+
+        console.log(newArray);
+
+        setChainCheckBoxes(newArray);
+    };
+
+    const filterDataArrayByType = (dataArray) => {
+        const checkedBoxes = checkBoxes.filter(item => item.isChecked);
+        const selectedTypes = checkedBoxes.map(item => item.type.toUpperCase());
         if (!Array.isArray(selectedTypes) || !selectedTypes.length) {
             return dataArray;
         }
-        return dataArray.filter(data => selectedTypes.includes(data.typeOfService));
+
+        return dataArray.filter(data => selectedTypes.includes(data.type));
+    };
+
+    const filterDataArrayByChain = (dataArray) => {
+
+        const checkedChains = chainCheckBoxes.filter(item => item.isChecked);
+        console.log(checkedChains)
+        const selectedChains = checkedChains.map(item => item.chain.id);
+        if (!Array.isArray(selectedChains) || !selectedChains.length) {
+            return dataArray;
+        }
+
+        return dataArray.filter(data => selectedChains.includes(data.chain));
     };
 
     useEffect(() => {
         const renderTableData = async () => {
             console.log(transactions);
-            const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED" && transaction.chain == chains["chains"][activeChain].id);
-            console.log(minedTransactions);
+            const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED");
+            // console.log(minedTransactions);
 
             const transactionsArray = await Promise.all(minedTransactions.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
 
-                const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
+                let consumerAgent = await agents["agents"].filter(agent => agent.account === from);
 
+                const chainIndex = await chains["chains"].findIndex((c) => c.id == transaction.chain);
+                
                 
                 let consumer;
                 if(consumerAgent.length) {
-                    const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
+                    let consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                     consumer = consumerUser[0].name;
                 } else {
                     consumer = chains["chains"][activeChain].name;
                 };
                 
                 
-                const providerAgent = await agents["agents"].filter(agent => agent.account === minedTransactions[0].to);
+                let providerAgent = await agents["agents"].filter(agent => agent.account === to);
+                // console.log(providerAgent)
                 let provider;
-                if(providerAgent && transaction.type !== "FEE") {
-                    const providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
+                if(providerAgent.length > 0 && transaction.type !== "FEE") {
+                    let providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
                     provider = providerUser[0].name;
                 } else {
                     provider = chains["chains"][activeChain].name;
@@ -127,6 +168,7 @@ const AllTransactionsTable = () => {
                 let time = hours + ":" + minutes + ":" + seconds;
 
                 if(transaction.type === "SERVICE") {
+                    // console.log(providerAgent[0].type)
                     return {
                         id: transaction._id,
                         consumer: consumer,
@@ -135,6 +177,8 @@ const AllTransactionsTable = () => {
                         fee: fee,
                         type: providerAgent[0].type,
                         createdAt: time,
+                        chain: transaction.chain,
+                        chainName: chains["chains"][chainIndex].name,
                     }
                 }
                     
@@ -148,18 +192,22 @@ const AllTransactionsTable = () => {
                         fee: fee,
                         type: transaction.type,
                         createdAt: time,
+                        chain: transaction.chain,
+                        chainName: chains["chains"][chainIndex].name,
                     }
                 )
                 
             }));
-            const filteredTransactionsArray = await filterDataArray(transactionsArray);
+            const filteredTransactionsArrayByType = await filterDataArrayByType(transactionsArray);
+            const filteredTransactionsArray= await filterDataArrayByChain(filteredTransactionsArrayByType);
+
             const dataArray = await sortDataArray(filteredTransactionsArray);
             setTableDataArray(dataArray.reverse());
         };
         
         renderTableData();
 
-    }, [game, checkBoxes, orderOfSort, transactions]);
+    }, [game, checkBoxes, chainCheckBoxes, orderOfSort, transactions]);
 
 
     return (
@@ -170,6 +218,15 @@ const AllTransactionsTable = () => {
                         checkBoxes.map((item) => (
                             <label className="checkbox-container" key={item.type}>{item.type}
                                 <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
+                                <span className="checkmark"></span>
+                            </label>
+                        ))
+                    }
+
+                    {
+                        chainCheckBoxes.map((item) => (
+                            <label className="checkbox-container" key={item.chain.id}>{item.chain.name}
+                                <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOneChain}/>
                                 <span className="checkmark"></span>
                             </label>
                         ))
@@ -204,6 +261,14 @@ const AllTransactionsTable = () => {
                                 }
                             }}>To {sortBy === 'provider' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
                             <th onClick={() => {
+                                setSortBy('chain');
+                                if (orderOfSort === 'ascending') {
+                                    setOrderOfSort('descending');
+                                } if (orderOfSort === 'descending') {
+                                    setOrderOfSort('ascending');
+                                }
+                            }}>Chain {sortBy === 'chain' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
+                            <th onClick={() => {
                                 setSortBy('typeOfService');
                                 if (orderOfSort === 'ascending') {
                                     setOrderOfSort('descending');
@@ -237,6 +302,7 @@ const AllTransactionsTable = () => {
                                         <td >{item.createdAt}</td>
                                         <td >{item.consumer}</td>
                                         <td >{item.provider}</td>
+                                        <td >{(item.chainName)}</td>
                                         <td >{item.type}</td>
                                         <td >{item.amount}</td>
                                         <td >{item.fee}</td>

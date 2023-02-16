@@ -7,7 +7,7 @@ const RankingTable = () => {
 
     useEffect(() => {
         const renderTableData = async () => { //Treba poopravit v contectu v array te playerje
-            const players = await context.ranking.sort((a, b) => parseInt(b.upgrades) === parseInt(a.upgrades) ? (parseInt(b.balance) + parseInt(b.stake)) - (parseInt(a.balance) + parseInt(a.stake)) : parseInt(b.upgrades) - parseInt(a.upgrades));
+            const players = await context.ranking.sort((a, b) => parseInt(b.upgrades) === parseInt(a.upgrades) ? (parseInt(b.balance) + parseInt(b.stake)) - (parseInt(a.balance) + parseInt(a.stake)) : parseInt(b.level) - parseInt(a.level));
             const playersWithNames = await players.map(function(player){ 
                 const agentObject = context.agents["agents"].filter(agent => agent._id === player.agent);
                 const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
@@ -54,7 +54,7 @@ const RankingTable = () => {
                                         <td><strong>{index + 1}</strong></td>
                                         <td>{item.userName}</td>
                                         <td>{item.type}</td>
-                                        <td>{item.upgrades}</td>
+                                        <td>{item.level}</td>
                                         <td>{item.balance}</td>
                                         <td>{item.stake}</td>
                                         <td>{item.revenueTrade}</td>

@@ -30,10 +30,12 @@ const TradeModal = () => {
     const confirm = async () => {
         try {
             let numCheck; 
-            console.log(tradeModalContent.price)
+            console.log("confirm")
+            let index = await chains["chains"].findIndex((c) => c.name === tradeModalContent.chainName);
+            
             await import('./HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[activeChain][`${chains["chains"][activeChain].name}`], transactions, agent, chains["chains"][activeChain]);
+                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
             })
             .catch(err => {
                 console.log(err);
@@ -72,7 +74,7 @@ const TradeModal = () => {
         console.log(transactions);
 
         const renderTableData = async () => {
-            const orderTransactions = await transactions.filter(transaction => transaction.chain == chains["chains"][activeChain].id && transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
+            const orderTransactions = await transactions.filter(transaction => transaction.chain == transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
             const transactionsInOrder = await orderTransactions.sort((a, b) => b.fee - a.fee);
 
             const transactionsArray = await Promise.all(transactionsInOrder.map(async (item) => {
@@ -135,6 +137,7 @@ const TradeModal = () => {
                             <li style={{textAlign: "center"}}> <span style={{color: getColor(tradeModalContent.serviceType)}}> {tradeModalContent.serviceType} </span>  </li>
                             {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                             <li> Price: <span style={{color: 'green'}}> {tradeModalContent.price} </span> </li>
+                            <li> Chain: <span style={{color: 'blue'}}> {tradeModalContent.chainName} </span> </li>
                             
                         </ul>
                         <div className={"trade-modal-input-group"}>

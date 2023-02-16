@@ -136,7 +136,7 @@ const CreateOrderModal = () => {
 
 
     return (
-        <div style={{alignItems: "center", justifyContent: "center"}}>
+        <div >
             {isCreateOrderModalOpen.open == true ? (
 
                 
@@ -161,17 +161,17 @@ const CreateOrderModal = () => {
                 <div style={{padding: "1rem", justifyContent : "center", alignItemes: "center"}}>       
                 
                     <div>   
-                        <h4 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} price for your Service </h4> 
+                        <h4 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {service.type} price </h4> 
                     </div>
 
                     {isCreateOrderModalOpen.mode == "set" ? (
                     <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
                   
-                        <InputGroup style={{marginTop: "5%"}}>
+                        <InputGroup style={{marginTop: "5%", width: "15rem"}}>
                         
                             <InputGroup.Text >CHAIN</InputGroup.Text>
-                            <Dropdown >
-                            <Dropdown.Toggle variant="outline-secondary"  >
+                            <Dropdown>
+                            <Dropdown.Toggle variant="outline-secondary"  style={{width: "10rem"}}>
                                 <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
                             </Dropdown.Toggle>
                 
@@ -197,7 +197,7 @@ const CreateOrderModal = () => {
 
                   <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
                   
-                        <InputGroup style={{marginTop: "5%", width: "15rem"}}>
+                        <InputGroup style={{marginTop: "5%", width: "14.5rem"}}>
                             <InputGroup.Text >NEW PRICE</InputGroup.Text>
                             <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
                         </InputGroup>
