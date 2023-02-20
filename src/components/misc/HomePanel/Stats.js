@@ -76,7 +76,7 @@ const Stats = () => {
                     }
                 )
             }));
-            // console.log(activeServices)
+            if(userServices.length == 0) return [];
             setServiceDataArray(userServices);
         };
         renderServiceData();
@@ -92,8 +92,17 @@ const Stats = () => {
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
 
-            let sum = numOfFirst.length + numOfSecond.length;
-            let upgrades = Math.floor(sum / 2); 
+            // let sum = numOfFirst.length + numOfSecond.length;
+            // let upgrades = Math.floor(sum / 2); 
+            let upgrades = 0;
+
+            if(numOfFirst.length > numOfSecond.length) {
+                upgrades = numOfSecond.length;
+            } else if (numOfFirst.length < numOfSecond.length) {
+                upgrades = numOfFirst.length;
+            } else {
+                upgrades = 0;
+            }
 
             setNumOfService1({num: numOfFirst.length - upgrades});
             setNumOfService2({num: numOfSecond.length - upgrades});

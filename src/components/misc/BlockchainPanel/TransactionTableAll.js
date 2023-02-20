@@ -104,6 +104,7 @@ const AllTransactionsTable = () => {
             selectedTypes.push("BRIDGE-LOCK");
             selectedTypes.push("BRIDGE-UNLOCK");
             selectedTypes.push("BRIDGE-MINT");
+            selectedTypes.push("BRIDGE-BURN");
         }
 
         return dataArray.filter(data => selectedTypes.includes(data.type));
@@ -221,7 +222,7 @@ const AllTransactionsTable = () => {
                         ))
                     }
                     
-                    <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                    <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
                         <b > Chains: </b>
                     </div>
 

@@ -35,7 +35,7 @@ const MiningBar = (props) => {
         }
         setTimeLeft((timeLeft/1000).toFixed(1));
         setWidth(width);
-    }, 50);
+    }, 20);
 
 
     return (

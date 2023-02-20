@@ -33,13 +33,13 @@ const AttackCard = () => {
     
 
     useEffect(() => {
-        console.log(context.stealVotes)
+        // console.log(context.stealVotes)
         const renderUserTable = async () => {
             const usersWithoutMainPlayer = await context.users['users'].filter(user => user.id !== context.user.id);
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
-        console.log(users)
+        // console.log(users)
     }, [])
 
 

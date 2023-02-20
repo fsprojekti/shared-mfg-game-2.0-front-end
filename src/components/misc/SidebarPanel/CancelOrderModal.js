@@ -4,12 +4,10 @@ import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstra
 import {motion} from 'framer-motion'
 
 const CancelOrderModal = () => {
-    const {  users, servicesAll, isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen, service, chains, apiUserCancelOrder, agents, note, setNote} = useContext(AppContext);
+    const {  users, servicesAll, isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen, service, chains, apiUserCancelOrder, agents, orders, setNote} = useContext(AppContext);
     const [order, setOrder] = useState({});
 
     const context = useContext(AppContext);
-    const [price, setPrice] = useState("0");
-
 
     const countDecimals = (value) => {
         if(Math.floor(value).toString() === value) return 0;
@@ -21,15 +19,16 @@ const CancelOrderModal = () => {
 
             let response = await apiUserCancelOrder(order._id);
             console.log("cancel order")
-            setNote((prevState) => {
-                return({
-                  ...prevState,
-                  msg: response,
-                  heading: 'Success',
-                  show: true,
-                  type: 'success'
-                });
-              });
+            console.debug(response)
+            // setNote((prevState) => {
+            //     return({
+            //       ...prevState,
+            //       msg: response,
+            //       heading: 'Success',
+            //       show: true,
+            //       type: 'success'
+            //     });
+            //   });
             setIsCancelUserOrderModalOpen({open: false})
         } catch(err) {
             console.log(err)
@@ -57,7 +56,7 @@ const CancelOrderModal = () => {
 
     useEffect(() => {
         const createDataArray = async () => { 
-            const placedOrders = context.orders.filter(order => order.state === "PLACED");
+            const placedOrders = orders.filter(order => order.state === "PLACED");
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
                 const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
@@ -74,7 +73,7 @@ const CancelOrderModal = () => {
             })   
         }
         createDataArray()
-    }, [])
+    }, [orders])
 
 
     return (

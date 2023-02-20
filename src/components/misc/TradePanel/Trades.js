@@ -82,6 +82,7 @@ const Trades = () => {
         const sortDataArrays = async () => { 
             // console.log(orders);
             let placedOrders = await orders.filter(order => order.state === "PLACED");
+            // console.log(placedOrders);
             // if(checkBoxes[0].isChecked && checkBoxes[1].isChecked) placedOrders =   
             // else {
             //     if(checkBoxes[0].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][0].id);
@@ -92,13 +93,15 @@ const Trades = () => {
 
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
-                ordr.serviceType=service[0].type;
+                // console.log(service)
+                
                 ordr.serviceDuration=service[0].duration;
 
                 let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
 
                 const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
+                ordr.serviceType=providerAgentObject[0].type;
                 ordr.providerName = providerClient[0].name;
                 ordr.agentId = providerAgentObject[0]._id;
                 ordr.agentAccount = providerAgentObject[0].account;
@@ -207,7 +210,7 @@ const Trades = () => {
         };
         sortDataArrays(); 
 
-    }, [orders, checked1, checked2, checked3, checkBoxes]);
+    }, [orders, checked1, checked2, checked3, checkBoxes, servicesAll["services"]]);
 
     return (
         <>  

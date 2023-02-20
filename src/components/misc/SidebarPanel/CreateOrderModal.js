@@ -141,8 +141,7 @@ const CreateOrderModal = () => {
 
                 
 
-            <div
-            className={`${'modal-confirm-overlay show-modal-confirm'}`} >
+            <div className={`${'modal-confirm-overlay show-modal-confirm'}`} >
             <motion.div 
               className="box"
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -155,46 +154,42 @@ const CreateOrderModal = () => {
                 }}
             >
             <div className='modal-confirm-container'>
-
+            <h3 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {service.type} order price </h3> 
+                
+                <div className='modal-confirm-container-input'> 
                 
 
-                <div style={{padding: "1rem", justifyContent : "center", alignItemes: "center"}}>       
-                
-                    <div>   
-                        <h4 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {service.type} price </h4> 
-                    </div>
-
-                    {isCreateOrderModalOpen.mode == "set" ? (
-                    <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
-                  
-                        <InputGroup style={{marginTop: "5%", width: "15rem"}}>
-                        
-                            <InputGroup.Text >CHAIN</InputGroup.Text>
-                            <Dropdown>
-                            <Dropdown.Toggle variant="outline-secondary"  style={{width: "10rem"}}>
-                                <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
-                            </Dropdown.Toggle>
-                
-                            <Dropdown.Menu>
-
-                            {
-                                chains["chains"].map((item, index) => (
-                                    
-                                    <Dropdown.Item onClick={(item) => (setChain(index))} > {chains["chains"][index].name} </Dropdown.Item>
-
-                                ))
-                            }
-                            </Dropdown.Menu>
+                        {isCreateOrderModalOpen.mode == "set" ? (
+                        <div >
+                    
+                            <InputGroup style={{paddingBottom: "5px"}}>
                             
-                            </Dropdown>
-                        </InputGroup>
-                    </div>
-                    ):(null)
-                    }
+                                <InputGroup.Text >CHAIN</InputGroup.Text>
+                                <Dropdown >
+                                <Dropdown.Toggle variant="outline-secondary"  style={{width: "11rem"}}>
+                                    <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
+                                </Dropdown.Toggle>
+                    
+                                <Dropdown.Menu>
+
+                                {
+                                    chains["chains"].map((item, index) => (
+                                        
+                                        <Dropdown.Item onClick={(item) => (setChain(index))} > {chains["chains"][index].name} </Dropdown.Item>
+
+                                    ))
+                                }
+                                </Dropdown.Menu>
+                                
+                                </Dropdown>
+                            </InputGroup>
+                </div>
+                ):(null)
+                }
 
                         
                   
-                    <InputGroup style={{marginTop: "5%", width: "14.5rem"}}>
+                    <InputGroup >
                         <InputGroup.Text >NEW PRICE</InputGroup.Text>
                         <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
                     </InputGroup>
@@ -207,8 +202,6 @@ const CreateOrderModal = () => {
                     }}>
                     Cancel
                     </Button>
-                    
-
             
         </div>
                 

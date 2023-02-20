@@ -1,6 +1,5 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
-import { Tooltip } from 'react-bootstrap';
-import { AppContext } from '../../../context/context';
+import React, {useState, useEffect, useRef} from 'react';
+import  ReactTooltip from 'react-tooltip'
 
 const ServiceLoading = (data) => {
     const { id, consumer, provider, type, updatedAt, duration } = data.item;
@@ -66,20 +65,20 @@ const ServiceLoading = (data) => {
                 <div id="divSpinner" className="spinner-loading">
                     <div className="loading-text">{serviceCompleted}%</div>
                 </div>
-                {/*<span className="service-tooltip">
+                <ReactTooltip  id={id} place="right" type="dark" effect="solid" >
                     <ul>
                         <li>Consumer: {consumer}</li>
                         <li>Provider: {provider}</li>
                         <li>Time left: {timeLeft}</li>
                     </ul>
-                </span>*/}
-                <Tooltip  id={id} place="right" type="dark" effect="solid">
+                </ReactTooltip>
+                {/* <Tooltip className="service-tooltip">
                     <ul>
                         <li>Consumer: {consumer}</li>
                         <li>Provider: {provider}</li>
                         <li>Time left: {timeLeft}</li>
                     </ul>
-                </Tooltip>
+                </Tooltip> */}
             </div>
         </>
     )

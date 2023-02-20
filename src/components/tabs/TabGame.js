@@ -4,6 +4,7 @@ import { AppContext } from "../../context/context";
 import PanelSide from "../panels/PanelSide";
 import NotificationCard from "../notifications/NotificationCard";
 import NoteDismissible from "../notifications/NoteDismissible";
+import NotifCardDissmisable from "../notifications/NotifCardDissmisable";
 import CreateOrderModal from "../misc/SidebarPanel/CreateOrderModal";
 import CancelOrderModal from "../misc/SidebarPanel/CancelOrderModal";
 
@@ -49,7 +50,7 @@ const TabGame = () => {
             <Row  style={{zIndex: 1}}>
                 <PanelSide/>
                 <Suspense fallback={<div className="justify-content-center" >Loading...</div>}>
-                <Col  style={{backgroundColor: "white", zIndex: 1}}>
+                <Col  style={{zIndex: 1}}>
 
                     { 
                         (context.game.state === 'RUN' && context.cookies.userId !== undefined) ? (
@@ -80,6 +81,16 @@ const TabGame = () => {
                         heading={context.note.heading}
                         reportHide={() => {
                             context.setNote({...(context.note.show = false)});
+                        }}/>
+            </div>
+
+            <div className="d-flex align-self-center justify-content-center"  style={{zIndex: 2, position: "absolute"}}>
+                    <NotifCardDissmisable show={context.notifCard.show}
+                        msg={context.notifCard.msg}
+                        color={context.notifCard.color}
+                        heading={context.notifCard.heading}
+                        reportHide={() => {
+                            context.setNote({...(context.notifCard.show = false)});
                         }}/>
             </div>
 

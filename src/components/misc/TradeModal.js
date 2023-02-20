@@ -35,7 +35,7 @@ const TradeModal = () => {
             
             await import('./HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
+                numCheck = await checkNumber(txFee, tradeModalContent.price, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
             })
             .catch(err => {
                 console.log(err);
@@ -74,7 +74,7 @@ const TradeModal = () => {
         // console.log(transactions);
 
         const renderTableData = async () => {
-            const orderTransactions = await transactions.filter(transaction => transaction.chain == transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
+            const orderTransactions = await transactions.filter(transaction => transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
             const transactionsInOrder = await orderTransactions.sort((a, b) => b.fee - a.fee);
 
             const transactionsArray = await Promise.all(transactionsInOrder.map(async (item) => {
@@ -143,10 +143,8 @@ const TradeModal = () => {
                         <div className={"trade-modal-input-group"}>
                             <label htmlFor={"txFee"}>Tx Fee</label>
                             <div className="trade-modal-input-group-container">
-                                {/* <input type={"text"} name={"txFee"} id={"inputHolder"} placeholder={"Enter tx fee"} onChange={e => changeFeeInput(e)} /> */}
-                                <InputGroup >
-                                        {/* <InputGroup.Text id="d-flex">Amount</InputGroup.Text> */}
-                                    <FormControl value ={txFee} placeholder={"Enter tx fee"} onChange={e => setTxFee(e.target.value)}  onKeyPress={e => handleKeypress(e)}></FormControl>
+                                <InputGroup style={{paddingBottom: "15px"}}>
+                                    <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "8px 8px 8px 8px"}}></FormControl>
                                 </InputGroup>
 
                             </div>

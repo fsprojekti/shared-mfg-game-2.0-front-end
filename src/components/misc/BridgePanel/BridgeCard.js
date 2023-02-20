@@ -124,12 +124,12 @@ const BridgeCard = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(chains["chains"][activeChain].name);
-        console.log(usersBalances);
-        console.log(usersBalances.indexOf(chains["chains"][activeChain].name));
+    // useEffect(() => {
+        // console.log(chains["chains"][activeChain].name);
+        // console.log(usersBalances);
+        // console.log(usersBalances.indexOf(chains["chains"][activeChain].name));
 
-    }, [chains]);
+    // }, [chains]);
 
 
     return (

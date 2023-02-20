@@ -53,10 +53,7 @@ const CancelOrderModal = () => {
             {context.isCancelOrderModalOpen ? (
 
 
-
-
-
-            <div>CANCEL ORDER MODAL
+            <div>
 
                 <div className={`${'modal-confirm-overlay show-modal-confirm'}`} >
                 <motion.div 

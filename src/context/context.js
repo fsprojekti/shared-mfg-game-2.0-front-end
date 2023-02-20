@@ -129,6 +129,13 @@ export const ContextWrapper = (props) => {
         heading: "Test"
     })
 
+    const [notifCard, setNotifCard] = useState({
+        show: false,
+        color: "#EBB8B7",
+        msg: "An attack has been detected, please check your balances",
+        heading: "👺 Attack detected 👺"
+    })
+
 
     const [modalContent, setModalContent] = useState('');
     const [confirmModalContent, setConfirmModalContent] = useState('');
@@ -145,6 +152,8 @@ export const ContextWrapper = (props) => {
 
     const [cancelBlockMocalContent, setCancelBlockModalContent] = useState({});
     const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);
+
+    const [attackModal, setAttackModal] = useState({open: false});
 
     
 
@@ -383,6 +392,20 @@ export const ContextWrapper = (props) => {
                 services["services"].push(newObj);
                 return services;
             });
+        }
+
+
+        if(transObj[0].type == "ATTACK-GAIN") {
+            setNotifCard((prevState) => {
+                return({
+                  ...prevState,
+                  msg: "Check your balances and attack history",
+                  heading: "👺 Attack detected 👺",
+                  show: true,
+                  color: '#EBB8B7'
+                });
+              });
+
         }
 
     }
@@ -1449,6 +1472,7 @@ export const ContextWrapper = (props) => {
             chainsTest, setChainsTest,
             isCreateOrderModalOpen, setIsCreateOrderModalOpen,
             isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen,
+            notifCard, setNotifCard,
         }}>
             {props.children}
         </AppContext.Provider>
