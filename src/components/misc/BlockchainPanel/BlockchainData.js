@@ -162,15 +162,21 @@ const BlockchainData = () => {
 
 
         const createDataArray = async () => { 
-            let dataArray = [2];
-            dataArray[0] = {id: "You", label: "user", value: context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]};
-            dataArray[1] = {id: "Other players", label: "chain", value: (context.chains["chains"][stakeChain].stake - context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]) };
+            const ranking = context.ranking;
+            let dataArray = ranking.map((item, index) => {
+                const agentObject = context.agents["agents"].filter(agent => agent._id === item.agent);
+                const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
+                // console.debug(userObject[0].name)
+                if (userObject[0].name == context.user.name) userObject[0].name = "You";
+                return {id: userObject[0].name, label: userObject[0].name, value: item.stake[stakeChain]}
+            });
+            // console.log(dataArray)
             setChartDataArray(dataArray);
-            console.log(dataArray);
+            // console.log(dataArray);
         };
         createDataArray();
 
-    }, [context.usersStakes, context.chains, stakeChain, stakeIndex]);
+    }, [context.chains, stakeChain, stakeIndex, context.ranking]);
 
 
     return (

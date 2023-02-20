@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-bootstrap';
 import { AppContext } from '../../../context/context';
 
 const ServiceLoading = (data) => {
@@ -73,13 +73,13 @@ const ServiceLoading = (data) => {
                         <li>Time left: {timeLeft}</li>
                     </ul>
                 </span>*/}
-                <ReactTooltip  id={id} place="right" type="dark" effect="solid">
+                <Tooltip  id={id} place="right" type="dark" effect="solid">
                     <ul>
                         <li>Consumer: {consumer}</li>
                         <li>Provider: {provider}</li>
                         <li>Time left: {timeLeft}</li>
                     </ul>
-                </ReactTooltip>
+                </Tooltip>
             </div>
         </>
     )

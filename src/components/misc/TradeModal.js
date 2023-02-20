@@ -70,8 +70,8 @@ const TradeModal = () => {
 
     useEffect(() => {
         
-        console.log(servicesAll);
-        console.log(transactions);
+        // console.log(servicesAll);
+        // console.log(transactions);
 
         const renderTableData = async () => {
             const orderTransactions = await transactions.filter(transaction => transaction.chain == transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
@@ -82,7 +82,7 @@ const TradeModal = () => {
                 const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
                 
                 const consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
-                console.log(consumerUser);
+                // console.log(consumerUser);
                 
                 return (
                     {
@@ -94,7 +94,7 @@ const TradeModal = () => {
                     }
                 )
             }));
-            console.log(transactionsArray);
+            // console.log(transactionsArray);
             setTableDataArray(transactionsArray);
         };
         renderTableData();
@@ -134,7 +134,7 @@ const TradeModal = () => {
                 <div className='modal-confirm-container-data'>
                     <div className='modal-confirm-container-input'>
                         <ul>
-                            <li style={{textAlign: "center"}}> <span style={{color: getColor(tradeModalContent.serviceType)}}> {tradeModalContent.serviceType} </span>  </li>
+                            <li> Type: <span style={{color: getColor(tradeModalContent.serviceType)}}> {tradeModalContent.serviceType} </span>  </li>
                             {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                             <li> Price: <span style={{color: 'green'}}> {tradeModalContent.price} </span> </li>
                             <li> Chain: <span style={{color: 'blue'}}> {tradeModalContent.chainName} </span> </li>

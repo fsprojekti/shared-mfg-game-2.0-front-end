@@ -87,7 +87,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
 
     return (
         <ResponsiveBar
-            data={modifiedData}
+            data={dataArray}
             onClick={(data) => setTradeModal(data.data)}
             onMouseEnter={(data, event) => mouseHover(data.data, event)}
             keys={toggleData()}

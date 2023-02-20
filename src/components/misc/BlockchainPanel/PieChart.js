@@ -68,10 +68,10 @@ const PieChart = ({ data}) => {
                 id: 'dots',
                 type: 'patternDots',
                 background: 'inherit',
-                color: 'rgba(255, 255, 255, 0.3)',
+                color: 'rgba(255, 255, 255, 0.9)',
                 size: 4,
                 padding: 1,
-                stagger: true
+                stagger: true,
             },
             {
                 id: 'lines',
@@ -86,7 +86,7 @@ const PieChart = ({ data}) => {
         fill={[
             {
                 match: {
-                    id: context.user.name
+                    id: "You"
                 },
                 id: 'dots'
             }

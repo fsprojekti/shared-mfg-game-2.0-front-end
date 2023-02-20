@@ -7,11 +7,11 @@ const AllTransactionsTable = () => {
     const [tableDataArray, setTableDataArray] = useState([]);
     const [sortBy, setSortBy] = useState('time');
     const [orderOfSort, setOrderOfSort] = useState('ascending');
-    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Unstake", isChecked: false},{type: "Bridge", isChecked: false}]);
+    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
     const displayTime = async (time) => {
-        const createdMillis = await new Date(time);
+        const createdMillis = new Date(time);
         return createdMillis.toLocaleTimeString('it-IT');
     };
 
@@ -19,9 +19,9 @@ const AllTransactionsTable = () => {
     const sortDataArray = async (dataArray) => {
         if (sortBy === 'time') {
             return await dataArray.sort((a, b) => {
-                let arrayA = a.createdAt.split(":");
+                let arrayA = a.timestamp.split(":");
                 let timeA = (parseInt(arrayA[0], 10) * 60 * 60) + (parseInt(arrayA[1], 10) * 60) + parseInt(arrayA[2], 10);
-                let arrayB = b.createdAt.split(":");
+                let arrayB = b.timestamp.split(":");
                 let timeB = (parseInt(arrayB[0], 10) * 60 * 60) + (parseInt(arrayB[1], 10) * 60) + parseInt(arrayB[2], 10);
                 if (orderOfSort === "descending") {
                     return timeB - timeA;
@@ -73,7 +73,7 @@ const AllTransactionsTable = () => {
     };
 
     const selectOne = async (e) => {
-        console.debug(e)
+        // console.debug(e)
         let itemName = e.target.name;
         let checked = e.target.checked;
         const newArray = checkBoxes.map(item =>
@@ -83,24 +83,13 @@ const AllTransactionsTable = () => {
     };
 
     const selectOneChain = async (e) => {
-        console.debug(e)
+        // console.debug(e)
         let itemName = e.target.name;
         let checked = e.target.checked;
 
         let newArray = chainCheckBoxes.map(item =>
-            item.chain.name === itemName ? { ...item, isChecked: checked } : item
+            item.chain.name === itemName ? { ...item, isChecked: checked } : { ...item }
         );
-
-        let index = newArray.find((c) => c.isChecked == true);
-        console.log(index)
-        if(index == -1) {
-            newArray = chainCheckBoxes.map((item) =>
-
-                {return { ...item, isChecked: true }}
-            );
-        }
-
-        console.log(newArray);
 
         setChainCheckBoxes(newArray);
     };
@@ -111,6 +100,11 @@ const AllTransactionsTable = () => {
         if (!Array.isArray(selectedTypes) || !selectedTypes.length) {
             return dataArray;
         }
+        if (selectedTypes.includes("BRIDGE")) {
+            selectedTypes.push("BRIDGE-LOCK");
+            selectedTypes.push("BRIDGE-UNLOCK");
+            selectedTypes.push("BRIDGE-MINT");
+        }
 
         return dataArray.filter(data => selectedTypes.includes(data.type));
     };
@@ -118,10 +112,10 @@ const AllTransactionsTable = () => {
     const filterDataArrayByChain = (dataArray) => {
 
         const checkedChains = chainCheckBoxes.filter(item => item.isChecked);
-        console.log(checkedChains)
+        // console.log(checkedChains)
         const selectedChains = checkedChains.map(item => item.chain.id);
         if (!Array.isArray(selectedChains) || !selectedChains.length) {
-            return dataArray;
+            return [];
         }
 
         return dataArray.filter(data => selectedChains.includes(data.chain));
@@ -129,7 +123,6 @@ const AllTransactionsTable = () => {
 
     useEffect(() => {
         const renderTableData = async () => {
-            console.log(transactions);
             const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED");
             // console.log(minedTransactions);
 
@@ -179,6 +172,7 @@ const AllTransactionsTable = () => {
                         createdAt: time,
                         chain: transaction.chain,
                         chainName: chains["chains"][chainIndex].name,
+                        timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
                     }
                 }
                     
@@ -194,6 +188,7 @@ const AllTransactionsTable = () => {
                         createdAt: time,
                         chain: transaction.chain,
                         chainName: chains["chains"][chainIndex].name,
+                        timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
                     }
                 )
                 
@@ -214,6 +209,9 @@ const AllTransactionsTable = () => {
         <>
             <div className="table-all-transactions-container">
                 <div className="filter-all-transactions">
+                     <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                        <b > Types: </b>
+                    </div>
                     {
                         checkBoxes.map((item) => (
                             <label className="checkbox-container" key={item.type}>{item.type}
@@ -222,6 +220,11 @@ const AllTransactionsTable = () => {
                             </label>
                         ))
                     }
+                    
+                    <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                        <b > Chains: </b>
+                    </div>
+
 
                     {
                         chainCheckBoxes.map((item) => (
@@ -299,7 +302,7 @@ const AllTransactionsTable = () => {
                             tableDataArray.map((item) =>
                                 (
                                     <tr key={item.id}>
-                                        <td >{item.createdAt}</td>
+                                        <td >{item.timestamp}</td>
                                         <td >{item.consumer}</td>
                                         <td >{item.provider}</td>
                                         <td >{(item.chainName)}</td>

@@ -85,7 +85,7 @@ const CreateOrderModal = () => {
                                 } else { 
                                     console.log(context.orders)
                                     let userOrder;
-                                    const placedOrders = context.orders.filter(order => order.chain === context.chains["chains"][chain].id  && order.state === "PLACED")
+                                    const placedOrders = context.orders.filter(order => order.state === "PLACED")
                                     console.log(servicesAll["services"]);
                                     const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                                         let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
@@ -155,7 +155,7 @@ const CreateOrderModal = () => {
                 }}
             >
             <div className='modal-confirm-container'>
-            <div className="d-flex flex-column" >
+
                 
 
                 <div style={{padding: "1rem", justifyContent : "center", alignItemes: "center"}}>       
@@ -193,19 +193,12 @@ const CreateOrderModal = () => {
                     }
 
                         
-                 
-
-                  <div style={{marginLeft: "1rem", marginTop: "1erm", marginRight: "1rem"}}>
                   
-                        <InputGroup style={{marginTop: "5%", width: "14.5rem"}}>
-                            <InputGroup.Text >NEW PRICE</InputGroup.Text>
-                            <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
-                        </InputGroup>
-
-                        
-                  </div>
+                    <InputGroup style={{marginTop: "5%", width: "14.5rem"}}>
+                        <InputGroup.Text >NEW PRICE</InputGroup.Text>
+                        <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
+                    </InputGroup>
                     
-                  <div className='d-flex'>
                     <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
                     <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                         setIsCreateOrderModalOpen({open: false})
@@ -215,12 +208,7 @@ const CreateOrderModal = () => {
                     Cancel
                     </Button>
                     
-                </div>
-                    
 
-                    
-                
-                </div>
             
         </div>
                 

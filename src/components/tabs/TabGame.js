@@ -5,6 +5,7 @@ import PanelSide from "../panels/PanelSide";
 import NotificationCard from "../notifications/NotificationCard";
 import NoteDismissible from "../notifications/NoteDismissible";
 import CreateOrderModal from "../misc/SidebarPanel/CreateOrderModal";
+import CancelOrderModal from "../misc/SidebarPanel/CancelOrderModal";
 
 //Lazy loading, to improve performance
 const Trades = React.lazy(() => import('../misc/TradePanel/Trades'));
@@ -86,6 +87,7 @@ const TabGame = () => {
 
             </Row>
             <CreateOrderModal />
+            <CancelOrderModal />
 
              </Container>
 

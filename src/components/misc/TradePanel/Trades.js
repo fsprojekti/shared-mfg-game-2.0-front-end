@@ -6,7 +6,7 @@ import TradeModal from '../TradeModal';
 import CancelOrderModal from '../CancelOrderModal';
 
 const Trades = () => {
-    const { agent, users, orders, agents, servicesAll, service, chains, activeChain } = useContext(AppContext);
+    const { users, orders, agents, servicesAll, service, chains } = useContext(AppContext);
     const [dataArray1, setDataArray1] = useState([]);
     const [dataArray2, setDataArray2] = useState([]);
     const [dataArray3, setDataArray3] = useState([]);
@@ -14,11 +14,37 @@ const Trades = () => {
     const [modifiedDataArray2, setModifiedDataArray2] = useState([]);
     const [modifiedDataArray3, setModifiedDataArray3] = useState([]);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
+    const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
     const [checked1, setChecked1] = useState(false);
     const [checked2, setChecked2] = useState(false);
     const [checked3, setChecked3] = useState(false);
     let backColor= "#ffffff";
+
+    const selectOne = async (e) => {
+        // console.debug(e)
+        let itemName = e.target.name;
+        let checked = e.target.checked;
+
+        let newArray = checkBoxes.map(item =>
+            item.chain.name === itemName ? { ...item, isChecked: checked } : { ...item }
+        );
+
+        setCheckBoxes(newArray);
+    };
+
+    const filterDataArrayByChain = (dataArray) => {
+
+        const checkedChains = checkBoxes.filter(item => item.isChecked);
+        // console.log(checkedChains)
+        const selectedChains = checkedChains.map(item => item.chain.id);
+        if (!Array.isArray(selectedChains) || !selectedChains.length) {
+            return [];
+        }
+
+        return dataArray.filter(data => selectedChains.includes(data.chain));
+    };
+
 
 
     const handleChange1 = nextChecked => {
@@ -53,44 +79,46 @@ const Trades = () => {
 
 
     useEffect(() => {
-        console.log(orders);
-        console.log((agents["agents"]));
-        console.log(users);
-        console.log(agent)
         const sortDataArrays = async () => { 
-            console.log(orders);
-            const placedOrders = orders.filter(order => order.state === "PLACED");   
-            console.log(placedOrders);
+            // console.log(orders);
+            let placedOrders = await orders.filter(order => order.state === "PLACED");
+            // if(checkBoxes[0].isChecked && checkBoxes[1].isChecked) placedOrders =   
+            // else {
+            //     if(checkBoxes[0].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][0].id);
+            //     if(checkBoxes[1].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][1].id);
+            // }
+
+            // console.log(placedOrders);
+
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
-                console.log(service)
                 ordr.serviceType=service[0].type;
                 ordr.serviceDuration=service[0].duration;
 
                 let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
-                console.debug(chain)
 
                 const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
-                console.log(providerAgentObject[0])
                 ordr.providerName = providerClient[0].name;
                 ordr.agentId = providerAgentObject[0]._id;
                 ordr.agentAccount = providerAgentObject[0].account;
                 ordr.providerId = providerClient[0].id;
                 ordr.chainName = chain[0].name;
+                ordr.chainId = chain[0].id;
 
                 return ordr
             })   
-                
+            
+            const placedOrdersWithPlayerDataByChain = await filterDataArrayByChain(placedOrdersWithPlayerData);
 
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
             setOtherServices(uniqueService)
 
             
-            let array1 = await placedOrdersWithPlayerData.filter(item => item.serviceType === uniqueService[0]);
-            let array2 = await placedOrdersWithPlayerData.filter(item => item.serviceType === uniqueService[1]);
-            let array3 = await placedOrdersWithPlayerData.filter(item => item.serviceType === service.type);
+            let array1 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[0]);
+            let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
+            let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service.type);
 
             if (checked1) {
                 await array1.forEach((item) => {
@@ -175,18 +203,30 @@ const Trades = () => {
             setModifiedDataArray1(modifiedArray1);
             setModifiedDataArray2(modifiedArray2);
             setModifiedDataArray3(modifiedArray3);
-            console.log(modifiedArray3)
-            console.log(modifiedArray2)
-            console.log(modifiedArray1)
-            console.log(service)
 
         };
         sortDataArrays(); 
 
-    }, [orders, checked1, checked2, checked3, activeChain]);
+    }, [orders, checked1, checked2, checked3, checkBoxes]);
 
     return (
-        <>
+        <>  
+
+                <div className="filter-all-transactions">                    
+                    <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                        <b > Chains: </b>
+                    </div>
+
+                    {
+                        checkBoxes.map((item) => (
+                            <label className="checkbox-container" key={item.chain.id}>{item.chain.name}
+                                <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOne}/>
+                                <span className="checkmark"></span>
+                            </label>
+                        ))
+                    }
+                </div>
+
             <div className="d-flex flex-row flex-wrap" style={{zIndex: 2}}>
 
                 <div style={{width: "35vw", maxWidth: "100%", boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", background: backColor }}>

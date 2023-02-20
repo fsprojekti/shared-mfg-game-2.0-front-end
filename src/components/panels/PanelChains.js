@@ -14,34 +14,25 @@ const PanelChains = () => {
 
         <>
             <div className="d-flex flex-column">
-            <Row>
-            <Col className='d-flex'>
-                <div className="d-flex flex-column" style={{zIndex: 2, position: "absolute", borderRadius: "8px", margin: "15px", textAlign: "center", alignSelf: "end"}}> 
-                    {/* <CreateSideChain /> */}
-                    {/* <ChainData /> */}
-                </div> 
-                        <ChainMesh />
-                        {/* <Row>
-                            <ChainData />
-                        </Row> */}
-                        
-                    {/* </div> */}
+            <Row style={{paddingRight: "0", paddingLeft: "0"}}>
+                <Col className='d-flex' style={{paddingRight: "0", paddingLeft: "0", marginRight: "5px"}}>
+                    <ChainMesh />
                 </Col>
-                <Col>
+                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px"}}>
                     <BridgeCard />
                 </Col>
                 </Row>
-                <Row>
+                <Row style={{paddingRight: "0", paddingLeft: "0"}}>
                 
-                <Col>
+                <Col style={{paddingRight: "0", paddingLeft: "0", paddingLeft: "0", marginRight: "5px" }}>
                     <AttackCard />
                 </Col>
-                <Col>
+                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px"}}>
                     <div className="sidechain-info-container">
                         {/* <ChainData /> */}
                     </div>    
                 </Col>
-                </Row>
+            </Row>
             </div>
 
         </>

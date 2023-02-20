@@ -32,9 +32,6 @@ const Ranking = () => {
 
                         <div>
                             <div className="home-grid">
-                                <div className="item-sidebar">
-                                    <Sidebar/>
-                                </div>
                                 <div className="item-content">
                                     <RankingTable/>
                                 </div>

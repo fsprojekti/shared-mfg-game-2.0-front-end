@@ -57,7 +57,9 @@ function App() {
         //Load game
         const game = context.apiGameFetch().then(game => {
             //TODO: Reset active chain if idle game
-            context.setGame(game);
+            const cotnextGame = context.game;
+            cotnextGame.game = game;
+            context.setGame({...game});
         })
 
         //Load all logged in users and their data

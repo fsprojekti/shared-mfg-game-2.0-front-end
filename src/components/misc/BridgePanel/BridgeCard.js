@@ -134,8 +134,8 @@ const BridgeCard = () => {
 
     return (
         <>
-        <div className='d-flex' style={{justifyContent: "center", alignItems: "center", padding: "5px"}}>
-            <Card className='d-flex' style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", height: "24rem", backgroundColor: "(255, 255, 255, 0.8)" }}>
+        <div className='d-flex' style={{justifyContent: "center", alignItems: "center", marginTop: "5px"}}>
+            <Card className='d-flex' style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", height: "24rem", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent" }}>
             { chains["chains"].length > 1 ? (
                 <Card.Body>
                 <Card.Title> 

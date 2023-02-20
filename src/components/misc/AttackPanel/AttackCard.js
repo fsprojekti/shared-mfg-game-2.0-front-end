@@ -100,7 +100,7 @@ const AttackCard = () => {
     return (
         <>
             <div className="d-flex "> 
-                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", margin: "5px", border: '1px solid rgb(211, 211, 211)'}}>
+                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", margin: "5px", borderColor: "transparent"}}>
                
                 <Row >
                 <Col>
@@ -110,10 +110,7 @@ const AttackCard = () => {
                             {context.bridges.length > 0 ? (
                             <Card.Body>
                             
-                                <Card.Title style={{padding: "10px"}}> Vote To Steal From a Bridge </Card.Title>
-                                <Card.Text>
-                                <b> Select the bridge you wish to steal from </b> 
-                                </Card.Text>
+                                <Card.Title style={{padding: "10px"}}> Vote To Steal From a {context.bridges[0].name}  </Card.Title>
                                 
                                 <Card.Text>
 
@@ -152,7 +149,7 @@ const AttackCard = () => {
                                 </Card.Body>
                             )}
 
-                            <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center"}} onClick={voteStealBridge} > 
+                            <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
                             {loading === "steal" ? (
                                 <div>
                                     <Spinner

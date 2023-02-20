@@ -9,7 +9,7 @@ import { Button, Row, Col } from 'react-bootstrap';
 const TransactionsTable = () => {
     const { user, users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [checkBoxes, setCheckBoxes] = useState([{type: "All", isChecked: true}, {type: `${chains["chains"][0].name}`, isChecked: false}, {type: `${chains["chains"][1].name}`, isChecked: false}]);
+    const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
     const setCancelTransactionModal = (transaction) => {
         setConfirmModalContent(transaction);
@@ -17,43 +17,52 @@ const TransactionsTable = () => {
     };
 
     const selectOne = async (e) => {
-        console.debug(e)
+        // console.debug(e)
         let itemName = e.target.name;
         let checked = e.target.checked;
-        const newArray = checkBoxes.map(item =>
-            item.type === itemName ? { ...item, isChecked: checked } : { ...item, isChecked: false }
+
+        let newArray = checkBoxes.map(item =>
+            item.chain.name === itemName ? { ...item, isChecked: checked } : { ...item }
         );
-        let index = newArray.findIndex((c) => c.isChecked == true);
-        console.log(index)
-        if(index == -1) newArray[0].isChecked = true; 
+
         setCheckBoxes(newArray);
     };
 
+    const filterDataArrayByChain = (dataArray) => {
+
+        const checkedChains = checkBoxes.filter(item => item.isChecked);
+        // console.log(checkedChains)
+        const selectedChains = checkedChains.map(item => item.chain.id);
+        if (!Array.isArray(selectedChains) || !selectedChains.length) {
+            return [];
+        }
+
+        return dataArray.filter(data => selectedChains.includes(data.chainId));
+    };
+
     useEffect(() => {
-        console.log(chains["chains"]);
+        // console.log(chains["chains"]);
         const renderTableData = async () => {
-            console.log(transactions)
-            let orderTransactions = [];
-            if(checkBoxes[0].isChecked) orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
-            else {
-                if(checkBoxes[1].isChecked) orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains["chains"][0].id);
-                if(checkBoxes[2].isChecked) orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains["chains"][1].id);
-            }
-            console.log(orderTransactions)
+            // console.log(transactions)
+            let orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
+            // if(checkBoxes[1].isChecked) orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains["chains"][0].id);
+            // else if (checkBoxes[2].isChecked) orderTransactions = await transactions.filter(transaction => transaction.state == "SEND" && transaction.chain == chains["chains"][1].id);
+            // else orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
+            // console.log(orderTransactions)
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
-            console.log(transactionsByFee)
+            // console.log(transactionsByFee)
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
                 let chainIndex = chains["chains"].findIndex((c) => c.id === transaction.chain);
-                console.log(chainIndex)
+                // console.log(chainIndex)
 
                 const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
-                console.log(consumerAgent)
+                // console.log(consumerAgent)
 
                 let consumerUser;
-                console.log(consumerAgent)
-                console.log(!consumerAgent.length)
+                // console.log(consumerAgent)
+                // console.log(!consumerAgent.length)
                 if(consumerAgent.length) consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
                 
@@ -68,6 +77,7 @@ const TransactionsTable = () => {
                             price: amount,
                             fee: fee,
                             chain: chains["chains"][chainIndex].name,
+                            chainId: chains["chains"][chainIndex].id,
                         }
                     )
                 }         
@@ -83,6 +93,7 @@ const TransactionsTable = () => {
                             price: amount,
                             fee: fee,
                             chain: chains["chains"][chainIndex].name,
+                            chainId: chains["chains"][chainIndex].id,
                         }
                     )
                 }
@@ -97,13 +108,18 @@ const TransactionsTable = () => {
                             price: amount,
                             fee: fee,
                             chain: chains["chains"][chainIndex].name,
+                            chainId: chains["chains"][chainIndex].id,
                         }
                     )
                 }
                 
             }));
 
-            setTableDataArray(transactionsArray);
+            console.log(transactionsArray)
+            let chainTransactionArray = await filterDataArrayByChain(transactionsArray);
+
+            console.log(chainTransactionArray)
+            setTableDataArray(chainTransactionArray);
         };
         renderTableData();
 
@@ -116,9 +132,12 @@ const TransactionsTable = () => {
                 {/* <MiningBar version=""/> */}
                 <h2 className="pending-transactions-title">Pending transactions</h2>
                 <div className="filter-all-transactions">
+                <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                    <b > Chains: </b>
+                </div>
                 {checkBoxes.map((item) => (
-                            <label className="checkbox-container" key={item.type}>{item.type}
-                                <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
+                    <label className="checkbox-container" key={item.chain.id}>{item.chain.name}
+                                <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOne}/>
                                 <span className="checkmark"></span>
                             </label>
                         ))}

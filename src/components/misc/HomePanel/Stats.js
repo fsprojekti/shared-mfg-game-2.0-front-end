@@ -40,7 +40,7 @@ const Stats = () => {
             if (chains["chains"][cookies.activeChain].stake == 0 ||  chains["chains"][cookies.activeChain].stake == undefined) {
                 setRelativeStake({stake: 0});
             } else {
-                console.log(((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1));
+                // console.log(((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1));
                 let stake = ((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1)
                 setRelativeStake({stake: stake});
             } 
@@ -49,18 +49,18 @@ const Stats = () => {
 
         
         const renderServiceData = async () => {
-            console.log(services)
+            // console.log(services)
             const activeServices = await services["services"].filter(service => service.state === "ACTIVE");            
-            console.log(activeServices)
+            // console.log(activeServices)
             const userServices = await Promise.all(activeServices.map(async (item) => {
 
-                console.log(item)
+                // console.log(item)
 
                 const providerAgentObject = await agents["agents"].filter(agent => agent._id === item.agent);
-                console.log(providerAgentObject)
+                // console.log(providerAgentObject)
 
                 const providerUser = await users["users"].filter(user => user.id === providerAgentObject[0].user); 
-                console.log(providerUser)
+                // console.log(providerUser)
                    
                       
                 return ( 
@@ -76,7 +76,7 @@ const Stats = () => {
                     }
                 )
             }));
-            console.log(activeServices)
+            // console.log(activeServices)
             setServiceDataArray(userServices);
         };
         renderServiceData();

@@ -901,6 +901,7 @@ BlockchainData
   background-image: linear-gradient(#7c8a9e, #616f83);
   border-top: 1px solid #858d99;
   cursor: pointer;
+  z-index: 1;
 }
 
 .table-all-transactions th {
@@ -922,6 +923,7 @@ BlockchainData
   border-bottom:1px solid #e0e0e0;
   text-align: center;
   position: relative;
+  z-index: 0;
 }
 
 .table-all-transactions tbody tr:nth-child(2n) {

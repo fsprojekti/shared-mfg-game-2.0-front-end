@@ -1,4 +1,5 @@
 import {Col, Card, Button, Dropdown} from "react-bootstrap";
+import { FaTimes } from 'react-icons/fa';
 
 import {IconContext} from "react-icons";
 import {
@@ -19,7 +20,7 @@ import {useState, useContext, useEffect, useReducer} from "react";
 
 const UserInfo = () => {
 
-    const { chains, setCookie, updateActiveChain, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen} = useContext(AppContext);
+    const { chains, setCookie, updateActiveChain, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen, setIsCancelUserOrderModalOpen} = useContext(AppContext);
 
     const [relativeStake, setRelativeStake] = useState(0);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
@@ -33,11 +34,26 @@ const UserInfo = () => {
     const serviceState = (service) => {
         switch(service.state) {
             case "IDLE":
-                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button>;
+                return ( 
+                    <div>
+                        <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                    </div>
+                )
             case "DONE":
-                return  <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button>;
+                return ( 
+                    <div>
+                        <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                    </div>
+                )
             case "MARKET": 
-                return <Button class="btn btn-info btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>;
+                return (
+                    <div>
+                        <Button class="btn btn-info btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>
+                        <Button variant="danger" class="btn btn-primary btn-lg" style={{marginLeft: "0.7rem" }} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
+                            <FaTimes></FaTimes>
+                        </Button>
+                    </div>
+                )
             case "ACTIVE": 
                 switch(service.type) {
                     case "PROGRAMMING":
@@ -98,25 +114,18 @@ const UserInfo = () => {
         const getOtherServiceTypes = async () => {
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
             uniqueService = uniqueService.filter(item => item !== service.type);
-            setOtherServices(uniqueService)
+            setOtherServices({service1: uniqueService[0], service2: uniqueService[1]});
             const filledOrders = await services["services"].filter(service => service.state === "DONE");
 
 
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
 
-            if(numOfFirst.length > 0 && numOfSecond.length > 0) {
-                if(numOfFirst.length < numOfSecond.length || numOfFirst.length === numOfSecond.length) {
-                    setNumOfService1(numOfSecond.length - numOfFirst.length);
-                    setNumOfService2(numOfFirst.length - numOfFirst.length);
-                } else {
-                    setNumOfService1(numOfFirst.length - numOfSecond.length);
-                    setNumOfService2(numOfSecond.length - numOfSecond.length);
-                }
-            } else {
-                setNumOfService1(numOfFirst.length);
-                setNumOfService2( numOfSecond.length);
-            }
+            let sum = numOfFirst.length + numOfSecond.length;
+            let upgrades = Math.floor(sum / 2); 
+
+            setNumOfService1({num: numOfFirst.length - upgrades});
+            setNumOfService2({num: numOfSecond.length - upgrades});
 
         };
         getOtherServiceTypes();
@@ -195,19 +204,19 @@ const UserInfo = () => {
                 </div>
                 
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
-                    <div className={`${(numOfService1 > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
-                        <h4>{otherServices[0]}</h4>
+                    <div className={`${(numOfService1["num"] > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
+                        <h4>{otherServices.service1}</h4>
                     </div>
-                    <div className={`${(numOfService1 > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
-                        <h4>{numOfService1}</h4>
+                    <div className={`${(numOfService1["num"]  > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
+                        <h4>{numOfService1["num"] }</h4>
                     </div>
                 </div>
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
-                    <div className={`${(numOfService2 > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
-                        <h4>{otherServices[1]}</h4>
+                    <div className={`${(numOfService2["num"]  > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
+                        <h4>{otherServices.service2 }</h4>
                     </div>
-                    <div className={`${(numOfService2 > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
-                        <h4>{numOfService2}</h4>
+                    <div className={`${(numOfService2["num"]  > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
+                        <h4>{numOfService2["num"] }</h4>
                     </div>
                 </div>        
                     

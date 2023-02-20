@@ -135,6 +135,7 @@ export const ContextWrapper = (props) => {
     const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
     const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState({open: false, mode: "set"});
     const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false);
+    const [isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen] = useState({open: false});
     
     const [tradeModalContent, setTradeModalContent] = useState({})
     const [cancelOrderModalContent, setCancelOrderModalContent] = useState({});
@@ -170,16 +171,16 @@ export const ContextWrapper = (props) => {
     }
 
     const updateGameState = (game) => {
-        console.log("GAME EVENT")
-        console.log(game)
+        // console.log("GAME EVENT")
+        // console.log(game)
         setGame((oldGame) => {
             return {...oldGame, state: game.state}
         });
     }
 
     const updateChainsState = async (chainObj) => {
-        console.debug("CHAIN EVENT")
-        console.debug(chainObj);
+        // console.debug("CHAIN EVENT")
+        // console.debug(chainObj);
         if(chains["chains"].length != 0) {
             setChains((chains) => {
                 const oldChains = chains;
@@ -224,8 +225,8 @@ export const ContextWrapper = (props) => {
 
     
     const updateOrdersState = (orderObj) => {
-        console.debug("ORDER EVENT");
-        console.debug(orderObj);
+        // console.debug("ORDER EVENT");
+        // console.debug(orderObj);
           setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -259,8 +260,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.debug("SERVICE EVENT")
-        console.debug(serviceObj);
+        // console.debug("SERVICE EVENT")
+        // console.debug(serviceObj);
         setServicesAll((oldServices) => {
             const servicesArray = oldServices;
 
@@ -328,8 +329,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateTransactionsState = (transObj) => {
-        console.debug("TRANSACTION EVENT");
-        console.debug(transObj);
+        // console.debug("TRANSACTION EVENT");
+        // console.debug(transObj);
           setTransactions((oldTrans) => {
             const transactions = [...oldTrans];
 
@@ -387,8 +388,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateRankingState = (rankingObj) => {
-            console.debug("RANKIN EVENT")
-            console.debug(rankingObj);
+            // console.debug("RANKIN EVENT")
+            // console.debug(rankingObj);
             setRanking((oldRanking) => {
                 let ranking = [...oldRanking];
                 ranking = rankingObj;
@@ -397,8 +398,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateBridgesState = (bridgeObj) => {
-        console.debug("BRIDGE EVENT")
-        console.log((bridgeObj));
+        // console.debug("BRIDGE EVENT")
+        // console.log((bridgeObj));
         //Bridge object is returned with whole chain objects
         setBridges((oldBridges) => {
             let bridges = [...oldBridges];
@@ -409,8 +410,8 @@ export const ContextWrapper = (props) => {
 
 
     const updateBalancesState = (balanceObj) => {
-        console.debug("BALANCE EVENT")
-        console.debug((balanceObj));
+        // console.debug("BALANCE EVENT")
+        // console.debug((balanceObj));
 
         if(balanceObj.agent == agent.id) {
             console.log("Updating user balance")
@@ -449,8 +450,8 @@ export const ContextWrapper = (props) => {
     }
 
     const updateStakesState = (stakeObj) => {
-        console.debug("STAKE EVENT")
-        console.debug((stakeObj));
+        // console.debug("STAKE EVENT")
+        // console.debug((stakeObj));
 
         if(stakeObj.agent == agent.id) {
             console.log("Updating user stake")
@@ -458,8 +459,8 @@ export const ContextWrapper = (props) => {
                 return c.id === stakeObj.chain;
             });
 
-            console.log(index)
-            console.log(chains["chains"][index].name)
+            // console.log(index)
+            // console.log(chains["chains"][index].name)
 
             
             
@@ -1447,6 +1448,7 @@ export const ContextWrapper = (props) => {
             updateStakesState,
             chainsTest, setChainsTest,
             isCreateOrderModalOpen, setIsCreateOrderModalOpen,
+            isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen,
         }}>
             {props.children}
         </AppContext.Provider>

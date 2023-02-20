@@ -13,6 +13,7 @@ const RankingTable = () => {
                 const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
 
                 player.userName = userObject[0].name;
+                player.serviceType = agentObject[0].type;
 
                 return player
             })   
@@ -42,6 +43,7 @@ const RankingTable = () => {
                                 <th>Revenue from trade</th>
                                 <th>Revenue from stake</th>
                                 <th>Revenue from attacks</th>
+                                <th>Loss from attacks</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -53,13 +55,15 @@ const RankingTable = () => {
                                     >
                                         <td><strong>{index + 1}</strong></td>
                                         <td>{item.userName}</td>
-                                        <td>{item.type}</td>
+                                        <td>{item.serviceType}</td>
                                         <td>{item.level}</td>
                                         <td>{item.balance}</td>
-                                        <td>{item.stake}</td>
+                                        {/* Fix so it works with arbitrary number of stakes */}
+                                        <td>{item.stake[0] + item.stake[1]}</td>
                                         <td>{item.revenueTrade}</td>
                                         <td>{item.revenueStake}</td>
-                                        <td>{item.revenueAttack}</td>
+                                        <td>{item.revenueAttackGain}</td>
+                                        <td>{item.revenueAttackLoss}</td>
                                     </tr>
                                 ))
                             }

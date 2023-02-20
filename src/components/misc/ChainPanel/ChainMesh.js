@@ -8,7 +8,7 @@ import 'vis/dist/vis-network.min.css';
 
 //TODO: Naredi te node clickable
 const ChainMesh = () => {
-  const { chains, cookies, bridges, activeChain } = useContext(AppContext);
+  const { chains, bridges, activeChain } = useContext(AppContext);
 
   
 
@@ -25,7 +25,7 @@ const ChainMesh = () => {
 
     let nodes =  new DataSet (chains.chains.map((item, index) => {
       let currentChain = parseInt(activeChain);
-      return { id: item.id, label:item.name, color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10,color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
 
 
@@ -42,15 +42,26 @@ const ChainMesh = () => {
 				{ nodes, edges},
 				{
 					autoResize: true,
-          interaction:{hover:true},
+          interaction: {
+            hover: true,
+            dragNodes: false,// do not allow dragging nodes
+            zoomView: false, // do not allow zooming
+            dragView: false  // do not allow dragging
+          },
           edges: {
             color: "#411811",
             width: 2,
             arrows: "middle"
           },
           nodes: {
-            shape: 'dot', //box, database, square, circle, ellipse...
-            physics:true,
+            shape: 'database', //box, database, square, circle, ellipse...
+            physics:false,
+            font: {
+              // required: enables displaying <b>text</b> in the label as bold text
+              multi: 'html',
+              // optional: use this if you want to specify the font of bold text
+              bold: '16px arial black'
+          },
 
         },
           
@@ -100,8 +111,13 @@ const ChainMesh = () => {
       // });
 
       network.on("hoverNode", function (params) {
-        network.canvas.body.container.style.cursor = 'grab';
+        network.canvas.body.container.style.cursor = 'help';
       });
+
+      network.on("hoverEdge", function (params) {
+        network.canvas.body.container.style.cursor = 'help';
+      });
+
 
 
       network.on("blurNode", function (params) {
@@ -111,6 +127,11 @@ const ChainMesh = () => {
       network.on("blurEdge", function (params) {
         network.canvas.body.container.style.cursor = 'default';
       });  
+
+    //   network.moveTo({
+    //     position: {x: 0, y: 0},
+    //     scale: 1,
+    // })
       
       // network.on('afterDrawing', function(){
       // 	let data = new DataSet (chains.chains.map((item, index) => {
@@ -133,7 +154,7 @@ const ChainMesh = () => {
 	}, [chains.chains.length, activeChain, bridges.length]);
 
 	return (
-    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", border: '1px solid rgb(	211, 211, 211)', margin: "5px", width: "100%"}}>
+    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", borderColor: "transparent", boxShadow: "var(--light-shadow)", borderRadius: "8px", marginTop: "5px", marginLeft: "5px", marginBottom: "5px", width: "100%"}}>
       <div style={{maxHeight: "16rem", height: "100rem", width: "100%"}} ref={visJsRef} />
       <ChainData />
     </div>
