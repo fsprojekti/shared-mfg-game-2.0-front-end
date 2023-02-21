@@ -161,6 +161,7 @@ const AttackCard = () => {
                                 {
                                 context.stealVotes["stealVotes"] == undefined ? (
                                     <>
+                                    
                                     <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
                                         {loading === "steal" ? (
                                             <div>
