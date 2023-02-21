@@ -39,7 +39,7 @@ const AttackCard = () => {
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
-        console.log(context.stealVotes["stealVotes"][0].bridges.length)
+        console.log(context.stealVotes)
     }, [])
 
 
@@ -109,7 +109,7 @@ const AttackCard = () => {
                             {context.bridges.length > 0 ? (
                             <Card.Body>
                             
-                                <Card.Title style={{padding: "10px"}}> {context.stealVotes["stealVotes"][0].bridges.length == 0 ? `Vote To Steal From ${context.bridges[0].name}` : 'Your vote was casted'}   </Card.Title>
+                                <Card.Title style={{padding: "10px"}}> {context.stealVotes["stealVotes"].bridges.length == 0 ? `Vote To Steal From ${context.bridges[0].name}` : 'Your vote was casted'}   </Card.Title>
                                 
                                 <Card.Text>
 
@@ -149,7 +149,7 @@ const AttackCard = () => {
                             )}
 
                             {
-                                context.stealVotes["stealVotes"][0].bridges.length == 0 ? (
+                                context.stealVotes["stealVotes"].bridges.length == 0 ? (
                                     <>
                                     <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
                                         {loading === "steal" ? (
