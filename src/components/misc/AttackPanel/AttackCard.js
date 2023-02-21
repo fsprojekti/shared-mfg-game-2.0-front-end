@@ -39,7 +39,7 @@ const AttackCard = () => {
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
-        console.log(context.stealVotes[0].bridges.length)
+        console.log(context.stealVotes["stealVotes"][0].bridges.length)
     }, [])
 
 
