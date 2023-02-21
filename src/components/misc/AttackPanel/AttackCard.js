@@ -107,8 +107,17 @@ const AttackCard = () => {
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
                             <Card.Body>
-                            
-                                <Card.Title style={{padding: "10px"}}> {context.stealVotes["stealVotes"].bridges.length == 0 ? `Vote To Steal From ${context.bridges[0].name}` : 'Your vote was casted'}   </Card.Title>
+                                
+                                {
+                                    context.stealVotes["stealVotes"] !== undefined ? (
+                                        <Card.Title style={{padding: "10px"}}> {context.stealVotes["stealVotes"].bridges.length == 0 ? `Vote To Steal From ${context.bridges[0].name}` : 'Your vote was casted'}   </Card.Title>
+                                    )
+                                    :
+                                    (
+                                        <Card.Title style={{padding: "10px"}}> Vote to steal from  {context.bridges[0].name} </Card.Title>
+                                    )
+                                }
+                                
                                 
                                 <Card.Text>
 
@@ -147,8 +156,10 @@ const AttackCard = () => {
                                 </Card.Body>
                             )}
 
-                            {
-                                context.stealVotes["stealVotes"].bridges.length == 0 ? (
+                            
+                                
+                                {
+                                context.stealVotes["stealVotes"] == undefined ? (
                                     <>
                                     <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
                                         {loading === "steal" ? (
@@ -191,6 +202,8 @@ const AttackCard = () => {
 
                                 )
                             }
+                                
+
                            
 
                         
