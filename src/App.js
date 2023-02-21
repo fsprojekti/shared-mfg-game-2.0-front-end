@@ -140,10 +140,10 @@ function App() {
             if(context.cookies.timeDiff !== undefined) {
                 console.debug("Setting time difference")
                 chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
-                chainsObj[0].updatedAt = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+                chainsObj[0].blockTimestamp = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
             }
 
-
+            chainsObj[0].blockTimestamp = chainsObj[0].updatedAt;
 
             let contextChains = context.chains;
             contextChains.chains = chainsObj;

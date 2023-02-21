@@ -69,32 +69,31 @@ const AttackCard = () => {
         }
     }
 
-
-    let voteBlockPlayer = async () => {
+    const confirmVoteOff = async () => {
         try {
-            
-            setLoading("block");
-
-            console.log(context.bridges[0])
-            await context.apiUserBlockOn(context.bridges[bridge]._id);
-
+            setLoading("steal");
+            const res = await context.apiUserStealVoteOFF(context.stealVotes["stealVotes"].bridges[0]);
+            setLoading(false);
             context.setNote({
                 show: true,
                 type: "success",
-                msg: "Attack vote casted",
+                msg: res,
                 heading: "Success! "
             })
             setLoading(false);
-        } catch (e) {
+        } catch(e) {
             setLoading(false);
+            console.log(e)
             context.setNote({
                 show: true,
                 type: "danger",
-                msg: e.response.data.message,
-                heading: "Could not vote! "
+                msg: e.message,
+                heading: "Could not retract! "
             })
         }
-    }
+    };
+
+
 
 
     return (
@@ -171,7 +170,7 @@ const AttackCard = () => {
                                     </>
                                 ): (
                                     <>
-                                    <Button variant="success" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
+                                    <Button variant="success" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={confirmVoteOff} > 
                                         {loading === "steal" ? (
                                             <div>
                                                 <Spinner

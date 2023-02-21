@@ -190,46 +190,43 @@ export const ContextWrapper = (props) => {
     const updateChainsState = async (chainObj) => {
         // console.debug("CHAIN EVENT")
         // console.debug(chainObj);
-        if(chains["chains"].length != 0) {
-            setChains((chains) => {
-                const oldChains = chains;
+        setChains((chains) => {
+            const oldChains = chains;
 
-                //Check if chain already exists in the state
-                const index = oldChains["chains"].findIndex(c => {
-                    return c.id === chainObj.id;
-                });
-
-                //If chain exists, update its state
-                if(index !== -1) {
-                    oldChains.chains[index].balance = chainObj.balance;
-                    oldChains.chains[index].stake = chainObj.stake;
-
-                    //Check if block number is higher than the one in current state
-                    if(chainObj.blockNumber > oldChains.chains[index].blockNumber){
-                        //Checking if this is a first run, to calculate time difference between server and client
-                        if(oldChains.chains[0].timeDiff === undefined) { 
-                            let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
-                            setCookie('timeDiff', difference);  
-                            oldChains.chains[0].timeDiff = difference;
-                            console.log("time difference: " + difference + "ms")
-                        }          
-                        
-                        oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
-                        oldChains.chains[index].blockNumber = chainObj.blockNumber; 
-                    }
-    
-                    // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
-
-                    return oldChains;
-                } else if(index == -1 && chainObj.id !== undefined) {
-                    oldChains.chains.push(chainObj);
-                    return oldChains;
-                }
-                
-                return chains;         
+            //Check if chain already exists in the state
+            const index = oldChains["chains"].findIndex(c => {
+                return c.id === chainObj.id;
             });
-        }
 
+            //If chain exists, update its state
+            if(index !== -1) {
+                oldChains.chains[index].balance = chainObj.balance;
+                oldChains.chains[index].stake = chainObj.stake;
+
+                //Check if block number is higher than the one in current state
+                if(chainObj.blockNumber > oldChains.chains[index].blockNumber){
+                    //Checking if this is a first run, to calculate time difference between server and client
+                    if(oldChains.chains[0].timeDiff === undefined) { 
+                        let difference = Date.now() - (new Date(oldChains.chains[index].blockTimestamp)).getTime() - 10000;
+                        setCookie('timeDiff', difference);  
+                        oldChains.chains[0].blockTimestamp = difference;
+                        console.log("time difference: " + difference + "ms")
+                    }          
+                    
+                    oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
+                    oldChains.chains[index].blockNumber = chainObj.blockNumber; 
+                }
+
+                // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
+
+                return oldChains;
+            } else if(index == -1 && chainObj.id !== undefined) {
+                oldChains.chains.push(chainObj);
+                return oldChains;
+            }
+            
+            return chains;         
+        });
     }
 
     
