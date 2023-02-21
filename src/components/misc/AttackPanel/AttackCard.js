@@ -159,7 +159,8 @@ const AttackCard = () => {
                             
                                 
                                 {
-                                context.stealVotes["stealVotes"] == undefined ? (
+                                (context.stealVotes["stealVotes"] == undefined || context.stealVotes["stealVotes"].bridges.length == 0) ? (
+
                                     <>
                                     
                                     <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
