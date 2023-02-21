@@ -4,7 +4,7 @@ import {useContext, useState} from "react";
 import { AppContext } from "../../context/context";
 import axios from "axios";
 import PanelAdmin from "../panels/PanelAdmin";
-const config = require("../../config.json");
+const config = require("../../config");
 axios.defaults.baseURL = config.server;
 
 

@@ -1,7 +1,7 @@
 import React, {useState, useContext, useCallback} from 'react'
 import axios from "axios";
 import {useCookies} from "react-cookie";
-import config from "../config.json";
+import config from "../config";
 import { GiConsoleController } from 'react-icons/gi';
 axios.defaults.baseURL = config.server;
 

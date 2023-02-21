@@ -4,7 +4,7 @@ import NoteDismissible from "../notifications/NoteDismissible";
 import {useContext, useState} from "react";
 import { AppContext } from "../../context/context";
 
-const config = require("../../config.json");
+const config = require("../../config");
 
 
 const PanelLogin = () => {
