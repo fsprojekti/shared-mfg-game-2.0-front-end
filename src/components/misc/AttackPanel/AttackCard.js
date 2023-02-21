@@ -39,7 +39,7 @@ const AttackCard = () => {
             setUsers(usersWithoutMainPlayer);
         };
         renderUserTable();
-        // console.log(users)
+        console.log(context.stealVotes[0].bridges.length)
     }, [])
 
 
@@ -100,17 +100,16 @@ const AttackCard = () => {
     return (
         <>
             <div className="d-flex "> 
-                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", margin: "5px", borderColor: "transparent"}}>
+                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", borderColor: "transparent"}}>
                
                 <Row >
                 <Col>
-                    
                     <h3> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
                             <Card.Body>
                             
-                                <Card.Title style={{padding: "10px"}}> Vote To Steal From a {context.bridges[0].name}  </Card.Title>
+                                <Card.Title style={{padding: "10px"}}> {context.stealVotes["stealVotes"][0].bridges.length == 0 ? `Vote To Steal From ${context.bridges[0].name}` : 'Your vote was casted'}   </Card.Title>
                                 
                                 <Card.Text>
 
@@ -149,23 +148,51 @@ const AttackCard = () => {
                                 </Card.Body>
                             )}
 
-                            <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
-                            {loading === "steal" ? (
-                                <div>
-                                    <Spinner
-                                    as="span"
-                                    animation="grow"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                />
-                                <text> Adding vote </text>
-                                </div>
-                            ) : ( <text> Vote to Steal  </text>)
-                            
-                            }   
-                            
-                            </Button>    
+                            {
+                                context.stealVotes["stealVotes"][0].bridges.length == 0 ? (
+                                    <>
+                                    <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
+                                        {loading === "steal" ? (
+                                            <div>
+                                                <Spinner
+                                                as="span"
+                                                animation="grow"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            <text> Adding vote </text>
+                                            </div>
+                                        ) : ( <text> Vote to Steal  </text>)
+                                        
+                                        }   
+                                        
+                                    </Button>    
+                                    </>
+                                ): (
+                                    <>
+                                    <Button variant="success" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
+                                        {loading === "steal" ? (
+                                            <div>
+                                                <Spinner
+                                                as="span"
+                                                animation="grow"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            <text> Removing vote </text>
+                                            </div>
+                                        ) : ( <text> Remove vote  </text>)
+                                        
+                                        }   
+                                        
+                                    </Button>    
+                                    </>
+
+                                )
+                            }
+                           
 
                         
                         </Card>

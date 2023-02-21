@@ -1,17 +1,19 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AppContext} from "../../../context/context";
 
 
 const ChainData = () => {
-    const { chains, cookies, setCookie, updateActiveChain} = useContext(AppContext);
+    const context = useContext(AppContext);
+    const [transactionsLengthArray, setTransactionsLengthArray] = useState([]);
 
-
-    async function changeChain(chainId){
-        setCookie("activeChain", chainId);
-        updateActiveChain(chainId);
-        console.log(chains.chains[chainId]);
-        console.log("ACtive chain:" + chains.chains[chainId].id);
-    }
+    useEffect(() => {
+        const transactions = context.transactions;
+        let mainChainTransactions = transactions.filter((item) => item.chain === context.chains.chains[0].id);
+        let sideChainTransactions = transactions.filter((item) => item.chain === context.chains.chains[1].id);
+        // console.log("Main chain transactions: " + mainChainTransactions.length);
+        // console.log("Side chain transactions: " + sideChainTransactions.length);
+        setTransactionsLengthArray([mainChainTransactions.length, sideChainTransactions.length]);
+    }, [context.transactions]);
 
 
     return (
@@ -27,23 +29,21 @@ const ChainData = () => {
                                 <th>Block no.</th>
                                 <th>Balance</th>
                                 <th>Staked</th>
+                                <th>Transactions</th>
                             </tr>
                             </thead>
                             <tbody>
                             {
-                                chains.chains.map((item, index) => (
+                                context["chains"].chains.map((item, index) => (
                                     <tr
-                                        key={item._id} //TODO: Naredi da se gleda trenutni chain {}
-                                        style={{background: `${item.name === chains.chains[cookies.activeChain].name ? '#FBBF0C' : ''}`, cursor:"pointer"}}
-                                        // onClick={changeChain(index)}
-                                        onClick={(item) => (changeChain(index))} 
+                                        key={item._id}
                                     >
                                         <td><strong>{index + 1}</strong></td>
                                         <td>{item.name}</td>
                                         <td>{item.blockNumber}</td>
                                         <td>{item.balance}</td>
                                         <td>{item.stake}</td>
-                                        {/* <td>{item.transactions.length()}</td> */}
+                                        <td>{transactionsLengthArray[index]}</td>
                                     </tr>
                                 ))
                             }

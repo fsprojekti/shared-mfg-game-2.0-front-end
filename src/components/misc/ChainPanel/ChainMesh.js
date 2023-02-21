@@ -25,7 +25,7 @@ const ChainMesh = () => {
 
     let nodes =  new DataSet (chains.chains.map((item, index) => {
       let currentChain = parseInt(activeChain);
-      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10,color: {background: `${index == currentChain ? '#FBBF0C' : '#7DCDF5'}`}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10,color: {background: '#7DCDF5'}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
 
 
@@ -68,48 +68,6 @@ const ChainMesh = () => {
 				}
 			)
 
-      //TODO: Popravi da dela spet to šaltanje
-      // network.on("doubleClick", function (params) {
-      //   if (params.nodes.length === 1) {
-      //     // console.log(params.nodes[0])
-      //     // console.log(localStorage.getItem("activeChain")+1);
-          
-      //     var previousNode = nodes.get(parseInt(cookies.activeChain));
-      //     console.log(previousNode);
-      //     // console.log(previousNode)
-      //     previousNode.color = {
-      //       background: '#7DCDF5',
-      //     }
-      //     nodes.update(previousNode);
-
-      //     var nodeID = params.nodes[0];
-          
-      //     var clickedNode = nodes.get(nodeID);
-      //     clickedNode.color = {
-      //       background: '#FBBF0C',
-      //     }
-          
-      //     nodes.update(clickedNode);
-      //     updateActiveChain(nodeID);
-      //     setCookie("activeChain",nodeID)
-
-      //     apiUserFetch(cookies.userId, activeChain)
-      //           .then(user => {
-      //               console.log("User" + user)
-      //               setUser({
-      //                   id: user.id,
-      //                   type: user.type,
-      //                   state: user.state,
-      //                   balance: user.balance,
-      //                   stake: user.stake,
-      //                   // typeOfService: user.typeOfService,
-
-      //               })
-      //           }).catch(e => console.log(e))
-  
-      //    }
-      // });
-
       network.on("hoverNode", function (params) {
         network.canvas.body.container.style.cursor = 'help';
       });
@@ -128,24 +86,6 @@ const ChainMesh = () => {
         network.canvas.body.container.style.cursor = 'default';
       });  
 
-    //   network.moveTo({
-    //     position: {x: 0, y: 0},
-    //     scale: 1,
-    // })
-      
-      // network.on('afterDrawing', function(){
-      // 	let data = new DataSet (chains.chains.map((item, index) => {
-      //     let currentChain = parseInt(activeChain);
-      //     return { id: item.id, x:100*index, y:0};
-      //   }));
-      //   nodes.update(data);
-      // })
-
-
-      
-
-
-
 
   };
 
@@ -155,7 +95,7 @@ const ChainMesh = () => {
 
 	return (
     <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", borderColor: "transparent", boxShadow: "var(--light-shadow)", borderRadius: "8px", marginTop: "5px", marginLeft: "5px", marginBottom: "5px", width: "100%"}}>
-      <div style={{maxHeight: "16rem", height: "100rem", width: "100%"}} ref={visJsRef} />
+      <div style={{maxHeight: "15.5rem", height: "100rem", width: "100%"}} ref={visJsRef} />
       <ChainData />
     </div>
 )

@@ -166,7 +166,7 @@ const CreateOrderModal = () => {
                             
                                 <InputGroup.Text >CHAIN</InputGroup.Text>
                                 <Dropdown >
-                                <Dropdown.Toggle variant="outline-secondary"  style={{width: "11rem"}}>
+                                <Dropdown.Toggle variant="outline-secondary"  style={{width: "10rem"}}>
                                     <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
                                 </Dropdown.Toggle>
                     
@@ -189,7 +189,7 @@ const CreateOrderModal = () => {
 
                         
                   
-                    <InputGroup >
+                    <InputGroup style={{width: "14.5rem"}} >
                         <InputGroup.Text >NEW PRICE</InputGroup.Text>
                         <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
                     </InputGroup>

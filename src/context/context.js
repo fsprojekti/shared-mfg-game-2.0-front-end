@@ -367,20 +367,21 @@ export const ContextWrapper = (props) => {
 
         if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
             setServices((oldServices) => {
-                console.log("Updating users services state")
+                console.log("Updating users services array state")
                 let services = oldServices;
                 
                 let agent= agents["agents"].filter(agent=> agent.account == transObj[0].to );
                 let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld === "IDLE");
-                console.log(service)
-                console.log(agent[0]._id)
 
-                let newObj = {};
-                console.log(service.length);
-                if(service == undefined ||service.length == 0 || services["services"][services["services"].length - 1]._id == service[0]._id) {
+
+                let serviceIndex = services["services"].findIndex((s) => s._id === service[0]._id);
+                
+                if(service == undefined ||service.length == 0 || serviceIndex !== -1) {
                     console.log("No new service")
                     return services;
                 }             
+
+                let newObj = {};
 
                 newObj = {...service[0]};
                 newObj.state = "ACTIVE";

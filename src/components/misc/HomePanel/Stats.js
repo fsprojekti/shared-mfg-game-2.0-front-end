@@ -14,6 +14,8 @@ const Stats = () => {
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState({num: 0});
     const [numOfService2, setNumOfService2] = useState({num: 0});
+    const [sumBalance, setSumBalance] = useState({balance: 0});
+    const [sumStake, setSumStake] = useState({stake: 0});
 
     let backColor= "#ffffff";
 
@@ -36,16 +38,28 @@ const Stats = () => {
         
 
         const renderStakeData = async () => {
-            if(Object.keys(usersStakes).length == 0) return;
-            if (chains["chains"][cookies.activeChain].stake == 0 ||  chains["chains"][cookies.activeChain].stake == undefined) {
-                setRelativeStake({stake: 0});
-            } else {
-                // console.log(((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1));
-                let stake = ((usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] / chains["chains"][cookies.activeChain].stake) * 100).toFixed(1)
-                setRelativeStake({stake: stake});
-            } 
-        };
+
+            let stakesKeys = [];
+            for(let i = 0; i < Object.keys(usersStakes).length; i++) {
+                stakesKeys[i] = Object.keys(usersStakes[i])[0];
+            }
+            let stakeIndex1 =  stakesKeys.indexOf(chains["chains"][0].name);
+            let stakeIndex2 =  stakesKeys.indexOf(chains["chains"][1].name);
+            let stakeIndexes = [stakeIndex1, stakeIndex2];
+
+            const stakes = usersStakes;
+            let sum = usersStakes.reduce((prev,next, index) => prev + next[[`${chains["chains"][stakeIndexes[index]].name}`]],0);
+            setSumStake({stake: sum});
+            };
         renderStakeData();
+
+        const renderBalanceData = async () => {
+                const balances = usersBalances;
+                let sum = await balances.reduce((prev,next, index) => prev + next[[`${chains["chains"][index].name}`]],0);
+                console.log(sum)
+                setSumBalance({balance: sum});
+        };
+        renderBalanceData();
 
         
         const renderServiceData = async () => {
@@ -123,7 +137,7 @@ const Stats = () => {
                         <img src={balanceImg} alt={"balance"}/>
                     </div>
                     <div className={"stats-value"}>
-                        <p>{ Object.keys(usersBalances).length !== 0 ?  usersBalances[activeChain][`${chains["chains"][activeChain].name}`] : 0}</p>
+                        <p>{ Object.keys(usersBalances).length !== 0 ?  sumBalance.balance : 0}</p>
                     </div>
                 </div>
                 <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", background: (getColor(service.type))}}>
@@ -142,11 +156,11 @@ const Stats = () => {
                         <img src={stakeImg} alt={"stake"}/>
                     </div>
                     <div className={"stake-value"}>
-                        <p>{ Object.keys(usersStakes).length !== 0 ?  usersStakes[stakeIndex][`${chains["chains"][activeChain].name}`] : 0}</p>
+                        <p>{sumStake.stake}</p>
                     </div>
-                    <div className={"stake-value-proc"}>
+                    {/* <div className={"stake-value-proc"}>
                         <p>({relativeStake.stake}%)</p>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", backgroundColor: backColor}}>
                     <div className="upgrade-value" >

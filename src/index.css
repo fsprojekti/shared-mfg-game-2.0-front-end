@@ -351,6 +351,20 @@ Sidebar
   -webkit-text-fill-color: transparent;
 }
 
+.stats-sidebar-container-blue h4{
+  margin-bottom: 0;
+  background: #2368c2;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stats-sidebar-container-black h4{
+  margin-bottom: 0;
+  background: #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .create-order-container {
   border-radius: 8px;
   margin: 40px;

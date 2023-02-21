@@ -50,7 +50,7 @@ const MiningBar = (props) => {
                         <div className={`mining-progress-filler${props.version}`} style={{width: `${width}%`}}></div>
                     </div>
                 </div>
-                {props.showText === "false" ? null : <span className="mining-progress-text">Time until new block: <b>{timeLeft}</b>  s</span>}
+                {props.showText === "false" ? null : <span className="mining-progress-text">New block in: <b>{timeLeft}</b>  s</span>}
                 
             </div>
         </>

@@ -100,7 +100,7 @@ function App() {
 
         //Load agents
         const agents = context.apiGameAgents().then(agentsObj => {
-            console.log(JSON.stringify(agentsObj));
+            // console.log(JSON.stringify(agentsObj));
             let contextAgents = context.agents;
             contextAgents.agents = agentsObj;
             
@@ -116,8 +116,6 @@ function App() {
 
         //Load user's purchased and active services
         const userServices = context.apiUserFetchServices().then(services => {
-            console.log(services)
-
             let contextServices = context.services;
             contextServices.services = services["services"];
             
@@ -163,7 +161,7 @@ function App() {
         //Load user's steal votes
         const stealVotes = context.apiUserStealGet().then(stealVotes => {
             console.debug((stealVotes))
-            context.setStealVotes(stealVotes);
+            context.setStealVotes({stealVotes: stealVotes[0]});
         }).catch(e => console.log(e))
 
         //Load user's block votes
