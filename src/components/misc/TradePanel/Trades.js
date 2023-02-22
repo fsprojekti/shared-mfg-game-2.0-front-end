@@ -64,14 +64,12 @@ const Trades = () => {
         return time.toFixed(2);
     };
 
-    const getColor = (service) => {
-        switch(service) {
-            case "MECHANICAL":
+    const getColor = (chainName) => {
+        switch(chainName) {
+            case chains["chains"][0].name:
                 return "#db6d28";
-            case "ELECTRICAL": 
+            case chains["chains"][1].name: 
                 return "#388bfd";
-            case "PROGRAMMING": 
-                return "#a371f7";
             default:
                 return "rgb(0, 0, 0)";
         }
@@ -126,7 +124,7 @@ const Trades = () => {
             if (checked1) {
                 await array1.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);
                 await array1.forEach((item) => {
@@ -137,7 +135,7 @@ const Trades = () => {
             } else {
                 await array1.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array1.sort((a, b) => a.price - b.price);
                 setDataArray1(array1);
@@ -145,7 +143,7 @@ const Trades = () => {
             if (checked2) {
                 await array2.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array2.sort((a, b) => a.serviceDuration - b.serviceDuration);
                 await array2.forEach((item) => {
@@ -156,7 +154,7 @@ const Trades = () => {
             } else {
                 await array2.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array2.sort((a, b) => a.price - b.price);
                 setDataArray2(array2);
@@ -166,7 +164,7 @@ const Trades = () => {
             if (checked3) {
                 await array3.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array3.sort((a, b) => a.serviceDuration - b.serviceDuration);
                 await array3.forEach((item) => {
@@ -176,7 +174,7 @@ const Trades = () => {
             } else {
                 await array3.forEach((item) => {
                     item.price = parseInt(item.price);
-                    item.color = getColor(item.serviceType);
+                    item.color = getColor(item.chainName);
                 });
                 await array3.sort((a, b) => a.price - b.price);
                 setDataArray3(array3);
