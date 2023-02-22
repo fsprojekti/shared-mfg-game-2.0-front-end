@@ -35,7 +35,7 @@ const TradeModal = () => {
             
             await import('./HelperFunctions/functions')
             .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(txFee, tradeModalContent.price, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
+                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
             })
             .catch(err => {
                 console.log(err);
