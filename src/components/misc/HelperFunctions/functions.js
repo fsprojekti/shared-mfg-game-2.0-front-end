@@ -44,7 +44,7 @@ export const checkNumber = async (input1, input2, balance, transactions, agent, 
                return ({state: -1,msg:"Values must be an integers"});
          } else {
                if (parseInt(input1) + parseInt(input2) + parseInt(sumOfTransactions) > balance) {
-                  return ({state: -1, msg:"Balance to low"});
+                  return ({state: -1, msg:`Balance too low on ${chain.name}`});
                } else {
                      return ({state: 1, msg:"OK"});
                   }
@@ -78,10 +78,10 @@ export const checkNumberUnstake = async (input1, input2, balance, stake, transac
                return ({state: -1,msg:"Values must be an integers"});
          } else {
                if (parseInt(input2) + parseInt(sumOfTransactions) > balance) {
-                  return ({state: -1, msg:"Balance to low"});
+                  return ({state: -1, msg:`Balance too low on ${chain.name}`});
                } else {
                   if (parseInt(input1) > stake) {
-                     return ({state: -1, msg:"You don't have enough stake"});
+                     return ({state: -1, msg:`Stake too low on ${chain.name}`});
                   } else
                      return ({state: 1, msg:"OK"});
                   }
