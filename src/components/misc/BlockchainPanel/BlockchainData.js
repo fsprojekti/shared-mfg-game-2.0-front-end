@@ -85,8 +85,8 @@ const BlockchainData = () => {
         try {
             let numCheck; 
             await import('../HelperFunctions/functions')
-            .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(txFee,"0", context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`], context.transactions, context.agent, context.chains["chains"][stakeChain])
+            .then(async({ checkNumberUnstake }) => {
+                numCheck = await checkNumberUnstake(newStake, txFee, context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`], context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`], context.transactions, context.agent, context.chains["chains"][stakeChain])
             })
             .catch(err => {
                 console.log(err);
