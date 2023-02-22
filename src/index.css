@@ -1201,9 +1201,6 @@ Pending transactions
   padding: 0;
   text-align: left;
 }
-.table-pending-transactions-tooltip-react {
-  visibility: visible;
-}
 
 .table-pending-transactions tbody tr:nth-child(2n) {
   background:#f0f3f5;

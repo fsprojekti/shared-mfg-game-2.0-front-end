@@ -59,19 +59,18 @@ const TransactionsTable = () => {
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             // console.log(transactionsByFee)
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
-                let { from, to, fee, amount} = transaction;
+                let { from, to, fee, amount, chain} = transaction;
 
-                let chainIndex = chains["chains"].findIndex((c) => c.id === transaction.chain);
+                let chainIndex = chains["chains"].findIndex((c) => c.id === chain);
 
                 const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
                 let consumerUser;
                 if(consumerAgent.length) consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
                 
-                const providerAgent = await agents["agents"].filter(agent => agent.account === orderTransactions[0].to);
+                const providerAgent = await agents["agents"].filter(agent => agent.account === to);
                 let providerUser;
                 if(providerAgent.length) providerUser =  await users["users"].filter(user => user.id === providerAgent[0].user);
-
 
                 return (
                     {
