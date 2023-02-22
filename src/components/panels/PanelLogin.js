@@ -29,6 +29,15 @@ const PanelLogin = () => {
         try {
             let data = await context.apiUserRegister(registerNumberLogin, name, email);
             console.log(data)
+            context.setNote((prevState) => {
+                return({
+                  ...prevState,
+                  msg: "Check you email",
+                  heading: 'Success',
+                  show: true,
+                  type: 'success'
+                });
+              });
         } catch (e) {
             console.log(e)
             context.setNote((prevState) => {
@@ -127,7 +136,7 @@ const PanelLogin = () => {
                     <Card style={{width: '25rem'}} size="lg">
                         <Card.Header className={"bg-dark text-white"}><h5>Login</h5></Card.Header>
                         <InputGroup className="mb-3 p-2">
-                            <InputGroup.Text id="input-user-registration-number">Register code</InputGroup.Text>
+                            <InputGroup.Text id="input-user-registration-number">Player Id</InputGroup.Text>
                             <FormControl onChange={e => setRegisterNumberLogin(e.target.value)}></FormControl>
                         </InputGroup>
                         <InputGroup className="mb-3 p-2">
