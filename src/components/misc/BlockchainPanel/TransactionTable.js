@@ -64,7 +64,6 @@ const TransactionsTable = () => {
                 let chainIndex = chains["chains"].findIndex((c) => c.id === transaction.chain);
 
                 const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
-
                 let consumerUser;
                 if(consumerAgent.length) consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
