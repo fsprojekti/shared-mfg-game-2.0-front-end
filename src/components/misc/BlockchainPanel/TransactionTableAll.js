@@ -7,7 +7,7 @@ const AllTransactionsTable = () => {
     const [tableDataArray, setTableDataArray] = useState([]);
     const [sortBy, setSortBy] = useState('time');
     const [orderOfSort, setOrderOfSort] = useState('ascending');
-    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}]);
+    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}, {type: "Mine", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
     const displayTime = async (time) => {
@@ -49,6 +49,18 @@ const AllTransactionsTable = () => {
                     return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
                 }
             });
+            
+        } if (sortBy === 'chain') {
+            return await dataArray.sort((a, b) => {
+                let textA = a.chainName.toUpperCase();
+                let textB = b.chainName.toUpperCase();
+                if (orderOfSort === "descending") {
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                } if (orderOfSort === "ascending") {
+                    return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
+                }
+            });
+            
         } if (sortBy === 'typeOfService') {
             return await dataArray.sort((a, b) => {
                 if (orderOfSort === "descending") {
@@ -125,8 +137,7 @@ const AllTransactionsTable = () => {
     useEffect(() => {
         const renderTableData = async () => {
             const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED");
-            // console.log(minedTransactions);
-
+            
             const transactionsArray = await Promise.all(minedTransactions.map(async (transaction) => {
                 let { from, to, fee, amount} = transaction;
 
@@ -161,37 +172,20 @@ const AllTransactionsTable = () => {
                 let seconds = d.getSeconds();
                 let time = hours + ":" + minutes + ":" + seconds;
 
-                if(transaction.type === "SERVICE") {
-                    // console.log(providerAgent[0].type)
-                    return {
-                        id: transaction._id,
-                        consumer: consumer,
-                        provider: provider,
-                        amount: amount,
-                        fee: fee,
-                        type: providerAgent[0].type,
-                        createdAt: time,
-                        chain: transaction.chain,
-                        chainName: chains["chains"][chainIndex].name,
-                        timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
-                    }
+                return {
+                    id: transaction._id,
+                    consumer: consumer,
+                    provider: provider,
+                    amount: amount,
+                    fee: fee,
+                    type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
+                    createdAt: time,
+                    chain: transaction.chain,
+                    chainName: chains["chains"][chainIndex].name,
+                    timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
                 }
-                    
 
-                return (
-                    {
-                        id: transaction._id,
-                        consumer: consumer,
-                        provider: provider,
-                        amount: amount,
-                        fee: fee,
-                        type: transaction.type,
-                        createdAt: time,
-                        chain: transaction.chain,
-                        chainName: chains["chains"][chainIndex].name,
-                        timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
-                    }
-                )
+
                 
             }));
             const filteredTransactionsArrayByType = await filterDataArrayByType(transactionsArray);
@@ -203,12 +197,27 @@ const AllTransactionsTable = () => {
         
         renderTableData();
 
-    }, [game, checkBoxes, chainCheckBoxes, orderOfSort, transactions]);
+    }, [checkBoxes, chainCheckBoxes, orderOfSort, transactions]);
+
 
 
     return (
         <>
-            <div className="table-all-transactions-container">
+            <div >
+                <div className="filter-all-transactions">                    
+                    <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
+                        <b > Chains: </b>
+                    </div>
+
+                    {
+                        chainCheckBoxes.map((item) => (
+                            <label className={`checkbox-container-${item.chain.name.toLowerCase()}`} key={item.chain.id}>{item.chain.name}
+                                <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOneChain}/>
+                                <span className="checkmark"></span>
+                            </label>
+                        ))
+                    }
+                </div>
                 <div className="filter-all-transactions">
                      <div className="d-block" style={{position: "relative", margin: "10px"}}>
                         <b > Types: </b>
@@ -217,20 +226,6 @@ const AllTransactionsTable = () => {
                         checkBoxes.map((item) => (
                             <label className="checkbox-container" key={item.type}>{item.type}
                                 <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
-                                <span className="checkmark"></span>
-                            </label>
-                        ))
-                    }
-                    
-                    <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
-                        <b > Chains: </b>
-                    </div>
-
-
-                    {
-                        chainCheckBoxes.map((item) => (
-                            <label className="checkbox-container" key={item.chain.id}>{item.chain.name}
-                                <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOneChain}/>
                                 <span className="checkmark"></span>
                             </label>
                         ))

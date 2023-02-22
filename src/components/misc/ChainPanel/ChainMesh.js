@@ -4,13 +4,23 @@ import { Network } from "vis-network";
 import { DataSet } from 'vis-data'
 import ChainData from './ChainData';
 import 'vis/dist/vis-network.min.css';
+import {
+  FaHome,
+} from 'react-icons/fa';
+import { IconContext } from 'react-icons';
 
 
 //TODO: Naredi te node clickable
 const ChainMesh = () => {
   const { chains, bridges, activeChain } = useContext(AppContext);
 
-  
+  const renderIcon = () => {
+    return (
+      <IconContext.Provider>
+        <FaHome/>
+      </IconContext.Provider>
+    )
+};
 
 	const visJsRef = useRef(null);
 
@@ -24,8 +34,7 @@ const ChainMesh = () => {
     
 
     let nodes =  new DataSet (chains.chains.map((item, index) => {
-      let currentChain = parseInt(activeChain);
-      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10,color: {background: '#7DCDF5'}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+      return { id: item.id, value: (parseInt(item.balance) + parseInt(item.stake)), label: `<b>${item.name}</b>`, x: (200*index),y: 10, color: {background: (item.name == chains["chains"][0].name ? '#f0c808' : '#2274a5')}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
 
 
@@ -41,7 +50,7 @@ const ChainMesh = () => {
 				visJsRef.current,
 				{ nodes, edges},
 				{
-					autoResize: true,
+					autoResize: false,
           interaction: {
             hover: true,
             dragNodes: false,// do not allow dragging nodes
@@ -54,7 +63,7 @@ const ChainMesh = () => {
             arrows: "middle"
           },
           nodes: {
-            shape: 'database', //box, database, square, circle, ellipse...
+            shape: 'hexagon', //box, database, square, circle, ellipse...
             physics:false,
             font: {
               // required: enables displaying <b>text</b> in the label as bold text

@@ -4,6 +4,7 @@ import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstra
 import PieChart from './PieChart';
 import TransactionsTable from './TransactionTable';
 import AllTransactionsTable from './TransactionTableAll';
+import CancelTransactionModal from '../CancelTransaction';
 
 
 
@@ -236,7 +237,7 @@ const BlockchainData = () => {
                                         <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
                                     </InputGroup>
                
-                                <Button variant="success"  onClick={confirmStake} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px"}}>
+                                <Button  onClick={confirmStake} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px", backgroundColor: "#34ad6a", borderColor: "#34ad6a"}}>
                                 {loadingStake ? (
                                         <div>
                                             <Spinner
@@ -291,6 +292,7 @@ const BlockchainData = () => {
                 </div>
                 
             </div>
+            <CancelTransactionModal/>
         </>
     )
 };

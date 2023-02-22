@@ -3,7 +3,6 @@ import { AppContext } from '../../../context/context';
 import BarChart from './BarChart';
 import ToggleSwitch from './ToggleSwitch';
 import TradeModal from '../TradeModal';
-import CancelOrderModal from '../CancelOrderModal';
 
 const Trades = () => {
     const { users, orders, agents, servicesAll, service, chains } = useContext(AppContext);
@@ -67,9 +66,9 @@ const Trades = () => {
     const getColor = (chainName) => {
         switch(chainName) {
             case chains["chains"][0].name:
-                return "#db6d28";
+                return "#f0c808";
             case chains["chains"][1].name: 
-                return "#388bfd";
+                return "#2274a5";
             default:
                 return "rgb(0, 0, 0)";
         }
@@ -220,7 +219,7 @@ const Trades = () => {
 
                     {
                         checkBoxes.map((item) => (
-                            <label className="checkbox-container" key={item.chain.id}>{item.chain.name}
+                            <label className={`checkbox-container-${item.chain.name.toLowerCase()}`} key={item.chain.id}>{item.chain.name}
                                 <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOne}/>
                                 <span className="checkmark"></span>
                             </label>
@@ -263,7 +262,6 @@ const Trades = () => {
 
 
                 <TradeModal/>
-                <CancelOrderModal/>
             </div>
         </>
     )

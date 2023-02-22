@@ -143,6 +143,8 @@ export const ContextWrapper = (props) => {
     const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState({open: false, mode: "set"});
     const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false);
     const [isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen] = useState({open: false});
+
+    const [cancelTransactionModalContent, setCancelTransactionModalContent] = useState({open: false, data: {}});
     
     const [tradeModalContent, setTradeModalContent] = useState({})
     const [cancelOrderModalContent, setCancelOrderModalContent] = useState({});
@@ -1471,6 +1473,7 @@ export const ContextWrapper = (props) => {
             isCreateOrderModalOpen, setIsCreateOrderModalOpen,
             isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen,
             notifCard, setNotifCard,
+            cancelTransactionModalContent, setCancelTransactionModalContent,
         }}>
             {props.children}
         </AppContext.Provider>

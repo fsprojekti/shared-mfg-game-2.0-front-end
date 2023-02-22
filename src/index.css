@@ -836,7 +836,7 @@ BlockchainData
 .checkbox-container {
   display: block;
   position: relative;
-  margin: 10px;
+  margin: 8px;
   padding-left: 35px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -860,7 +860,7 @@ BlockchainData
   height: 25px;
   width: 25px;
   background-color: #e2e2e2;
-  border-radius: 3px;
+  border-radius: 6px;
   font-weight: bolder;
 }
 
@@ -869,7 +869,7 @@ BlockchainData
 }
 
 .checkbox-container input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #61d095;
 }
 
 .checkmark:after {
@@ -894,8 +894,96 @@ BlockchainData
   transform: rotate(45deg);
 }
 
+.checkbox-container-main {
+  display: block;
+  position: relative;
+  margin: 8px;
+  padding-left: 35px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-container-main input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-container-main:hover input ~ .checkmark {
+  background-color: #c5c5c5;
+}
+
+.checkbox-container-main input:checked ~ .checkmark {
+  background-color: #f0c808;
+}
+
+.checkbox-container-main input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container-main .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.checkbox-container-side {
+  display: block;
+  position: relative;
+  margin: 8px;
+  padding-left: 35px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-container-side input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-container-side:hover input ~ .checkmark {
+  background-color: #c5c5c5;
+}
+
+.checkbox-container-side input:checked ~ .checkmark {
+  background-color: #2274a5;
+}
+
+.checkbox-container-side input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container-side .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 .table-all-transactions-overflow {
-  height: 25vh;
+  height: 29vh;
   overflow: auto;
 }
 
@@ -948,11 +1036,11 @@ BlockchainData
   border-bottom: none;
 }
 .table-all-transactions tbody tr:first-child {
-  border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 8px;
 }
 
 .table-all-transactions tbody tr:last-child {
-  border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 8px;
 }
 
 /*
@@ -1109,7 +1197,7 @@ Pending transactions
 
 .table-pending-transactions tbody tr td:last-child {
   width: 0;
-  background-color: #222222;
+  /* background-color: #222222; */
   padding: 0;
   text-align: left;
 }
@@ -1143,10 +1231,7 @@ Pending transactions
 }
 
 .cancel-transaction-btn {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  font-size: 2em;
+  font-size: 1.5em;
   background: transparent;
   border-color: transparent;
   color: var(--clr-red-dark);
@@ -1155,7 +1240,7 @@ Pending transactions
 }
 
 .cancel-transaction-btn:hover {
-  color: #ff0e0e;
+  color: #dd1c1a;
   transform: scale(1.1);
 }
 

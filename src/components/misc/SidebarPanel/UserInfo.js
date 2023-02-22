@@ -205,7 +205,7 @@ const UserInfo = () => {
 
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
 
-            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#FFBF00"}}>
+            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#f0c808"}}>
                 <h4 className="d-inline-block">
                     {chains["chains"][0].name}
                 </h4>
@@ -246,7 +246,7 @@ const UserInfo = () => {
 
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
 
-            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#FFBF00"}}>
+            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#2274a5"}}>
                 <h4 className="d-inline-block">
                     {chains["chains"][1].name}
                 </h4>
