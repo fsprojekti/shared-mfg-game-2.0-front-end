@@ -1,12 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
-import ReactTooltip from 'react-tooltip';
 import { AppContext } from '../../../context/context';
 import { FaTimes } from 'react-icons/fa';
-import {Tooltip} from "react-bootstrap";
-import {OverlayTrigger} from "react-bootstrap";
+import { Table } from "react-fluid-table";
+import { Button } from 'react-bootstrap';
 
 const TransactionsTable = () => {
-    const { user, users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain, setCancelTransactionModalContent} = useContext(AppContext);
+    const { user, users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain, setCancelTransactionModalContent, agent} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
     const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
@@ -15,16 +14,67 @@ const TransactionsTable = () => {
         openConfirmModal();
     };
 
-    const renderTooltip1 = (props) => (
-        <Tooltip id="button-tooltip" style={{position:"fixed"}} {...props}>
-          <li> Provider: {props.consumer} </li>
-          <li>Consumer: {props.provider}</li>
-            <li>Amount: {props.price}</li>
-            <li>Fee: {props.fee}</li>
-            <li>Chain: {props.chain}</li>
+    const HeaderCell = ({ name, style }) => {
+        const cellStyle = {
+          ...style
+        };
+      
+        const textStyle = { color: "white" };
+      
+        return (
+          <div className="header-cell" style={cellStyle}>
+            <div className="header-cell-text" style={textStyle}>
+              {name}
+            </div>
+          </div>
+        );
+      };
+
+
+      const userRow = (row) => {      
+        console.log(row)
+        console.log(agent)
+        return (
+          <div >
           
-        </Tooltip>
-    );
+            {row.index}
+            <button
+                className='cancel-transaction-btn'
+                // style={{backgroundColor: "transparent", borderColor: "transparent"}}
+                onClick={() => { setCancelTransactionModalContent({open: true, data: row})}}
+            >
+                <FaTimes></FaTimes>
+        </button>
+          </div>
+        );
+      };
+    
+
+
+    const columns = [
+        { 
+            key: "index", 
+            header: "No.", 
+            sortable: true,
+            content: ({ row }) => (row.owner == agent.account ? userRow(row) : row.index) 
+        },
+        { 
+            key: "consumer", 
+            header: "From", 
+            sortable: true,
+        },
+        { key: "provider", header: "To", sortable: true },
+        { key: "chain", header: "Chain", sortable: true },
+        { key: "fee", header: "Fee", sortable: true },
+      ].map(c => ({
+        ...c,
+        header: props => <HeaderCell name={c.header} {...props} />
+      }));
+
+
+    //   const rowStyle = index => ({
+    //     backgroundColor: (tableDataArray[index].owner == agent.account ? "#f0c808" : (index % 2 === 0 ? "#f0f3f5" : "#white") ),
+    //   });
 
 
     const selectOne = async (e) => {
@@ -51,6 +101,8 @@ const TransactionsTable = () => {
         return dataArray.filter(data => selectedChains.includes(data.chainId));
     };
 
+    
+
     useEffect(() => {
         // console.log(chains["chains"]);
         const renderTableData = async () => {
@@ -58,7 +110,7 @@ const TransactionsTable = () => {
             let orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             // console.log(transactionsByFee)
-            const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction) => {
+            const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction, index) => {
                 let { from, to, fee, amount, chain} = transaction;
 
                 let chainIndex = chains["chains"].findIndex((c) => c.id === chain);
@@ -75,12 +127,15 @@ const TransactionsTable = () => {
                 return (
                     {
                         id: transaction._id,
+                        index: index+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
+                        // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,
                         price: amount,
-                        fee: fee,
+                        fee: fee.toString(),
                         chain: chains["chains"][chainIndex].name,
                         chainId: chains["chains"][chainIndex].id,
+                        owner: transaction.owner,
                     }
                 )
                 
@@ -89,7 +144,7 @@ const TransactionsTable = () => {
             // console.log(transactionsArray)
             let chainTransactionArray = await filterDataArrayByChain(transactionsArray);
 
-            // console.log(chainTransactionArray)
+            console.log(chainTransactionArray)
             setTableDataArray(chainTransactionArray);
         };
         renderTableData();
@@ -97,10 +152,10 @@ const TransactionsTable = () => {
     }, [transactions, activeChain, checkBoxes]);
 
 
+
     return (
         <>
             <div className="pending-transactions-container">
-                {/* <MiningBar version=""/> */}
                 <h2 className="pending-transactions-title">Pending transactions</h2>
                 <div className="filter-all-transactions">
                 <div className="d-block" style={{position: "relative", margin: "10px"}}>
@@ -114,52 +169,13 @@ const TransactionsTable = () => {
                         ))}
                 </div>
                 <div className="table-pending-transactions-container">
-                    <table className="table-pending-transactions">
-                        <thead>
-                        <tr>
-                            <th className="table-pending-transactions-head">No.</th>
-                            <th className="table-pending-transactions-head">Pending transactions</th>
-                            <th className="table-pending-transactions-head">Chain</th>
-                            <th className="table-pending-transactions-head">Tx Fee</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            tableDataArray.map((item, index) => (
-                                <OverlayTrigger
-                                placement="top"
-                                delay={{ show: 0, hide: 0 }}
-                                overlay={renderTooltip1(item)}
-                                >
-                                <tr
-                                    key={item.id}
-                                    data-tip data-for={item.id}
-                                    style={{background: `${(item.consumer === "You") || (item.provider === "You") ? '#fffd6c' : ''}`}}
-                                >
-                                <td><strong>{index + 1}</strong></td>
-                                    <td>
-                                        {item.consumer} &#8646; {item.provider}
-                                        {item.consumer === "You" ?
-                                           <div   style={{position: "absolute", top: -7, right: 0, alignSelf: "end", justifyItems: "start"}} >
-                                            <button
-                                                className='cancel-transaction-btn'
-                                                // style={{backgroundColor: "transparent", borderColor: "transparent"}}
-                                                onClick={() => { ((item.consumer === "You") || (item.provider === user.name)) && setCancelTransactionModalContent({open: true, data: item})}}
-                                            >
-                                                <FaTimes></FaTimes>
-                                            </button>
-                                            </div>
-                                            :''}
-                                    </td>
-                                    <td>{item.chain}</td>
-                                    <td>{item.fee}</td>
-                                </tr>       
-                                </OverlayTrigger>
-                                    
-                            ))
-                        }
-                        </tbody>
-                    </table>
+                    <Table 
+                    data={tableDataArray} 
+                    columns={columns} 
+                    className="table-all-transactions"
+                    // rowStyle={rowStyle}
+                    headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
+                    />
                 </div>
             </div>
         </>

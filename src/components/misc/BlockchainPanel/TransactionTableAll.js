@@ -1,31 +1,61 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { Table } from "react-fluid-table";
+
+
 
 const AllTransactionsTable = () => {
-    const { game, users, agents,  transactions, chains, activeChain} = useContext(AppContext);
+    const { users, agents,  transactions, chains, activeChain} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [sortBy, setSortBy] = useState('time');
-    const [orderOfSort, setOrderOfSort] = useState('ascending');
     const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}, {type: "Mine", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
 
-    const displayTime = async (time) => {
-        const createdMillis = new Date(time);
-        return createdMillis.toLocaleTimeString('it-IT');
-    };
+
+    const HeaderCell = ({ name, sortDirection, style, onClick }) => {
+        const icon = !sortDirection ? null : ( (sortDirection === "ASC") ? <FaArrowUp color='white'/> : <FaArrowDown color='white'/> );
+        // console.log(sortDirection)
+        const cellStyle = {
+          background: !!sortDirection ? "#f0c808" : undefined,
+          ...style
+        };
+      
+        const textStyle = { color: !!sortDirection ? "rgb(249, 38, 114)" : "white" };
+      
+        return (
+          <div className="header-cell" onClick={onClick} style={cellStyle}>
+            <div className="header-cell-text" style={textStyle}>
+              {name}
+            </div>
+            {icon}
+          </div>
+        );
+      };
+
+    const columns = [
+        { key: "timestamp", header: "Time", sortable: true },
+        { key: "provider", header: "From", sortable: true},
+        { key: "consumer", header: "To", sortable: true },
+        { key: "type", header: "Type",  sortable: true },
+        { key: "chainName", header: "Chain", sortable: true },
+        { key: "amount", header: "Amount", sortable: true },
+        { key: "fee", header: "Fee", sortable: true },
+      ].map(c => ({
+        ...c,
+        header: props => <HeaderCell name={c.header} {...props} />
+      }));
 
 
-    const sortDataArray = async (dataArray) => {
-        if (sortBy === 'time') {
+    const sortDataArray = async (dataArray, sortBy, order) => {
+        if (sortBy === 'timestamp') {
             return await dataArray.sort((a, b) => {
                 let arrayA = a.timestamp.split(":");
                 let timeA = (parseInt(arrayA[0], 10) * 60 * 60) + (parseInt(arrayA[1], 10) * 60) + parseInt(arrayA[2], 10);
                 let arrayB = b.timestamp.split(":");
                 let timeB = (parseInt(arrayB[0], 10) * 60 * 60) + (parseInt(arrayB[1], 10) * 60) + parseInt(arrayB[2], 10);
-                if (orderOfSort === "descending") {
+                if (order === "DESC") {
                     return timeB - timeA;
-                } if (orderOfSort === "ascending") {
+                } if (order === "ASC") {
                     return timeA - timeB;
                 }
             });
@@ -33,9 +63,9 @@ const AllTransactionsTable = () => {
             return await dataArray.sort((a, b) => {
                 let textA = a.consumer.toUpperCase();
                 let textB = b.consumer.toUpperCase();
-                if (orderOfSort === "descending") {
+                if (order === "DESC") {
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                } if (orderOfSort === "ascending") {
+                } if (order === "ASC") {
                     return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
                 }
             });
@@ -43,46 +73,58 @@ const AllTransactionsTable = () => {
             return await dataArray.sort((a, b) => {
                 let textA = a.provider.toUpperCase();
                 let textB = b.provider.toUpperCase();
-                if (orderOfSort === "descending") {
+                if (order === "DESC") {
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                } if (orderOfSort === "ascending") {
+                } if (order === "ASC") {
                     return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
                 }
             });
             
-        } if (sortBy === 'chain') {
+        } if (sortBy === 'chainName') {
             return await dataArray.sort((a, b) => {
                 let textA = a.chainName.toUpperCase();
                 let textB = b.chainName.toUpperCase();
-                if (orderOfSort === "descending") {
+                if (order === "DESC") {
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                } if (orderOfSort === "ascending") {
+                } if (order === "ASC") {
                     return (textA > textB) ? -1 : (textA < textB) ? 1 : 0;
                 }
             });
             
-        } if (sortBy === 'typeOfService') {
+        } if (sortBy === 'type') {
             return await dataArray.sort((a, b) => {
-                if (orderOfSort === "descending") {
+                if (order === "DESC") {
                     return (a.type < b.type) ? -1 : (a.type > b.type) ? 1 : 0;
-                } if (orderOfSort === "ascending") {
+                } if (order === "ASC") {
                     return (a.type > b.type) ? -1 : (a.type < b.type) ? 1 : 0;
                 }
             });
-        } if (sortBy === 'price') {
-            if (orderOfSort === "descending") {
+        } if (sortBy === 'amount') {
+            if (order === "DESC") {
                 return await dataArray.sort((a, b) => parseInt(b.amount) - parseInt(a.amount));
-            } if (orderOfSort === "ascending") {
+            } if (order === "ASC") {
                 return await dataArray.sort((a, b) => parseInt(a.amount) - parseInt(b.amount));
             }
-        } if (sortBy === 'txFee') {
-            if (orderOfSort === "descending") {
+        } if (sortBy === 'fee') {
+            if (order === "DESC") {
                 return await dataArray.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
-            } if (orderOfSort === "ascending") {
+            } if (order === "ASC") {
                 return await dataArray.sort((a, b) => parseInt(a.fee) - parseInt(b.fee));
             }
         }
+        
     };
+
+
+    const onSort = async (col, dir) => {
+        console.log(col, dir);
+        const dataArrayOld = tableDataArray;
+        let dataArray;
+        if (col != null) dataArray  = await sortDataArray(dataArrayOld, col, dir);
+        else dataArray = await sortDataArray(dataArrayOld, "timestamp", "DESC");
+        setTableDataArray(dataArray);
+    };
+
 
     const selectOne = async (e) => {
         // console.debug(e)
@@ -176,8 +218,8 @@ const AllTransactionsTable = () => {
                     id: transaction._id,
                     consumer: consumer,
                     provider: provider,
-                    amount: amount,
-                    fee: fee,
+                    amount: amount.toString(),
+                    fee: fee.toString(),
                     type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
                     createdAt: time,
                     chain: transaction.chain,
@@ -191,20 +233,18 @@ const AllTransactionsTable = () => {
             const filteredTransactionsArrayByType = await filterDataArrayByType(transactionsArray);
             const filteredTransactionsArray= await filterDataArrayByChain(filteredTransactionsArrayByType);
 
-            const dataArray = await sortDataArray(filteredTransactionsArray);
-            setTableDataArray(dataArray.reverse());
+            setTableDataArray(filteredTransactionsArray.reverse());
         };
         
         renderTableData();
 
-    }, [checkBoxes, chainCheckBoxes, orderOfSort, transactions]);
+    }, [checkBoxes, chainCheckBoxes]);
 
 
 
     return (
-        <>
-            <div >
-                <div className="filter-all-transactions">                    
+        <> 
+            <div className="filter-all-transactions">                    
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
                         <b > Chains: </b>
                     </div>
@@ -231,87 +271,15 @@ const AllTransactionsTable = () => {
                         ))
                     }
                 </div>
-                <div className="table-all-transactions-overflow">
-                    <table className="table-all-transactions">
-                        <thead>
-                        <tr>
-                            <th onClick={() => {
-                                setSortBy('time');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>Time {sortBy === 'time' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('consumer');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>From {sortBy === 'consumer' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('provider');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>To {sortBy === 'provider' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('chain');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>Chain {sortBy === 'chain' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('typeOfService');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>Type {sortBy === 'typeOfService' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('price');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>Price/Amount {sortBy === 'price' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                            <th onClick={() => {
-                                setSortBy('txFee');
-                                if (orderOfSort === 'ascending') {
-                                    setOrderOfSort('descending');
-                                } if (orderOfSort === 'descending') {
-                                    setOrderOfSort('ascending');
-                                }
-                            }}>Fee {sortBy === 'txFee' ? orderOfSort === 'ascending' ? <FaArrowUp/> : <FaArrowDown/> : ""}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            tableDataArray.map((item) =>
-                                (
-                                    <tr key={item.id}>
-                                        <td >{item.timestamp}</td>
-                                        <td >{item.consumer}</td>
-                                        <td >{item.provider}</td>
-                                        <td >{(item.chainName)}</td>
-                                        <td >{item.type}</td>
-                                        <td >{item.amount}</td>
-                                        <td >{item.fee}</td>
-                                    </tr>
-                                )
-                            )
-                        }
-                        </tbody>
-                    </table>
-                </div>
+            <div className="table-all-transactions-overflow">
+            
+             <Table 
+                data={tableDataArray} 
+                columns={columns} 
+                onSort={onSort}
+                className="table-all-transactions"
+                headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
+                />
             </div>
         </>
     )

@@ -33,12 +33,10 @@ const PieChart = ({ data}) => {
     <ResponsivePie 
         data={data}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-
-
-        innerRadius={0.5}
-        padAngle={0.7}
+        innerRadius={0.2}
         cornerRadius={3}
-        activeOuterRadiusOffset={8}
+        colors={{ scheme: 'category10' }}
+        activeOuterRadiusOffset={4}
         borderWidth={1}
         borderColor={{
             from: 'color',
@@ -89,7 +87,7 @@ const PieChart = ({ data}) => {
                     id: "You"
                 },
                 id: 'dots'
-            }
+            },
         ]}
 
     /> 

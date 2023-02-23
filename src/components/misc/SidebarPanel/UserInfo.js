@@ -166,7 +166,7 @@ const UserInfo = () => {
                 <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px", paddingTop: "15px"}}>
                     <div className={'stats-sidebar-container-blue'}>
-                        <h4>{service.type.length > 10 ? `${service.type.slice(10)} S.` :  `${service.type} S.`} </h4>
+                        <h4>{`${service.type.slice(0, 4)}. S.`} </h4>
                     </div>
                     {/* <FaBusinessTime style={{color: "#38aaff", fontSize: "22px"}}/> */}
                     {serviceState(service)}

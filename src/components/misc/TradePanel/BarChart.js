@@ -4,7 +4,7 @@ import { AppContext } from '../../../context/context';
 import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { Card } from 'react-bootstrap';
 const BarChart = ({dataArray, modifiedData, checked}) => {
-    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent, agents } = useContext(AppContext);
+    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, user } = useContext(AppContext);
     const setTradeModal = (data) => {
 
         const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
@@ -42,31 +42,6 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             }
         }
     };
-
-    const renderTooltip = (data) => {
-        const realData = dataArray.filter(item => item._id === data._id);
-        if (!(!Array.isArray(realData) || !realData.length)) {
-            return realData[0].price.toString();
-        }
-    };
-
-    const millisToMinutesAndSecondsShort = (millis) => {
-        let d = new Date(1000*Math.round(millis/1000));
-        if (d.getUTCMinutes() === 0) {
-            return ( d.getUTCSeconds() + 's' );
-        } else {
-            return ( d.getUTCMinutes() + ':' + d.getUTCSeconds());
-        }
-    };
-
-    function millisToMinutesAndSeconds(millis) {
-        let d = new Date(1000*Math.round(millis/1000));
-        if (d.getUTCMinutes() === 0) {
-            return ( d.getUTCSeconds() + 's' );
-        } else {
-            return ( d.getUTCMinutes() + 'min ' + d.getUTCSeconds() + 's' );
-        }
-    }
 
     const toggleData = () => {
         if (!checked) {
@@ -119,7 +94,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             tooltip={({ data }) => {
                 return (
                     <Card style={{opacity: "0.8"}}>
-                        <b>Price: {renderTooltip(data)}</b>
+                        <b>Price: {data.price.toString()}</b>
                         <b>Time for service: {data.serviceDuration} seconds</b>
                     </Card>
 
@@ -152,7 +127,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             fill={[
                 {
                 match: 
-                    d => d.data.data.service == service._id,
+                    d => d.data.data.providerName == "You",
                 id: 'lines-pattern'
             },
                 // { match: '*', id: 'custom' },

@@ -220,19 +220,19 @@ const BlockchainData = () => {
 
                         <h4>Your stake: {context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]} ({relativeStake.stake}%)</h4>         
 
-                        <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "20%"}}>
+                        <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "30%"}}>
 
-                            <div style={{margin: "auto", width: "35vh", height: "30vh"}}>
+                            <div style={{margin: "auto", width: "45vh", height: "36vh"}}>
                                 <PieChart data={chartDataArray}/>
                             </div>
                             <div className="d-flex flex-column" style={{justifyContent: "center", alignItems: "center", zIndex: 1}}>
                             
-                                    <InputGroup style={{paddingBottom: "15px"}}>
+                                    <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
                                         <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Amount</InputGroup.Text>
                                         <FormControl value ={newStake} placeholder={"Enter amount"} onChange={e => setNewStake(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
                                     </InputGroup>
 
-                                    <InputGroup style={{paddingBottom: "15px"}}>
+                                    <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
                                         <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
                                         <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
                                     </InputGroup>

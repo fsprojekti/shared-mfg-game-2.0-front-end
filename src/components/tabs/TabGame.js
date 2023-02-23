@@ -49,7 +49,7 @@ const TabGame = () => {
             <Container fluid>
             <Row  style={{zIndex: 1}}>
                 <PanelSide/>
-                <Suspense fallback={<div className="justify-content-center" >Loading...</div>}>
+                <Suspense fallback={<div className="justify-content-center" >  <Spinner animation="border" style={{margin: "30%"}}> Rendering Panel </Spinner></div>}>
                 <Col  style={{zIndex: 1}}>
 
                     { 

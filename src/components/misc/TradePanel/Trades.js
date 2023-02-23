@@ -70,7 +70,7 @@ const Trades = () => {
             case chains["chains"][1].name: 
                 return "#2274a5";
             default:
-                return "rgb(0, 0, 0)";
+                return "rgb(32, 123, 211)";
         }
     };
 
@@ -79,7 +79,7 @@ const Trades = () => {
         const sortDataArrays = async () => { 
             // console.log(orders);
             let placedOrders = await orders.filter(order => order.state === "PLACED");
-            // console.log(placedOrders);
+            console.log(placedOrders);
             // if(checkBoxes[0].isChecked && checkBoxes[1].isChecked) placedOrders =   
             // else {
             //     if(checkBoxes[0].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][0].id);
@@ -92,7 +92,7 @@ const Trades = () => {
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
                 // console.log(service)
                 
-                ordr.serviceDuration=service[0].duration;
+                ordr.serviceDuration=service[0].duration.toFixed(2);
 
                 let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
 
@@ -119,6 +119,9 @@ const Trades = () => {
             let array1 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[0]);
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service.type);
+            console.log(array1)
+            console.log(array2)
+            console.log(array3)
 
             if (checked1) {
                 await array1.forEach((item) => {
@@ -203,6 +206,9 @@ const Trades = () => {
             setModifiedDataArray1(modifiedArray1);
             setModifiedDataArray2(modifiedArray2);
             setModifiedDataArray3(modifiedArray3);
+            console.log(array1);
+            console.log(array2);
+            console.log(array3);
 
         };
         sortDataArrays(); 

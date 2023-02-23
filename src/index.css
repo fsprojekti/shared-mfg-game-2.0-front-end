@@ -1024,7 +1024,6 @@ BlockchainData
   padding:10px 15px 10px 15px;
   border-bottom:1px solid #e0e0e0;
   text-align: center;
-  position: relative;
   z-index: 0;
 }
 
@@ -1041,6 +1040,22 @@ BlockchainData
 
 .table-all-transactions tbody tr:last-child {
   border-bottom-right-radius: 8px;
+}
+
+.header-all-transactions {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d9dddd;
+  border-bottom: none;
+  width: 100%;
+}
+
+.HeaderColumn-all-transaction{
+  line-height: 35px;
+  flex: 1 1 auto;
+  font-weight: bold;
+  text-align: center;
+  border-right: 1px solid #d9dddd;
 }
 
 /*
@@ -1215,16 +1230,6 @@ Pending transactions
 
 .table-pending-transactions tbody tr:last-child {
   border-bottom-right-radius: 5px;
-}
-
-.table-pending-transactions tbody:hover > tr td {
-  opacity: 0.5;
-}
-
-.table-pending-transactions tbody:hover > tr:hover td {
-  text-shadow: none;
-  color:#2d2d2d;
-  opacity: 1.0;
 }
 
 .cancel-transaction-btn {

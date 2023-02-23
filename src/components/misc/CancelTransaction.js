@@ -90,7 +90,7 @@ const CancelTransactionModal = () => {
                                 <li> Provider: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.provider} </span>    </li>
                                 <li> Fee: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.fee} </span>    </li>
                                 <li> Amount: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.price} </span>    </li>
-                                <li> Chain: <span style={{color: 'blue'}}> {order.chainName} </span> </li>
+                                <li> Chain: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.chain} </span> </li>
                             
                             </ul>    
                             
