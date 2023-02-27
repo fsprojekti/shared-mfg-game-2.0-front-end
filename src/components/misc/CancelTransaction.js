@@ -21,15 +21,15 @@ const CancelTransactionModal = () => {
             console.log("cancel transaction")
             console.log(cancelTransactionModalContent)
             console.debug(response)
-            setNote((prevState) => {
-                return({
-                  ...prevState,
-                  msg: response,
-                  heading: 'Success',
-                  show: true,
-                  type: 'success'
-                });
-              });
+            // setNote((prevState) => {
+            //     return({
+            //       ...prevState,
+            //       msg: response,
+            //       heading: 'Success',
+            //       show: true,
+            //       type: 'success'
+            //     });
+            //   });
             setCancelTransactionModalContent({open: false})
         } catch(err) {
             console.log(err)
