@@ -849,6 +849,28 @@ export const ContextWrapper = (props) => {
     }, []);
 
     /**
+     * User's cancel order function
+     * @param {string} transactionId - User's transactoin id
+     */
+    const apiUserCancelTransaction= useCallback((transactionId) => {
+        return new Promise(async (resolve, reject) => {
+            try {                
+                let out = await axios.get(`user/transactions/cancel`,{
+                    params: {
+                        transactionId: transactionId,
+                    },
+                    headers: {
+                      authorization: cookies.authToken
+                    }
+                })
+                resolve(out.data)
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }, []);
+
+    /**
      * User's get agent function
      * @returns {Object} - User's agent data
      */
@@ -1474,6 +1496,7 @@ export const ContextWrapper = (props) => {
             isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen,
             notifCard, setNotifCard,
             cancelTransactionModalContent, setCancelTransactionModalContent,
+            apiUserCancelTransaction
         }}>
             {props.children}
         </AppContext.Provider>

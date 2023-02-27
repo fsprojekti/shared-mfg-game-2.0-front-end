@@ -4,7 +4,7 @@ import { Button} from "react-bootstrap";
 import {motion} from 'framer-motion'
 
 const CancelTransactionModal = () => {
-    const {  users, servicesAll, service, chains, apiUserCancelOrder, agents, orders, setNote, cancelTransactionModalContent, setCancelTransactionModalContent} = useContext(AppContext);
+    const {  apiUserCancelTransaction, orders, setNote, cancelTransactionModalContent, setCancelTransactionModalContent} = useContext(AppContext);
     const [order, setOrder] = useState({});
 
     const context = useContext(AppContext);
@@ -17,18 +17,19 @@ const CancelTransactionModal = () => {
     const confirm = async () => {
         try {
 
-            // let response = await apiUserCancelOrder(order._id);
+            let response = await apiUserCancelTransaction(cancelTransactionModalContent.data.id);
             console.log("cancel transaction")
-            // console.debug(response)
-            // setNote((prevState) => {
-            //     return({
-            //       ...prevState,
-            //       msg: response,
-            //       heading: 'Success',
-            //       show: true,
-            //       type: 'success'
-            //     });
-            //   });
+            console.log(cancelTransactionModalContent)
+            console.debug(response)
+            setNote((prevState) => {
+                return({
+                  ...prevState,
+                  msg: response,
+                  heading: 'Success',
+                  show: true,
+                  type: 'success'
+                });
+              });
             setCancelTransactionModalContent({open: false})
         } catch(err) {
             console.log(err)
@@ -85,9 +86,9 @@ const CancelTransactionModal = () => {
                         <div className='modal-confirm-container-input'>
 
                             <ul>
-                                <li> Consumer: {cancelTransactionModalContent.data.consumer}  </li>
+                                <li> From: {cancelTransactionModalContent.data.consumer}  </li>
                                 {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
-                                <li> Provider: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.provider} </span>    </li>
+                                <li> To: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.provider} </span>    </li>
                                 <li> Fee: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.fee} </span>    </li>
                                 <li> Amount: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.price} </span>    </li>
                                 <li> Chain: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.chain} </span> </li>

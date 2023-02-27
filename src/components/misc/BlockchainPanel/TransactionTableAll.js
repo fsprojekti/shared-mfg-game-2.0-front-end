@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { Table } from "react-fluid-table";
+import { Button } from 'react-bootstrap';
 
 
 
@@ -244,7 +245,8 @@ const AllTransactionsTable = () => {
 
     return (
         <> 
-            <div className="filter-all-transactions">                    
+            <div className="filter-all-transactions">            
+                           
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
                         <b > Chains: </b>
                     </div>
@@ -280,6 +282,7 @@ const AllTransactionsTable = () => {
                 className="table-all-transactions"
                 headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
                 />
+                
             </div>
         </>
     )

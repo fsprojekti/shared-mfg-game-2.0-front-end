@@ -126,7 +126,7 @@ const TransactionsTable = () => {
 
                 return (
                     {
-                        id: transaction._id,
+                        id: transaction.id,
                         index: index+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
