@@ -213,6 +213,7 @@ const AllTransactionsTable = () => {
                 let consumerAgent = await agents["agents"].filter(agent => agent.account === from);
 
                 const chainIndex = await chains["chains"].findIndex((c) => c.id == transaction.chain);
+                 
                 
                 
                 let consumer;
@@ -224,20 +225,24 @@ const AllTransactionsTable = () => {
                 let provider;
                 if(providerAgent.length) provider = await users["users"].filter(user => user.id === providerAgent[0].user);
 
-                return {
-                    id: transaction.id,
-                    consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].name) ,
-                    consumerId: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].id) ,
-                    provider: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].name) ,
-                    providerId: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].id) ,
-                    owner:transaction.owner ,
-                    amount: amount.toString(),
-                    fee: fee.toString(),
-                    type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
-                    chain: transaction.chain,
-                    chainName: chains["chains"][chainIndex].name,
-                    timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
+                if(chainIndex != -1) {
+                    return {
+                        id: transaction.id,
+                        consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].name) ,
+                        consumerId: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].id) ,
+                        provider: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].name) ,
+                        providerId: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].id) ,
+                        owner:transaction.owner ,
+                        amount: amount.toString(),
+                        fee: fee.toString(),
+                        type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
+                        chain: transaction.chain,
+                        chainName: chains["chains"][chainIndex].name,
+                        timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
+                    }
                 }
+
+                
 
 
                 
@@ -300,7 +305,7 @@ const AllTransactionsTable = () => {
                 tableWidth="100%"
                 onSort={onSort}
                 className="d-flex"
-                headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
+                headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)", fontSize: "14px", color: "white", textAlign: "center", fontWeight: "lighter"}}
                 />
                 
             </div>
