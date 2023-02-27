@@ -35,7 +35,9 @@ const PieChart = ({ data}) => {
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
         innerRadius={0.2}
         cornerRadius={3}
-        colors={{ scheme: 'category10' }}
+        sortByValue={true}
+        // enableArcLinkLabels={false}
+        colors={{ scheme: 'pastel1' }}
         activeOuterRadiusOffset={4}
         borderWidth={1}
         borderColor={{
@@ -47,25 +49,26 @@ const PieChart = ({ data}) => {
                 ]
             ]
         }}
-        arcLinkLabelsSkipAngle={10}
-        arcLinkLabelsTextColor="#333333"
-        arcLinkLabelsThickness={2}
-        arcLinkLabelsColor={{ from: 'color' }}
-        arcLabelsSkipAngle={10}
-        arcLabelsTextColor={{
-            from: 'color',
-            modifiers: [
-                [
-                    'darker',
-                    2
-                ]
-            ]
-        }}
+        arcLinkLabelsDiagonalLength={30}
+        arcLinkLabelsSkipAngle={9}
+        // arcLinkLabelsTextColor="#333333"
+        // arcLinkLabelsThickness={2}
+        // arcLinkLabelsColor={{ from: 'color' }}
+        // arcLabelsSkipAngle={2}
+        // arcLabelsTextColor={{
+        //     from: 'color',
+        //     modifiers: [
+        //         [
+        //             'darker',
+        //             2
+        //         ]
+        //     ]
+        // }}
         defs={[
             {
                 id: 'dots',
                 type: 'patternDots',
-                background: 'inherit',
+                background: 'red',
                 color: 'rgba(255, 255, 255, 0.9)',
                 size: 4,
                 padding: 1,
@@ -84,7 +87,7 @@ const PieChart = ({ data}) => {
         fill={[
             {
                 match: {
-                    id: "You"
+                    id: context.user.name
                 },
                 id: 'dots'
             },

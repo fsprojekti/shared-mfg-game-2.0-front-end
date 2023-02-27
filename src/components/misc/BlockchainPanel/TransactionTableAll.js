@@ -222,7 +222,7 @@ const AllTransactionsTable = () => {
                 let providerAgent = await agents["agents"].filter(agent => agent.account === to);
 
                 let provider;
-                if(providerAgent.length > 0 && transaction.type !== "FEE") provider = await users["users"].filter(user => user.id === providerAgent[0].user);
+                if(providerAgent.length) provider = await users["users"].filter(user => user.id === providerAgent[0].user);
 
                 return {
                     id: transaction.id,
@@ -260,7 +260,7 @@ const AllTransactionsTable = () => {
 
 
     return (
-        <Card style={{borderColor: "transparent"}}> 
+        <Card className='d-flex' style={{borderColor: "transparent"}}> 
             <div className="filter-all-transactions">            
                            
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
@@ -297,8 +297,9 @@ const AllTransactionsTable = () => {
              <Table 
                 data={tableDataArray} 
                 columns={columns} 
+                tableWidth="100%"
                 onSort={onSort}
-                className="table-all-transactions"
+                className="d-flex"
                 headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
                 />
                 

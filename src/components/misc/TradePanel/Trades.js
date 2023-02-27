@@ -80,13 +80,7 @@ const Trades = () => {
             // console.log(orders);
             let placedOrders = await orders.filter(order => order.state === "PLACED");
             console.log(placedOrders);
-            // if(checkBoxes[0].isChecked && checkBoxes[1].isChecked) placedOrders =   
-            // else {
-            //     if(checkBoxes[0].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][0].id);
-            //     if(checkBoxes[1].isChecked) placedOrders = await orders.filter(order => order.state === "PLACED" && order.chain == chains["chains"][1].id);
-            // }
 
-            // console.log(placedOrders);
 
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
