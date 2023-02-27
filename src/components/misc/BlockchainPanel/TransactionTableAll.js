@@ -240,7 +240,12 @@ const AllTransactionsTable = () => {
                         chainName: chains["chains"][chainIndex].name,
                         timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
                     }
-                }
+                } else { 
+                    console.debug("chain not found");
+                    console.debug(transaction);
+
+            }
+
 
                 
 
