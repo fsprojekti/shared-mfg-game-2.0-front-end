@@ -10,7 +10,7 @@ import { MdRefresh } from "react-icons/md";
 
 
 const AllTransactionsTable = () => {
-    const { users, agents,  transactions, chains, activeChain} = useContext(AppContext);
+    const { users, agents,  transactions, chains, agent, user} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
     const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}, {type: "Mine", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
@@ -118,6 +118,7 @@ const AllTransactionsTable = () => {
             }
         }
         
+        
     };
 
 
@@ -159,11 +160,18 @@ const AllTransactionsTable = () => {
         if (!Array.isArray(selectedTypes) || !selectedTypes.length) {
             return dataArray;
         }
+
         if (selectedTypes.includes("BRIDGE")) {
             selectedTypes.push("BRIDGE-LOCK");
             selectedTypes.push("BRIDGE-UNLOCK");
             selectedTypes.push("BRIDGE-MINT");
             selectedTypes.push("BRIDGE-BURN");
+        }
+
+        if (selectedTypes.includes("ATTACK")) {
+            selectedTypes.push("ATTACK-GAIN");
+            selectedTypes.push("ATTACK-LOSS-STAKE");
+            selectedTypes.push("ATTACK-LOSS-BALANCE");
         }
 
         return dataArray.filter(data => selectedTypes.includes(data.type));
@@ -181,6 +189,19 @@ const AllTransactionsTable = () => {
         return dataArray.filter(data => selectedChains.includes(data.chain));
     };
 
+    const filterDataArrayByOwner = (dataArray) => {
+
+        const checkedBoxes = checkBoxes.filter(item => item.isChecked);
+        const selectedTypes = checkedBoxes.map(item => item.type);
+
+        if (!Array.isArray(selectedTypes) || !selectedTypes.length || !(selectedTypes.includes("Mine"))) {
+            return dataArray;
+        }
+        console.log(dataArray.filter(data => data.owner == agent.account))
+
+        return dataArray.filter(data => data.consumerId == agent.account || data.providerId == agent.account);
+    };
+
     useEffect(() => {
         const renderTableData = async () => {
             const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED");
@@ -195,38 +216,24 @@ const AllTransactionsTable = () => {
                 
                 
                 let consumer;
-                if(consumerAgent.length) {
-                    let consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
-                    consumer = consumerUser[0].name;
-                } else {
-                    consumer = chains["chains"][activeChain].name;
-                };
+                if(consumerAgent.length) consumer = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
                 
                 let providerAgent = await agents["agents"].filter(agent => agent.account === to);
-                // console.log(providerAgent)
-                let provider;
-                if(providerAgent.length > 0 && transaction.type !== "FEE") {
-                    let providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
-                    provider = providerUser[0].name;
-                } else {
-                    provider = chains["chains"][activeChain].name;
-                };
 
-                let d = new Date(transaction.createdAt);
-                let hours = d.getHours();
-                let minutes = d.getMinutes();
-                let seconds = d.getSeconds();
-                let time = hours + ":" + minutes + ":" + seconds;
+                let provider;
+                if(providerAgent.length > 0 && transaction.type !== "FEE") provider = await users["users"].filter(user => user.id === providerAgent[0].user);
 
                 return {
-                    id: transaction._id,
-                    consumer: consumer,
-                    provider: provider,
+                    id: transaction.id,
+                    consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].name) ,
+                    consumerId: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].id) ,
+                    provider: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].name) ,
+                    providerId: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].id) ,
+                    owner:transaction.owner ,
                     amount: amount.toString(),
                     fee: fee.toString(),
                     type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
-                    createdAt: time,
                     chain: transaction.chain,
                     chainName: chains["chains"][chainIndex].name,
                     timestamp: new Date(transaction.timestamp).toLocaleTimeString("it-IT"),
@@ -236,9 +243,14 @@ const AllTransactionsTable = () => {
                 
             }));
             const filteredTransactionsArrayByType = await filterDataArrayByType(transactionsArray);
-            const filteredTransactionsArray= await filterDataArrayByChain(filteredTransactionsArrayByType);
+            const filteredTransactionsArrayByChain= await filterDataArrayByChain(filteredTransactionsArrayByType);
+            const filteredTransactionsArrayByOwner= await filterDataArrayByOwner(filteredTransactionsArrayByChain);
 
-            setTableDataArray(filteredTransactionsArray.reverse());
+            console.log(filteredTransactionsArrayByOwner)
+            console.log(agent)
+            console.log(user)
+
+            setTableDataArray(filteredTransactionsArrayByOwner.reverse());
         };
         
         renderTableData();
@@ -248,7 +260,7 @@ const AllTransactionsTable = () => {
 
 
     return (
-        <Card> 
+        <Card style={{borderColor: "transparent"}}> 
             <div className="filter-all-transactions">            
                            
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
@@ -278,8 +290,8 @@ const AllTransactionsTable = () => {
                     }
                 </div>
             <div className="table-all-transactions-overflow">
-            <div style={{position: "absolute", top: 0, right: 0, alignSelf: "end", justifyItems: "start"}} >
-                <Button size="sm" style={{backgroundColor: "gray", borderColor: "transparent"}} onClick={() => { setRefresh(prevState => ({ resfresh: !prevState.refresh }));}}><MdRefresh></MdRefresh></Button>
+            <div style={{position: "absolute", top: 5, right: 15, alignSelf: "end", justifyItems: "start"}} >
+                <Button size="sm" style={{backgroundColor: "gray", borderColor: "transparent", borderRadius: "8px"}} onClick={() => { setRefresh(prevState => ({ resfresh: !prevState.refresh }));}}><MdRefresh></MdRefresh></Button>
             </div>
             
              <Table 

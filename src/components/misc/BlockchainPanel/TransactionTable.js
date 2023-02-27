@@ -32,8 +32,8 @@ const TransactionsTable = () => {
 
 
       const userRow = (row) => {      
-        console.log(row)
-        console.log(agent)
+        // console.log(row)
+        // console.log(agent)
         return (
           <div >
           

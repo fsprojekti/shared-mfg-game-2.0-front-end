@@ -12,9 +12,16 @@ const AttackInfo = () => {
         const createDataArray = async () => { 
             const transactions = context.transactions;
             
-            let AllAttackGainsArray = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" || transaction.type === "ATTACK-LOSS-STAKE" || transaction.type === "ATTACK-LOSS-BALANCE");
-            let numberOfAttacks = AllAttackGainsArray.length/(context.users["users"].length*2);
-            console.log(AllAttackGainsArray.length)
+            let AllAttackTransactions = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" || transaction.type === "ATTACK-LOSS-STAKE" || transaction.type === "ATTACK-LOSS-BALANCE");
+            let differentAttack = [];
+            if (AllAttackTransactions.length > 0) {
+                AllAttackTransactions.map((item) => {
+                    let difference = item.timestamp - differentAttack[differentAttack.length-1].timestamp;
+                    if(difference > 10000) differentAttack.push(item);
+                    
+                });
+            }
+            
 
 
             let AttackGainArray = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" && transaction.to == context.agent.account);
@@ -28,7 +35,7 @@ const AttackInfo = () => {
             console.log("Loss amount: " + lossAmount);
 
 
-            setDataArray({noAttack: (numberOfAttacks), gain: gainAmount, loss: lossAmount});
+            setDataArray({noAttack: (differentAttack.length), gain: gainAmount, loss: lossAmount});
         };
         createDataArray();
     }, [context.transaction]);

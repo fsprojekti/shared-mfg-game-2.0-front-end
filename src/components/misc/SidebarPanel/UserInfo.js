@@ -140,6 +140,8 @@ const UserInfo = () => {
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
 
+            // let sum = numOfFirst.length + numOfSecond.length;
+            // let upgrades = Math.floor(sum / 2); 
             let upgrades = 0;
 
             if(numOfFirst.length > numOfSecond.length) {

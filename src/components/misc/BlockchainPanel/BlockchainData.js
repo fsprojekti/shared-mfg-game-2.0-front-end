@@ -164,16 +164,19 @@ const BlockchainData = () => {
 
         const createDataArray = async () => { 
             const ranking = context.ranking;
+            const agents = context.agents;
+            const users = context.users;
             let dataArray = ranking.map((item, index) => {
-                const agentObject = context.agents["agents"].filter(agent => agent._id === item.agent);
-                const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
+                const agentObject = agents["agents"].filter(agent => agent._id === item.agent);
+                const userObject = users["users"].filter(user => user.id === agentObject[0].user);
                 // console.debug(userObject[0].name)
+                // console.log(item.stake)
+                // console.log(stakeChain)
                 if (userObject[0].name == context.user.name) userObject[0].name = "You";
-                return {id: userObject[0].name, label: userObject[0].name, value: item.stake[stakeChain]}
+                return {id: userObject[0].name, label: userObject[0].id, value: item.stake[stakeChain]}
             });
             // console.log(dataArray)
             setChartDataArray(dataArray);
-            // console.log(dataArray);
         };
         createDataArray();
 

@@ -40,10 +40,6 @@ const RankingTable = () => {
                                 <th>Number of upgrades</th>
                                 <th>Balance</th>
                                 <th>Stake</th>
-                                <th>Revenue from trade</th>
-                                <th>Revenue from stake</th>
-                                <th>Revenue from attacks</th>
-                                <th>Loss from attacks</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -57,13 +53,8 @@ const RankingTable = () => {
                                         <td>{item.userName}</td>
                                         <td>{item.serviceType}</td>
                                         <td>{item.level}</td>
-                                        <td>{item.stake[0] + item.stake[1]}</td>
-                                        {/* Fix so it works with arbitrary number of stakes */}
-                                        <td>{item.stake[0] + item.stake[1]}</td>
-                                        <td>{item.revenueTrade}</td>
-                                        <td>{item.revenueStake}</td>
-                                        <td>{item.revenueAttackGain}</td>
-                                        <td>{item.revenueAttackLoss}</td>
+                                        <td>{parseInt(item.balance[0]) + parseInt(item.balance[1])}</td>
+                                        <td>{parseInt(item.stake[0]) + parseInt(item.stake[1])}</td>
                                     </tr>
                                 ))
                             }

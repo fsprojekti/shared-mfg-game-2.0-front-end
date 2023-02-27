@@ -34,7 +34,7 @@ const ChainMesh = () => {
     
 
     let nodes =  new DataSet (chains.chains.map((item, index) => {
-      return { id: item.id, value: (parseInt(item.balance) + parseInt(item.stake)), label: `<b>${item.name}</b>`, x: (200*index),y: 10, color: {background: (item.name == chains["chains"][0].name ? '#f0c808' : '#2274a5')}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10, color: {background: (item.name == chains["chains"][0].name ? '#f0c808' : '#2274a5')}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
 
 
