@@ -18,7 +18,7 @@ const RankingTable = () => {
                 return player
             })   
 
-            
+            console.log(playersWithNames)
             setTableDataArray(playersWithNames);
         };
         renderTableData();
@@ -57,7 +57,7 @@ const RankingTable = () => {
                                         <td>{item.userName}</td>
                                         <td>{item.serviceType}</td>
                                         <td>{item.level}</td>
-                                        <td>{item.balance}</td>
+                                        <td>{item.stake[0] + item.stake[1]}</td>
                                         {/* Fix so it works with arbitrary number of stakes */}
                                         <td>{item.stake[0] + item.stake[1]}</td>
                                         <td>{item.revenueTrade}</td>

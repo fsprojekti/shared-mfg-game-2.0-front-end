@@ -2,7 +2,10 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { Table } from "react-fluid-table";
-import { Button } from 'react-bootstrap';
+import { Button, Card} from 'react-bootstrap';
+import { GiRecycle } from 'react-icons/gi';
+import { MdRefresh } from "react-icons/md";
+
 
 
 
@@ -11,6 +14,7 @@ const AllTransactionsTable = () => {
     const [tableDataArray, setTableDataArray] = useState([]);
     const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}, {type: "Mine", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
+    const [refresh, setRefresh] = useState({refresh: false});
 
 
     const HeaderCell = ({ name, sortDirection, style, onClick }) => {
@@ -239,12 +243,12 @@ const AllTransactionsTable = () => {
         
         renderTableData();
 
-    }, [checkBoxes, chainCheckBoxes]);
+    }, [checkBoxes, chainCheckBoxes, refresh]);
 
 
 
     return (
-        <> 
+        <Card> 
             <div className="filter-all-transactions">            
                            
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
@@ -274,6 +278,9 @@ const AllTransactionsTable = () => {
                     }
                 </div>
             <div className="table-all-transactions-overflow">
+            <div style={{position: "absolute", top: 0, right: 0, alignSelf: "end", justifyItems: "start"}} >
+                <Button size="sm" style={{backgroundColor: "gray", borderColor: "transparent"}} onClick={() => { setRefresh(prevState => ({ resfresh: !prevState.refresh }));}}><MdRefresh></MdRefresh></Button>
+            </div>
             
              <Table 
                 data={tableDataArray} 
@@ -284,7 +291,7 @@ const AllTransactionsTable = () => {
                 />
                 
             </div>
-        </>
+        </Card>
     )
 };
 

@@ -7,15 +7,12 @@ import {
     FaChartPie,
     FaChartBar,
     FaConnectdevelop,
-    FaBusinessTime,
-    FaMoneyBillAlt
 } from 'react-icons/fa';
 
 import classNames from "classnames";
 import { AppContext } from "../../context/context";
 
 import {useContext} from "react";
-import {GiStoneBridge, GiTakeMyMoney, GiTriquetra} from "react-icons/gi";
 import UserInfo from "../misc/SidebarPanel/UserInfo";
 
 

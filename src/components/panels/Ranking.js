@@ -27,22 +27,14 @@ const Ranking = () => {
     return (
         <div>
             <div>
-                {
-                    (game.state == "RUNNING" && localStorage.getItem("auth-token") !== null) ? (
 
-                        <div>
-                            <div className="home-grid">
-                                <div className="item-content">
-                                    <RankingTable/>
-                                </div>
-                            </div>
+                <div>
+                    <div className="home-grid">
+                        <div className="item-content">
+                            <RankingTable/>
                         </div>
-                    ) : (
-                        <>
-                            <Modal/>
-                        </>
-                    )
-                }
+                    </div>
+                </div>
             </div>
         </div>
     )
