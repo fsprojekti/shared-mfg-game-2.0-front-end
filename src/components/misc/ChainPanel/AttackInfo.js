@@ -12,27 +12,30 @@ const AttackInfo = () => {
         const createDataArray = async () => { 
             const transactions = context.transactions;
             
-            let AllAttackTransactions = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" || transaction.type === "ATTACK-LOSS-STAKE" || transaction.type === "ATTACK-LOSS-BALANCE");
+            let AllAttackTransactions =  await transactions.filter(transaction => transaction.type === "ATTACK-GAIN" || transaction.type === "ATTACK-LOSS-STAKE" || transaction.type === "ATTACK-LOSS-BALANCE");
+            console.log(AllAttackTransactions)
             let differentAttack = [];
             if (AllAttackTransactions.length > 0) {
-                AllAttackTransactions.map((item) => {
+                differentAttack.push(AllAttackTransactions[0]);
+                await AllAttackTransactions.map((item) => {
                     let difference = item.timestamp - differentAttack[differentAttack.length-1].timestamp;
                     if(difference > 10000) differentAttack.push(item);
                     
                 });
             }
+            // console.log(differentAttack)
             
 
 
             let AttackGainArray = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" && transaction.to == context.agent.account);
-            console.log(AttackGainArray)
+            // console.log(AttackGainArray)
             const gainAmount = AttackGainArray.reduce((prev,next) => prev + next.amount,0);
-            console.log("Gain amount: " + gainAmount);
+            // console.log("Gain amount: " + gainAmount);
 
             let AttackLossArray = transactions.filter(transaction => (transaction.type === "ATTACK-LOSS-STAKE" && transaction.from == context.agent.account) || (transaction.type === "ATTACK-LOSS-BALANCE" && transaction.from == context.agent.account));
-            console.log(AttackGainArray)
+            // console.log(AttackGainArray)
             const lossAmount = AttackLossArray.reduce((prev,next) => prev + next.amount,0);
-            console.log("Loss amount: " + lossAmount);
+            // console.log("Loss amount: " + lossAmount);
 
 
             setDataArray({noAttack: (differentAttack.length), gain: gainAmount, loss: lossAmount});

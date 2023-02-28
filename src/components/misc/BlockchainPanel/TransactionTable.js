@@ -5,14 +5,9 @@ import { Table } from "react-fluid-table";
 import { Button } from 'react-bootstrap';
 
 const TransactionsTable = () => {
-    const { user, users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain, setCancelTransactionModalContent, agent} = useContext(AppContext);
+    const { users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain, setCancelTransactionModalContent, agent} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
     const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
-
-    const setCancelTransactionModal = (transaction) => {
-        setConfirmModalContent(transaction);
-        openConfirmModal();
-    };
 
     const HeaderCell = ({ name, style }) => {
         const cellStyle = {
@@ -59,11 +54,11 @@ const TransactionsTable = () => {
             content: ({ row }) => (row.owner == agent.account ? userRow(row) : row.index) 
         },
         { 
-            key: "consumer", 
-            header: "From", 
+            key: "owner", 
+            header: "Owner", 
             sortable: true,
         },
-        { key: "provider", header: "To", sortable: true },
+        { key: "type", header: "Type", sortable: true },
         { key: "chain", header: "Chain", sortable: true },
         { key: "fee", header: "Fee", sortable: true },
       ].map(c => ({
@@ -111,7 +106,7 @@ const TransactionsTable = () => {
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             // console.log(transactionsByFee)
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction, index) => {
-                let { from, to, fee, amount, chain} = transaction;
+                let { from, to, fee, amount, chain, owner} = transaction;
 
                 let chainIndex = chains["chains"].findIndex((c) => c.id === chain);
 
@@ -120,22 +115,23 @@ const TransactionsTable = () => {
                 if(consumerAgent.length) consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
                 
                 
-                const providerAgent = await agents["agents"].filter(agent => agent.account === to);
-                let providerUser;
-                if(providerAgent.length) providerUser =  await users["users"].filter(user => user.id === providerAgent[0].user);
+                const ownerAgent = await agents["agents"].filter(agent => agent.account === owner);
+                let ownerUser;
+                if(ownerAgent.length) ownerUser =  await users["users"].filter(user => user.id === ownerAgent[0].user);
 
                 return (
                     {
                         id: transaction.id,
                         index: index+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
-                        provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
+                        // provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
                         // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,
                         price: amount,
                         fee: fee.toString(),
                         chain: chains["chains"][chainIndex].name,
                         chainId: chains["chains"][chainIndex].id,
-                        owner: transaction.owner,
+                        owner: ownerUser[0].name,
+                        type: transaction.type,
                     }
                 )
                 

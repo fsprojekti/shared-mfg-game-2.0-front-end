@@ -34,12 +34,12 @@ const ChainMesh = () => {
     
 
     let nodes =  new DataSet (chains.chains.map((item, index) => {
-      return { id: item.id, label: `<b>${item.name}</b>`, x: (200*index),y: 10, color: {background: (item.name == chains["chains"][0].name ? '#f0c808' : '#2274a5')}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
+      return { id: item.id, label: `<b>${item.name}</b>`, x: (300*index),y: 10, size: 50, color: {background: (item.name == chains["chains"][0].name ? '#f0c808' : '#2274a5')}, title: `Stake: ${item.stake}, Balance: ${item.balance}`};
     }));
 
 
     let edges =  new DataSet (bridges.map(item => {
-      return { from: item.chainSource, to:item.chainTarget, title: `🔁Bridge: ${item.name}`};
+      return { from: item.chainSource, to:item.chainTarget, title: `🔁${item.name}`};
     }));
 
 
@@ -58,18 +58,27 @@ const ChainMesh = () => {
             dragView: false  // do not allow dragging
           },
           edges: {
-            color: "#411811",
-            width: 2,
-            arrows: "middle"
+            color: {
+              color: '#000000',
+              highlight: '#848484',
+              hover: '#848484',
+            },
+            width: 3,
+            arrows: "to;from"
           },
           nodes: {
-            shape: 'hexagon', //box, database, square, circle, ellipse...
+            shape: 'dot', //box, database, square, circle, ellipse...
             physics:false,
             font: {
               // required: enables displaying <b>text</b> in the label as bold text
               multi: 'html',
               // optional: use this if you want to specify the font of bold text
               bold: '16px arial black'
+          },
+          scaling: {
+            label: {
+              enabled: true,
+            },
           },
 
         },

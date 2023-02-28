@@ -113,9 +113,9 @@ const Trades = () => {
             let array1 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[0]);
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service.type);
-            console.log(array1)
-            console.log(array2)
-            console.log(array3)
+            // console.log(array1)
+            // console.log(array2)
+            // console.log(array3)
 
             if (checked1) {
                 await array1.forEach((item) => {
@@ -200,9 +200,9 @@ const Trades = () => {
             setModifiedDataArray1(modifiedArray1);
             setModifiedDataArray2(modifiedArray2);
             setModifiedDataArray3(modifiedArray3);
-            console.log(array1);
-            console.log(array2);
-            console.log(array3);
+            // console.log(array1);
+            // console.log(array2);
+            // console.log(array3);
 
         };
         sortDataArrays(); 
