@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import {useContext, useEffect, useCallback } from "react";
 import {AppContext} from "./context/context";
