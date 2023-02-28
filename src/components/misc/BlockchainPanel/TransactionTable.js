@@ -211,6 +211,7 @@ const TransactionsTable = () => {
                     <Table 
                     data={tableDataArray} 
                     columns={columns} 
+                    tableWidth="100%"
                     className="table-all-transactions"
                     // rowStyle={rowStyle}
                     headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
