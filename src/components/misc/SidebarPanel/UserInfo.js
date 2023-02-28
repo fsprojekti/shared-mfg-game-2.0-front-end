@@ -144,7 +144,7 @@ const UserInfo = () => {
             // let upgrades = Math.floor(sum / 2); 
             let upgrades = 0;
 
-            if(numOfFirst.length > numOfSecond.length) {
+            if(numOfFirst.length >= numOfSecond.length) {
                 upgrades = numOfSecond.length;
             } else if (numOfFirst.length < numOfSecond.length) {
                 upgrades = numOfFirst.length;
@@ -158,7 +158,7 @@ const UserInfo = () => {
         };
         getOtherServiceTypes();
 
-    }, [user, chains, activeChain, services["services"]], usersBalances, usersStakes);
+    }, [user, chains, activeChain, services["services"]], servicesAll["services"], usersBalances, usersStakes);
 
     return (
 
@@ -207,7 +207,7 @@ const UserInfo = () => {
 
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
 
-            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#f0c808"}}>
+            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#ec8f48"}}>
                 <h4 className="d-inline-block">
                     {chains["chains"][0].name}
                 </h4>
@@ -248,7 +248,7 @@ const UserInfo = () => {
 
         <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
 
-            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#2274a5"}}>
+            <div className='d-flex-row d-inline-block' style={{backgroundColor: "#73bcd4"}}>
                 <h4 className="d-inline-block">
                     {chains["chains"][1].name}
                 </h4>

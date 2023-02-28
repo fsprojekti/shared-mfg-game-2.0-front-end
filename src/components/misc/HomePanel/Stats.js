@@ -22,12 +22,12 @@ const Stats = () => {
 
     const getColor = (service) => {
         switch(service) {
-            case "MECHANICAL":
-                return "#f8e3a1";
-            case "ELECTRICAL": 
-                return "rgb(255, 255, 132, 0.5)";
-            case "PROGRAMMING": 
-                return "rgb(0, 99, 132, 0.5)";
+            case "IDLE":
+                return "white";
+            case "ACTIVE": 
+                return "#34ad6a";
+            case "MARKET": 
+                return "#f0c808";
             default:
                 return "rgb(255, 255, 255)";
         }
@@ -110,7 +110,7 @@ const Stats = () => {
             // let upgrades = Math.floor(sum / 2); 
             let upgrades = 0;
 
-            if(numOfFirst.length > numOfSecond.length) {
+            if(numOfFirst.length >= numOfSecond.length) {
                 upgrades = numOfSecond.length;
             } else if (numOfFirst.length < numOfSecond.length) {
                 upgrades = numOfFirst.length;
@@ -123,6 +123,8 @@ const Stats = () => {
 
         };
         getOtherServiceTypes();
+
+        // console.log(services)
         
 
 
@@ -140,7 +142,7 @@ const Stats = () => {
                         <p>{ Object.keys(usersBalances).length !== 0 ?  sumBalance.balance : 0}</p>
                     </div>
                 </div>
-                <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", background: (getColor(service.type))}}>
+                <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", background: (getColor(service.state))}}>
                     <div className="time-value">
                         <h2>{service.type}</h2>
                     </div>

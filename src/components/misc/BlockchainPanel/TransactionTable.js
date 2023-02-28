@@ -5,9 +5,10 @@ import { Table } from "react-fluid-table";
 import { Button } from 'react-bootstrap';
 
 const TransactionsTable = () => {
-    const { users, agents, openConfirmModal, setConfirmModalContent, transactions, chains, activeChain, setCancelTransactionModalContent, agent} = useContext(AppContext);
+    const context = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
+    const [checkBoxes, setCheckBoxes] = useState([{chain: context.chains["chains"][0], isChecked: true}, {chain: context.chains["chains"][1], isChecked: true}]);
+    const [checkBoxesOwner, setCheckBoxesOwner] = useState([{type: "My tx", isChecked: false}]);
 
     const HeaderCell = ({ name, style }) => {
         const cellStyle = {
@@ -36,7 +37,7 @@ const TransactionsTable = () => {
             <button
                 className='cancel-transaction-btn'
                 // style={{backgroundColor: "transparent", borderColor: "transparent"}}
-                onClick={() => { setCancelTransactionModalContent({open: true, data: row})}}
+                onClick={() => { context.setCancelTransactionModalContent({open: true, data: row})}}
             >
                 <FaTimes></FaTimes>
         </button>
@@ -51,7 +52,7 @@ const TransactionsTable = () => {
             key: "index", 
             header: "No.", 
             sortable: true,
-            content: ({ row }) => (row.owner == agent.account ? userRow(row) : row.index) 
+            content: ({ row }) => (row.ownerId == context.agent.account ? userRow(row) : row.index) 
         },
         { 
             key: "owner", 
@@ -84,6 +85,16 @@ const TransactionsTable = () => {
         setCheckBoxes(newArray);
     };
 
+    const selectOwner = async (e) => {
+        // console.debug(e)
+        let itemName = e.target.name;
+        let checked = e.target.checked;
+        const newArray = checkBoxesOwner.map(item =>
+            item.type === itemName ? { ...item, isChecked: checked } : item
+        );
+        setCheckBoxesOwner(newArray);
+    };
+
     const filterDataArrayByChain = (dataArray) => {
 
         const checkedChains = checkBoxes.filter(item => item.isChecked);
@@ -96,12 +107,27 @@ const TransactionsTable = () => {
         return dataArray.filter(data => selectedChains.includes(data.chainId));
     };
 
+    const filterDataArrayByOwner = (dataArray) => {
+        const agent = context.agent;
+        const checkedBoxes = checkBoxesOwner.filter(item => item.isChecked);
+        if (!Array.isArray(checkedBoxes) || !checkedBoxes.length) {
+            return dataArray;
+        }
+        // console.log(dataArray.filter(transaction => transaction.owner === agent.account))
+        return dataArray.filter(transaction => transaction.owner === agent.account);
+    };
+
+
     
 
     useEffect(() => {
         // console.log(chains["chains"]);
         const renderTableData = async () => {
             // console.log(transactions)
+            const transactions = context.transactions;
+            const chains = context.chains;
+            const agents = context.agents;
+            const users = context.users;
             let orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
             // console.log(transactionsByFee)
@@ -131,6 +157,7 @@ const TransactionsTable = () => {
                         chain: chains["chains"][chainIndex].name,
                         chainId: chains["chains"][chainIndex].id,
                         owner: ownerUser[0].name,
+                        ownerId: ownerAgent[0].account,
                         type: transaction.type,
                     }
                 )
@@ -138,14 +165,14 @@ const TransactionsTable = () => {
             }));
 
             // console.log(transactionsArray)
-            let chainTransactionArray = await filterDataArrayByChain(transactionsArray);
+            const chainTransactionArray = await filterDataArrayByChain(transactionsArray);
+            const filteredTransactionsArrayByOwner= await filterDataArrayByOwner(chainTransactionArray);
 
-            console.log(chainTransactionArray)
-            setTableDataArray(chainTransactionArray);
+            setTableDataArray(filteredTransactionsArrayByOwner);
         };
         renderTableData();
 
-    }, [transactions, activeChain, checkBoxes]);
+    }, [context.transactions, checkBoxes]);
 
 
 
@@ -162,7 +189,19 @@ const TransactionsTable = () => {
                                 <input type="checkbox" name={item.chain.name} checked={item.isChecked} onChange={selectOne}/>
                                 <span className="checkmark"></span>
                             </label>
-                        ))}
+                        ))
+                }
+                <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                    <b > Owner: </b>
+                </div>
+                        {
+                        checkBoxesOwner.map((item) => (
+                            <label className="checkbox-container" key={item.type}>{item.type}
+                                <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOwner}/>
+                                <span className="checkmark"></span>
+                            </label>
+                        ))
+                    }
                 </div>
                 <div className="table-pending-transactions-container">
                     <Table 

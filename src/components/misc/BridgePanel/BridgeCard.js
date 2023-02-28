@@ -92,8 +92,8 @@ const BridgeCard = () => {
                     });
                   });
             } else {
-                            
-                            console.log(bridges[bridge])
+                            setLoading(true);
+                            // console.log(bridges[bridge])
                             let response;
                             if(direction == '2') response= await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
                             else if(direction == '1') response = await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  

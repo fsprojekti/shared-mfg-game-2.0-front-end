@@ -3,6 +3,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import { AppContext } from '../../../context/context';
 import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { Card } from 'react-bootstrap';
+import userEvent from '@testing-library/user-event';
 const BarChart = ({dataArray, modifiedData, checked}) => {
     const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, user } = useContext(AppContext);
     const setTradeModal = (data) => {
@@ -127,7 +128,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             fill={[
                 {
                 match: 
-                    d => d.data.data.providerName == "You",
+                    d => d.data.data.service === service._id,
                 id: 'lines-pattern'
             },
                 // { match: '*', id: 'custom' },

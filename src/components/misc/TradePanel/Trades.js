@@ -5,7 +5,7 @@ import ToggleSwitch from './ToggleSwitch';
 import TradeModal from '../TradeModal';
 
 const Trades = () => {
-    const { users, orders, agents, servicesAll, service, chains } = useContext(AppContext);
+    const context = useContext(AppContext);
     const [dataArray1, setDataArray1] = useState([]);
     const [dataArray2, setDataArray2] = useState([]);
     const [dataArray3, setDataArray3] = useState([]);
@@ -13,7 +13,7 @@ const Trades = () => {
     const [modifiedDataArray2, setModifiedDataArray2] = useState([]);
     const [modifiedDataArray3, setModifiedDataArray3] = useState([]);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
-    const [checkBoxes, setCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
+    const [checkBoxes, setCheckBoxes] = useState([{chain: context.chains["chains"][0], isChecked: true}, {chain: context.chains["chains"][1], isChecked: true}]);
 
     const [checked1, setChecked1] = useState(false);
     const [checked2, setChecked2] = useState(false);
@@ -65,10 +65,10 @@ const Trades = () => {
 
     const getColor = (chainName) => {
         switch(chainName) {
-            case chains["chains"][0].name:
-                return "#f0c808";
-            case chains["chains"][1].name: 
-                return "#2274a5";
+            case context.chains["chains"][0].name:
+                return "#EC8F48";
+            case context.chains["chains"][1].name: 
+                return "#73bcd4";
             default:
                 return "rgb(32, 123, 211)";
         }
@@ -78,6 +78,12 @@ const Trades = () => {
     useEffect(() => {
         const sortDataArrays = async () => { 
             // console.log(orders);
+            const orders = context.orders;
+            const servicesAll = context.servicesAll;
+            const chains = context.chains;
+            const agents = context.agents;
+            const users = context.users;
+            const service = context.service;
             let placedOrders = await orders.filter(order => order.state === "PLACED");
             console.log(placedOrders);
 
@@ -207,7 +213,7 @@ const Trades = () => {
         };
         sortDataArrays(); 
 
-    }, [orders, checked1, checked2, checked3, checkBoxes, servicesAll["services"]]);
+    }, [context.orders, checked1, checked2, checked3, checkBoxes, context.servicesAll["services"]]);
 
     return (
         <>  
@@ -251,7 +257,7 @@ const Trades = () => {
                 <div >
                     <div style={{width: "35vw",boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", background: backColor}}>
                         <div style={{ textAlign: "center", paddingTop: "7px"}}>
-                            <h3>{`${service.type}`}</h3>
+                            <h3>{`${context.service.type}`}</h3>
                         </div>
                         <ToggleSwitch checked={checked3} onChange={handleChange3}/>
                         <div style={{ height: "300px", width: "auto", margin: "auto"}}>

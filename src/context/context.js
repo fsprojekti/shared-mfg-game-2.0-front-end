@@ -518,6 +518,17 @@ export const ContextWrapper = (props) => {
 
     }
 
+    const updateAttackState = (attacObj) => {
+        // console.debug("BRIDGE EVENT")
+        // console.log((bridgeObj));
+        //Bridge object is returned with whole chain objects
+        setStealVotes((oldStealVotes) => {
+            let votes = oldStealVotes;
+            votes = attacObj;
+            return votes;     
+        });
+    }
+
 
     //--------------------- API requests ------------------------------------------------------
 
@@ -1496,7 +1507,8 @@ export const ContextWrapper = (props) => {
             isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen,
             notifCard, setNotifCard,
             cancelTransactionModalContent, setCancelTransactionModalContent,
-            apiUserCancelTransaction
+            apiUserCancelTransaction,
+            updateAttackState
         }}>
             {props.children}
         </AppContext.Provider>

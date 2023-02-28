@@ -919,7 +919,7 @@ BlockchainData
 }
 
 .checkbox-container-main input:checked ~ .checkmark {
-  background-color: #f0c808;
+  background-color: #ec8f48;
 }
 
 .checkbox-container-main input:checked ~ .checkmark:after {
@@ -963,7 +963,7 @@ BlockchainData
 }
 
 .checkbox-container-side input:checked ~ .checkmark {
-  background-color: #2274a5;
+  background-color: #73bcd4;
 }
 
 .checkbox-container-side input:checked ~ .checkmark:after {

@@ -37,6 +37,7 @@ const PieChart = ({ data}) => {
         cornerRadius={3}
         sortByValue={true}
         // enableArcLinkLabels={false}
+        animate={false}
         colors={{ scheme: 'pastel1' }}
         activeOuterRadiusOffset={4}
         borderWidth={1}
@@ -68,9 +69,9 @@ const PieChart = ({ data}) => {
             {
                 id: 'dots',
                 type: 'patternDots',
-                background: 'red',
-                color: 'rgba(255, 255, 255, 0.9)',
-                size: 4,
+                background: '#e73936',
+                color: '#f0c808',
+                size: 3,
                 padding: 1,
                 stagger: true,
             },

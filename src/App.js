@@ -228,7 +228,7 @@ function App() {
         <div className="App">
             <Navbar style={{backgroundColor: "#272c34", height: "60px"}}>
                 <Container>
-                    <Navbar.Brand style={{color: "#eddeff"}} className='nav-brand' href="/">
+                    <Navbar.Brand style={{color: "#d2abd8"}} className='nav-brand' href="/">
                     <h4> Shared Manufacturing game </h4>
                     </Navbar.Brand>
 

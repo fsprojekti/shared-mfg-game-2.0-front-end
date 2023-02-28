@@ -11,36 +11,16 @@ const AttackCard = () => {
 
     let [bridge, setbridgeNo] = useState(0);
     let [user, setUser] = useState(0);
-    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState("");
 
     function attackbridge(number){
         setbridgeNo(number);
         console.log(bridge);
     }
-
-    function attackUser(number){
-        setUser(number);
-        console.log(user);
-    }
-
-
-    const renderTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-          You can remove your vote by clicking on the bridge/player in the table.
-        </Tooltip>
-      );
     
 
     useEffect(() => {
-        // console.log(context.stealVotes)
-        const renderUserTable = async () => {
-            const usersWithoutMainPlayer = await context.users['users'].filter(user => user.id !== context.user.id);
-            setUsers(usersWithoutMainPlayer);
-        };
-        renderUserTable();
-        console.log(context.stealVotes)
-    }, [])
+    }, [context.stealVotes])
 
 
     let voteStealBridge = async () => {
@@ -103,7 +83,7 @@ const AttackCard = () => {
                
                 <Row >
                 <Col>
-                    <h3> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
+                    <h3 style={{paddingTop: "2rem"}}> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
                             <Card.Body>
@@ -163,7 +143,7 @@ const AttackCard = () => {
 
                                     <>
                                     
-                                    <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={voteStealBridge} > 
+                                    <Button variant="danger" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px", backgroundColor: "#e73936"}} onClick={voteStealBridge} > 
                                         {loading === "steal" ? (
                                             <div>
                                                 <Spinner
@@ -173,9 +153,9 @@ const AttackCard = () => {
                                                 role="status"
                                                 aria-hidden="true"
                                             />
-                                            <text> Adding vote </text>
+                                            <text> VOTING </text>
                                             </div>
-                                        ) : ( <text> Vote to Steal  </text>)
+                                        ) : ( <text> VOTE  </text>)
                                         
                                         }   
                                         
@@ -183,7 +163,7 @@ const AttackCard = () => {
                                     </>
                                 ): (
                                     <>
-                                    <Button variant="success" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px"}} onClick={confirmVoteOff} > 
+                                    <Button variant="success" style={{borderRadius: "8px", alignSelf: "center", marginBottom: "20px", backgroundColor: "#34ad6a", borderColor: "#34ad6a"}} onClick={confirmVoteOff} > 
                                         {loading === "steal" ? (
                                             <div>
                                                 <Spinner
@@ -193,9 +173,9 @@ const AttackCard = () => {
                                                 role="status"
                                                 aria-hidden="true"
                                             />
-                                            <text> Removing vote </text>
+                                            <text> REMOVING </text>
                                             </div>
-                                        ) : ( <text> Remove vote  </text>)
+                                        ) : ( <text> REMOVE VOTE  </text>)
                                         
                                         }   
                                         

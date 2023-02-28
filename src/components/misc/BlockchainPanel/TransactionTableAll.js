@@ -2,19 +2,20 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { Table } from "react-fluid-table";
-import { Button, Card} from 'react-bootstrap';
-import { GiRecycle } from 'react-icons/gi';
+import { Button, Card, ToggleButton} from 'react-bootstrap';
 import { MdRefresh } from "react-icons/md";
 
 
 
 
 const AllTransactionsTable = () => {
-    const { users, agents,  transactions, chains, agent, user} = useContext(AppContext);
+    const context = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}, {type: "Mine", isChecked: false}]);
-    const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: chains["chains"][0], isChecked: true}, {chain: chains["chains"][1], isChecked: true}]);
+    const [checkBoxes, setCheckBoxes] = useState([{type: "Programming", isChecked: false}, {type: "Electrical", isChecked: false}, {type: "Mechanical", isChecked: false}, {type: "Stake", isChecked: false}, {type: "Un-stake", isChecked: false},{type: "Bridge", isChecked: false}, {type: "Attack", isChecked: false}]);
+    const [checkBoxesOwner, setCheckBoxesOwner] = useState([{type: "My tx", isChecked: false}]);
+    const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: context.chains["chains"][0], isChecked: true}, {chain: context.chains["chains"][1], isChecked: true}]);
     const [refresh, setRefresh] = useState({refresh: false});
+    const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 
     const HeaderCell = ({ name, sortDirection, style, onClick }) => {
@@ -142,6 +143,16 @@ const AllTransactionsTable = () => {
         setCheckBoxes(newArray);
     };
 
+    const selectOwner = async (e) => {
+        // console.debug(e)
+        let itemName = e.target.name;
+        let checked = e.target.checked;
+        const newArray = checkBoxesOwner.map(item =>
+            item.type === itemName ? { ...item, isChecked: checked } : item
+        );
+        setCheckBoxesOwner(newArray);
+    };
+
     const selectOneChain = async (e) => {
         // console.debug(e)
         let itemName = e.target.name;
@@ -180,9 +191,9 @@ const AllTransactionsTable = () => {
     const filterDataArrayByChain = (dataArray) => {
 
         const checkedChains = chainCheckBoxes.filter(item => item.isChecked);
-        // console.log(checkedChains)
         const selectedChains = checkedChains.map(item => item.chain.id);
         if (!Array.isArray(selectedChains) || !selectedChains.length) {
+            console.log("no chains selected")
             return [];
         }
 
@@ -190,20 +201,22 @@ const AllTransactionsTable = () => {
     };
 
     const filterDataArrayByOwner = (dataArray) => {
-
-        const checkedBoxes = checkBoxes.filter(item => item.isChecked);
-        const selectedTypes = checkedBoxes.map(item => item.type);
-
-        if (!Array.isArray(selectedTypes) || !selectedTypes.length || !(selectedTypes.includes("Mine"))) {
+        const agent = context.agent;
+        const checkedBoxes = checkBoxesOwner.filter(item => item.isChecked);
+        if (!Array.isArray(checkedBoxes) || !checkedBoxes.length) {
             return dataArray;
         }
-        console.log(dataArray.filter(data => data.owner == agent.account))
-
-        return dataArray.filter(data => data.consumerId == agent.account || data.providerId == agent.account);
+        // console.log(dataArray.filter(transaction => transaction.owner === agent.account))
+        return dataArray.filter(transaction => transaction.owner === agent.account);
     };
 
     useEffect(() => {
         const renderTableData = async () => {
+            const transactions = context.transactions;
+            const chains = context.chains;
+            const agents = context.agents;
+            const users = context.users;
+
             const minedTransactions = await transactions.filter(transaction => transaction.state == "MINED");
             
             const transactionsArray = await Promise.all(minedTransactions.map(async (transaction) => {
@@ -232,7 +245,7 @@ const AllTransactionsTable = () => {
                         consumerId: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumer[0].id) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].name) ,
                         providerId: (!providerAgent.length ? chains["chains"][chainIndex].name : provider[0].id) ,
-                        owner:transaction.owner ,
+                        owner:transaction.owner,
                         amount: amount.toString(),
                         fee: fee.toString(),
                         type: (transaction.type === "SERVICE" ? providerAgent[0].type : transaction.type),
@@ -256,16 +269,14 @@ const AllTransactionsTable = () => {
             const filteredTransactionsArrayByChain= await filterDataArrayByChain(filteredTransactionsArrayByType);
             const filteredTransactionsArrayByOwner= await filterDataArrayByOwner(filteredTransactionsArrayByChain);
 
-            console.log(filteredTransactionsArrayByOwner)
-            console.log(agent)
-            console.log(user)
+            // console.log(filteredTransactionsArrayByOwner)
 
             setTableDataArray(filteredTransactionsArrayByOwner.reverse());
         };
         
         renderTableData();
 
-    }, [checkBoxes, chainCheckBoxes, refresh]);
+    }, [checkBoxes, chainCheckBoxes, checkBoxesOwner, refresh]);
 
 
 
@@ -294,6 +305,14 @@ const AllTransactionsTable = () => {
                         checkBoxes.map((item) => (
                             <label className="checkbox-container" key={item.type}>{item.type}
                                 <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
+                                <span className="checkmark"></span>
+                            </label>
+                        ))
+                    }
+                    {
+                        checkBoxesOwner.map((item) => (
+                            <label className="checkbox-container" key={item.type}>{item.type}
+                                <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOwner}/>
                                 <span className="checkmark"></span>
                             </label>
                         ))
