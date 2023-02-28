@@ -41,12 +41,12 @@ const AttackInfo = () => {
             setDataArray({noAttack: (differentAttack.length), gain: gainAmount, loss: lossAmount});
         };
         createDataArray();
-    }, [context.transaction]);
+    }, [context.transactions]);
 
 
     return (
         <>
-                    <Card style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent" }}>
+                    <Card style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent", height: "300px" }}>
                         <Row className="p-2">
                         <Col className={"p-2"}>
 

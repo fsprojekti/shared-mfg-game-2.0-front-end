@@ -195,6 +195,7 @@ export const ContextWrapper = (props) => {
         if(chains["chains"].length != 0) {
             setChains((chains) => {
                 const oldChains = chains;
+                // console.log(oldChains)
 
                 //Check if chain already exists in the state
                 const index = oldChains["chains"].findIndex(c => {
@@ -206,19 +207,17 @@ export const ContextWrapper = (props) => {
                     oldChains.chains[index].balance = chainObj.balance;
                     oldChains.chains[index].stake = chainObj.stake;
 
-                   //Check if block number is higher than the one in current state
-                   if(chainObj.blockNumber > oldChains.chains[index].blockNumber){
-                        //Checking if this is a first run, to calculate time difference between server and client
-                        if(oldChains.chains[0].timeDiff === undefined) { 
-                            let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
-                            setCookie('timeDiff', difference);  
-                            oldChains.chains[0].timeDiff = difference;
-                            console.log("time difference: " + difference + "ms")
-                        }          
-                        
-                        oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
-                        oldChains.chains[index].blockNumber = chainObj.blockNumber; 
-                    }
+                    //Checking if this is a first run after refresh, to calculate time difference between server and client
+                    //Wrong logic, but somehow "works"
+                    if(oldChains.chains[0].timeDiff === undefined) { 
+                        let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
+                        oldChains.chains[0].timeDiff = difference;
+                        console.log("time difference: " + difference + "ms")
+                    }          
+                    
+                    oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
+                    oldChains.chains[index].blockNumber = chainObj.blockNumber; 
+
 
                     // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
 
@@ -524,7 +523,7 @@ export const ContextWrapper = (props) => {
         //Bridge object is returned with whole chain objects
         setStealVotes((oldStealVotes) => {
             let votes = oldStealVotes;
-            votes = attacObj;
+            votes.stealVotes = attacObj;
             return votes;     
         });
     }

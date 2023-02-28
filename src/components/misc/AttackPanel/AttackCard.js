@@ -20,7 +20,7 @@ const AttackCard = () => {
     
 
     useEffect(() => {
-    }, [context.stealVotes])
+    }, [context.stealVotes.bridges])
 
 
     let voteStealBridge = async () => {
@@ -79,11 +79,11 @@ const AttackCard = () => {
     return (
         <>
             <div className="d-flex "> 
-                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", borderColor: "transparent"}}>
+                <Container style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", minHeight: "30vh", borderColor: "transparent", height: "300px"}}>
                
                 <Row >
                 <Col>
-                    <h3 style={{paddingTop: "2rem"}}> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
+                    <h3 style={{paddingTop: "1rem"}}> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
                             <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                             {context.bridges.length > 0 ? (
                             <Card.Body>
@@ -101,25 +101,6 @@ const AttackCard = () => {
                                 
                                 <Card.Text>
 
-                                {/* <Dropdown  className='d-flex' style={{justifyContent: "center", width: "auto", wordBreak: "break-all"}}>
-                            
-                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" >
-                                 <b>{context.bridges[bridge].name} </b> 
-                                </Dropdown.Toggle>
-                                
-                                <Dropdown.Menu>
-
-                                {
-                                    context.bridges.map((item, index) => (
-                                        
-                                        <Dropdown.Item onClick={(item) => (attackbridge(index))} > {context.bridges[index].name} </Dropdown.Item>
-
-                                    ))
-                                }
-                                </Dropdown.Menu>
-                                
-                                </Dropdown> */}
-                                
                                 
                                 </Card.Text>
                                 

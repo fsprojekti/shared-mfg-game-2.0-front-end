@@ -64,7 +64,7 @@ const ChainMesh = () => {
               hover: '#848484',
             },
             width: 3,
-            arrows: "to;from"
+            // arrows: "to;from"
           },
           nodes: {
             shape: 'dot', //box, database, square, circle, ellipse...

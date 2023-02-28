@@ -137,11 +137,11 @@ function App() {
         const chains = context.apiGameChains().then(chainsObj => {
             console.log(chainsObj)
             console.debug(context.cookies.timeDiff)
-            if(context.cookies.timeDiff !== undefined) {
-                console.debug("Setting time difference")
-                chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
-                chainsObj[0].updatedAt = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
-            }
+            // if(context.cookies.timeDiff !== undefined) {
+            //     console.debug("Setting time difference")
+            //     chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
+            //     chainsObj[0].updatedAt = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
+            // }
 
             let contextChains = context.chains;
             contextChains.chains = chainsObj;

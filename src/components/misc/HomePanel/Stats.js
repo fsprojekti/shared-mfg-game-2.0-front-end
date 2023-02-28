@@ -25,9 +25,9 @@ const Stats = () => {
             case "IDLE":
                 return "white";
             case "ACTIVE": 
-                return "#34ad6a";
+                return "white";
             case "MARKET": 
-                return "#f0c808";
+                return "white";
             default:
                 return "rgb(255, 255, 255)";
         }

@@ -28,7 +28,7 @@ const PanelChains = () => {
                 <Col style={{paddingRight: "0", paddingLeft: "0", paddingLeft: "0", marginRight: "5px", marginLeft: "5px"}}>
                     <AttackInfo />
                 </Col>
-                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px"}}>
+                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px", marginBottom: "5px"}}>
                     <AttackCard />
                 </Col>
             </Row>
