@@ -114,7 +114,7 @@ const TransactionsTable = () => {
             return dataArray;
         }
         // console.log(dataArray.filter(transaction => transaction.owner === agent.account))
-        return dataArray.filter(transaction => transaction.owner === agent.account);
+        return dataArray.filter(transaction => transaction.ownerId === agent.account);
     };
 
 
@@ -139,6 +139,10 @@ const TransactionsTable = () => {
                 const consumerAgent = await agents["agents"].filter(agent => agent.account === from);
                 let consumerUser;
                 if(consumerAgent.length) consumerUser = await users["users"].filter(user => user.id === consumerAgent[0].user);
+
+                const providerAgent = await agents["agents"].filter(agent => agent.account === to);
+                let providerUser;
+                if(providerAgent.length) providerUser = await users["users"].filter(user => user.id === providerAgent[0].user);
                 
                 
                 const ownerAgent = await agents["agents"].filter(agent => agent.account === owner);
@@ -150,7 +154,7 @@ const TransactionsTable = () => {
                         id: transaction.id,
                         index: index+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
-                        // provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
+                        provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
                         // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,
                         price: amount,
                         fee: fee.toString(),
@@ -172,7 +176,7 @@ const TransactionsTable = () => {
         };
         renderTableData();
 
-    }, [context.transactions, checkBoxes]);
+    }, [context.transactions, checkBoxes, checkBoxesOwner]);
 
 
 

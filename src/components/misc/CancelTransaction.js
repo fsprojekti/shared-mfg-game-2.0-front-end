@@ -5,7 +5,6 @@ import {motion} from 'framer-motion'
 
 const CancelTransactionModal = () => {
     const {  apiUserCancelTransaction, orders, setNote, cancelTransactionModalContent, setCancelTransactionModalContent} = useContext(AppContext);
-    const [order, setOrder] = useState({});
 
     const context = useContext(AppContext);
 
@@ -89,6 +88,7 @@ const CancelTransactionModal = () => {
                                 <li> From: {cancelTransactionModalContent.data.consumer}  </li>
                                 {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                                 <li> To: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.provider} </span>    </li>
+                                <li> Type: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.type} </span>    </li>
                                 <li> Fee: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.fee} </span>    </li>
                                 <li> Amount: <span style={{color: 'green'}}> {cancelTransactionModalContent.data.price} </span>    </li>
                                 <li> Chain: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.chain} </span> </li>
