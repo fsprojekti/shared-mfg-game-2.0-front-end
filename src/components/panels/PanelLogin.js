@@ -43,7 +43,7 @@ const PanelLogin = () => {
             context.setNote((prevState) => {
                 return({
                   ...prevState,
-                  msg: e.response.data.message,
+                  msg: e.message,
                   heading: 'Error',
                   show: true,
                   type: 'danger'
@@ -95,7 +95,7 @@ const PanelLogin = () => {
             context.setNote((prevState) => {
                 return({
                   ...prevState,
-                  msg: e.response.data.message,
+                  msg: e.message,
                   heading: 'Error',
                   show: true,
                   type: 'danger'
@@ -110,7 +110,7 @@ const PanelLogin = () => {
                 <div className={"d-flex p-3"}>
                     <Card style={{width: '25rem', borderRadius: "8px"}} size="lg">
                         <Form>
-                            <Card.Header className={"bg-dark text-white"}><h5>Register</h5></Card.Header>
+                            <Card.Header style={{backgroundColor: "#F0C808"}}><h5>Register</h5></Card.Header>
                             <InputGroup className="mb-3 p-2">
                                 <InputGroup.Text id="input-user-registration-number">Player
                                     id</InputGroup.Text>
@@ -135,7 +135,7 @@ const PanelLogin = () => {
                 <div className={"d-flex p-3"}>
                     <Card style={{width: '25rem', borderRadius: "8px"}} size="lg">
                     <Form>
-                        <Card.Header className={"bg-dark text-white"} style={{borderRadius: "8 0 8 0"}}><h5>Login</h5></Card.Header>
+                        <Card.Header  style={{backgroundColor: "#EC8F48"}}><h5>Login</h5></Card.Header>
                         <InputGroup className="mb-3 p-2">
                             <InputGroup.Text id="input-user-registration-number">Player Id</InputGroup.Text>
                             <FormControl onChange={e => setRegisterNumberLogin(e.target.value)}></FormControl>

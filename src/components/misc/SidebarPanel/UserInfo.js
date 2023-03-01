@@ -158,7 +158,7 @@ const UserInfo = () => {
         };
         getOtherServiceTypes();
 
-    }, [user, chains, activeChain, services["services"]], servicesAll["services"], usersBalances, usersStakes);
+    }, [user, chains, activeChain, services["services"], servicesAll["services"], usersBalances, usersStakes]);
 
     return (
 

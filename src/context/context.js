@@ -373,8 +373,16 @@ export const ContextWrapper = (props) => {
                 let agent= agents["agents"].filter(agent=> agent.account == transObj[0].to );
                 let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld === "IDLE");
 
-
-                let serviceIndex = services["services"].findIndex((s) => s._id === service[0]._id);
+                //TODO: FIX this
+                let serviceIndex;
+                try{
+                    serviceIndex = services["services"].findIndex((s) => s._id === service[0]._id);
+                }
+                catch(err) {
+                    console.debug("Service doesnt exis in users purchased services")
+                    console.debug(err)
+                    
+                }
                 
                 if(service == undefined ||service.length == 0 || serviceIndex !== -1) {
                     // console.log("No new service")
