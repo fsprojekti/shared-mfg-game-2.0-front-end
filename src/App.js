@@ -225,16 +225,17 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar style={{backgroundColor: "#272c34", height: "60px"}}>
-                <Container>
-                    <Navbar.Brand style={{color: "#d2abd8"}} className='nav-brand' href="/">
+            <Navbar className='d-flex' style={{backgroundColor: "#272c34", height: "60px", textAlign: "inherit", justifyContent: "space-between"}}>
+                <Container className='d-flex' style={{justifyContent: "space-between"}}>
+                    <Navbar.Brand style={{color: "#d2abd8"}}  href="/">
                     <h4> Shared Manufacturing game </h4>
                     </Navbar.Brand>
-
+                    
                     {
                     //Popravi to da se gleda local id in pol al je logged al ne
+                    context.user.id === "" ? (null):(
 
-                        <div className='d-flex'  >
+                        <div className='d-flex'>
                             <NavDropdown title={<Avatar name={`${context.user.name}`}  round={true} size="45" />} id="navbarScrollingDropdown">
                             <p style={{fontWeight: "bold", textAlign: "center", color: "#8957e5"}}>{context.user.name}</p>
 
@@ -247,6 +248,7 @@ function App() {
                             </NavDropdown>
 
                         </div>
+                    )
 
                     }
 

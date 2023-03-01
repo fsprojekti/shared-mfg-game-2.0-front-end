@@ -108,7 +108,7 @@ const PanelLogin = () => {
         <div>
             <div className="d-flex flex-row justify-content-center flex-wrap" style={{paddingTop: "15%"}}>
                 <div className={"d-flex p-3"}>
-                    <Card style={{width: '25rem'}} size="lg">
+                    <Card style={{width: '25rem', borderRadius: "8px"}} size="lg">
                         <Form>
                             <Card.Header className={"bg-dark text-white"}><h5>Register</h5></Card.Header>
                             <InputGroup className="mb-3 p-2">
@@ -133,8 +133,9 @@ const PanelLogin = () => {
                     </Card>
                 </div>
                 <div className={"d-flex p-3"}>
-                    <Card style={{width: '25rem'}} size="lg">
-                        <Card.Header className={"bg-dark text-white"}><h5>Login</h5></Card.Header>
+                    <Card style={{width: '25rem', borderRadius: "8px"}} size="lg">
+                    <Form>
+                        <Card.Header className={"bg-dark text-white"} style={{borderRadius: "8 0 8 0"}}><h5>Login</h5></Card.Header>
                         <InputGroup className="mb-3 p-2">
                             <InputGroup.Text id="input-user-registration-number">Player Id</InputGroup.Text>
                             <FormControl onChange={e => setRegisterNumberLogin(e.target.value)}></FormControl>
@@ -143,11 +144,12 @@ const PanelLogin = () => {
                             <InputGroup.Text id="input-user-password">Password</InputGroup.Text>
                             <FormControl type="password" onChange={e => setPasswordLogin(e.target.value)} onKeyPress={(k) => enter(k)} ></FormControl>
                         </InputGroup>
-                        <div className="d-flex justify-content-end p-2">
-                            <Button variant="dark" type="button" className="p-2" onClick={e => login()}>
+                        <div className="d-flex justify-content-end p-2" >
+                            <Button variant="dark" style={{marginTop: "4.3rem"}}  type="button" className="p-2" onClick={e => login()}>
                                 Login
                             </Button>
                         </div>
+                        </Form>
                     </Card>
                 </div>
             </div>
