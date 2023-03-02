@@ -78,19 +78,16 @@ const Trades = () => {
     useEffect(() => {
         const sortDataArrays = async () => { 
             // console.log(orders);
-            const orders = context.orders;
-            const servicesAll = context.servicesAll;
-            const chains = context.chains;
-            const agents = context.agents;
-            const users = context.users;
-            const service = context.service;
+            const orders = await context.orders;
+            const servicesAll = await context.servicesAll;
+            const chains = await context.chains;
+            const agents = await context.agents;
+            const users = await context.users;
+            const service = await context.service;
             let placedOrders = await orders.filter(order => order.state === "PLACED");
-            console.log(placedOrders);
-
 
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
-                // console.log(service)
                 
                 ordr.serviceDuration=service[0].duration.toFixed(2);
 

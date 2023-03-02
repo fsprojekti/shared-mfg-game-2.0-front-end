@@ -17,9 +17,9 @@ const CancelTransactionModal = () => {
         try {
 
             let response = await apiUserCancelTransaction(cancelTransactionModalContent.data.id);
-            console.log("cancel transaction")
-            console.log(cancelTransactionModalContent)
-            console.debug(response)
+            // console.log("cancel transaction")
+            // console.log(cancelTransactionModalContent)
+            // console.debug(response)
             // setNote((prevState) => {
             //     return({
             //       ...prevState,

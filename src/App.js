@@ -49,10 +49,6 @@ function App() {
     useEffect(() => {
         context.setLoadingMain(true);
 
-        //Load last cookies into context state
-        context.setActiveChain(context.cookies.activeChain);
-        // context.setTimeDiff({difference: context.cookies.timeDiff});
-
         //Load game
         const game = context.apiGameFetch().then(game => {
             //TODO: Reset active chain if idle game

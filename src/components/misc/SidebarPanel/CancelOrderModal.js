@@ -1,38 +1,31 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import {motion} from 'framer-motion'
 
 const CancelOrderModal = () => {
-    const {  users, servicesAll, isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen, service, chains, apiUserCancelOrder, agents, orders, setNote} = useContext(AppContext);
+    const context = useContext(AppContext);
     const [order, setOrder] = useState({});
 
-    const context = useContext(AppContext);
-
-    const countDecimals = (value) => {
-        if(Math.floor(value).toString() === value) return 0;
-        return value.toString().split(".")[1].length || 0;
-    };
 
     const confirm = async () => {
         try {
 
-            let response = await apiUserCancelOrder(order._id);
-            console.log("cancel order")
-            console.debug(response)
-            // setNote((prevState) => {
-            //     return({
-            //       ...prevState,
-            //       msg: response,
-            //       heading: 'Success',
-            //       show: true,
-            //       type: 'success'
-            //     });
-            //   });
-            setIsCancelUserOrderModalOpen({open: false})
+            let response = await context.apiUserCancelOrder(order._id);
+
+            context.setNote((prevState) => {
+                return({
+                  ...prevState,
+                  msg: response.message,
+                  heading: 'Success',
+                  show: true,
+                  type: 'success'
+                });
+              });
+            context.setIsCancelUserOrderModalOpen({open: false})
         } catch(err) {
             console.log(err)
-                setNote((prevState) => {
+                context.setNote((prevState) => {
                     return({
                       ...prevState,
                       msg: err.response.data.message,
@@ -44,41 +37,34 @@ const CancelOrderModal = () => {
         }
     };
 
-    const handleKeypress = async e => {
-        try {
-            if (e.key === 'Enter') {
-                confirm();
-            }
-        } catch(err) {
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
         const createDataArray = async () => { 
-            const placedOrders = orders.filter(order => order.state === "PLACED");
-            const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
-                let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
-                const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
-                const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
-                let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
-                ordr.chainName = chain[0].name;
-
-                if (providerClient[0].id == context.user.id) {
-                    console.log("Im in")
-                    console.log(ordr)
-                    setOrder(ordr)
-                }
-                return ordr;
+            const orders = await context.orders;
+            const service = await context.service;
+            const chains = await context.chains;
+            const placedOrders = await orders.filter(order => order.state === "PLACED");
+            const playersOrder = await placedOrders.reduce((ordr, current) => { 
+                return ordr.service == service._id ? ordr : current;
             })   
+
+            if(playersOrder.service == service._id) {
+                console.log(playersOrder)
+                let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
+                playersOrder.chainName = chain[0].name;
+                setOrder(playersOrder);
+            } else {
+                playersOrder.chainName = "Something went wrong";
+                playersOrder.price = "Something went wrong";
+                setOrder(playersOrder);
+            }
         }
         createDataArray()
-    }, [orders])
+    }, [context.orders])
 
 
     return (
         <div >
-            {isCancelUserOrderModalOpen.open == true ? (
+            {context.isCancelUserOrderModalOpen.open == true ? (
 
                 
 
@@ -101,7 +87,7 @@ const CancelOrderModal = () => {
                         <div className='modal-confirm-container-input'>
 
                             <ul>
-                                <li> Type: {service.type}  </li>
+                                <li> Type: {context.service.type}  </li>
                                 {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                                 <li> Price: <span style={{color: 'green'}}> {order.price} </span> </li>
                                 <li> Chain: <span style={{color: 'blue'}}> {order.chainName} </span> </li>
@@ -113,7 +99,7 @@ const CancelOrderModal = () => {
                                 
                                 <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
                                 <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
-                                    setIsCancelUserOrderModalOpen({open: false})
+                                    context.setIsCancelUserOrderModalOpen({open: false})
                                     // setNote({...(note.show = false)});
                                 }}>
                                 Cancel

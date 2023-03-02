@@ -165,7 +165,6 @@ const BlockchainData = () => {
         const ranking = context.ranking;
         const agents = context.agents;
         const users = context.users;
-        const user = context.user;
         const createDataArray = async () => { 
             
             let dataArray = ranking.map((item, index) => {

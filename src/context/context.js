@@ -1,8 +1,7 @@
-import React, {useState, useContext, useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import axios from "axios";
 import {useCookies} from "react-cookie";
 import config from "../config";
-import { GiConsoleController } from 'react-icons/gi';
 axios.defaults.baseURL = config.server;
 
 // /**
@@ -30,8 +29,6 @@ export const ContextWrapper = (props) => {
     const [active, setActive] = useState("home");
     //Cookies
     const [cookies, setCookie, removeCookie] = useCookies(['authToken', 'userId', 'activeChain', 'timeDiff']);
-    //Active chain
-    const [activeChain, setActiveChain] = useState(0);
     //Stake index
     //needed because of the way data is returned from api
     const [stakeIndex, setStakeIndex] = useState(0);
@@ -138,7 +135,6 @@ export const ContextWrapper = (props) => {
 
 
     const [modalContent, setModalContent] = useState('');
-    const [confirmModalContent, setConfirmModalContent] = useState('');
     const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
     const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState({open: false, mode: "set"});
     const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false);
@@ -153,11 +149,7 @@ export const ContextWrapper = (props) => {
     const [isCancelVoteModalOpen, setIsCancelVoteModalOpen] = useState(false);
 
     const [cancelBlockMocalContent, setCancelBlockModalContent] = useState({});
-    const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);
-
-    const [attackModal, setAttackModal] = useState({open: false});
-
-    
+    const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);    
 
     //--------------------- FUNCTIONS ------------------------------------------------------
 
@@ -172,14 +164,9 @@ export const ContextWrapper = (props) => {
         setIsCancelOrderModalOpen(false);
     };
 
-
     const openTradeModal = () => {
         setIsTradeModalOpen(true);
     };
-
-    const updateActiveChain = (chainId) => {
-        setActiveChain(chainId);
-    }
 
     const updateGameState = (game) => {
         // console.log("GAME EVENT")
@@ -193,347 +180,373 @@ export const ContextWrapper = (props) => {
         // console.debug("CHAIN EVENT")
         // console.debug(chainObj);
         if(chains["chains"].length != 0) {
-            setChains((chains) => {
-                const oldChains = chains;
-                // console.log(oldChains)
-
-                //Check if chain already exists in the state
-                const index = oldChains["chains"].findIndex(c => {
-                    return c.id === chainObj.id;
-                });
-
-                //If chain exists, update its state
-                if(index !== -1) {
-                    oldChains.chains[index].balance = chainObj.balance;
-                    oldChains.chains[index].stake = chainObj.stake;
-
-                    //Checking if this is a first run after refresh, to calculate time difference between server and client
-                    //Wrong logic, but somehow "works"
-                    if(oldChains.chains[0].timeDiff === undefined) { 
-                        let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
-                        oldChains.chains[0].timeDiff = difference;
-                        console.log("time difference: " + difference + "ms")
-                    }          
+            try {
+                setChains((chains) => {
+                    const oldChains = chains;
+                    // console.log(oldChains)
+    
+                    //Check if chain already exists in the state
+                    const index = oldChains["chains"].findIndex(c => {
+                        return c.id == chainObj.id;
+                    });
+    
+                    //If chain exists, update its state
+                    if(index !== -1) {
+                        oldChains.chains[index].balance = chainObj.balance;
+                        oldChains.chains[index].stake = chainObj.stake;
+    
+                        //Checking if this is a first run after refresh, to calculate time difference between server and client
+                        //Wrong logic, but somehow "works"
+                        if(oldChains.chains[0].timeDiff == undefined) { 
+                            let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
+                            oldChains.chains[0].timeDiff = difference;
+                            console.log("time difference: " + difference + "ms")
+                        }          
+                        
+                        oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
+                        oldChains.chains[index].blockNumber = chainObj.blockNumber; 
+    
+    
+                        // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
+    
+                        return oldChains;
+                    } else if(index == -1 && chainObj.id != undefined) {
+                        oldChains.chains.push(chainObj);
+                        return oldChains;
+                    }
                     
-                    oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
-                    oldChains.chains[index].blockNumber = chainObj.blockNumber; 
-
-
-                    // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
-
-                    return oldChains;
-                } else if(index == -1 && chainObj.id !== undefined) {
-                    oldChains.chains.push(chainObj);
-                    return oldChains;
-                }
+                    return chains;         
+                });
                 
-                return chains;         
-            });
+            } catch (error) {
+                console.log(error)
+            }
+            
         }
     }
 
     
     const updateOrdersState = (orderObj) => {
-        // console.debug("ORDER EVENT");
-        // console.debug(orderObj);
-          setOrders((oldOrders) => {
-            const orders = [...oldOrders];
-
-            const index = orders.findIndex(c => {
-                return c._id === orderObj.id;
+        try {
+            setOrders((oldOrders) => {
+                const orders = [...oldOrders];
+    
+                const index = orders.findIndex(c => {
+                    return c._id == orderObj.id;
+                });
+    
+                if(index != -1) {
+                    // console.log("updating existing")
+                    // console.log(orders[index]); 
+                    orders[index].state = orderObj.state;
+                    orders[index].price = orderObj.price;
+                    return orders;
+                } else if(index == -1 && orderObj.id != undefined) {
+                    // console.log("pushing");
+                    // console.log(orderObj.chain._id);
+                    //The new object I get is not in the correct format, so I need to create a new one
+                    let newOrder = {};
+                    newOrder._id = orderObj.id;
+                    newOrder.chain = orderObj.chain;
+                    newOrder.state = orderObj.state;
+                    newOrder.service = orderObj.service;
+                    newOrder.price = orderObj.price;
+                    orders.push(newOrder);
+                    return orders;
+                }
+                
+                return oldOrders;         
             });
-
-            if(index !== -1) {
-                // console.log("updating existing")
-                // console.log(orders[index]); 
-                orders[index].state = orderObj.state;
-                orders[index].price = orderObj.price;
-                return orders;
-            } else if(index == -1 && orderObj.id !== undefined) {
-                // console.log("pushing");
-                // console.log(orderObj.chain._id);
-                //The new object I get is not in the correct format, so I need to create a new one
-                let newOrder = {};
-                newOrder._id = orderObj.id;
-                newOrder.chain = orderObj.chain;
-                newOrder.state = orderObj.state;
-                newOrder.service = orderObj.service;
-                newOrder.price = orderObj.price;
-                orders.push(newOrder);
-                return orders;
-            }
             
-            return oldOrders;         
-        });
+        } catch (error) {
+            console.log(error)
+        }
 
     }
 
     const updateServiceState = (serviceObj) => {
-        // console.debug("SERVICE EVENT")
-        // console.debug(serviceObj);
-        setServicesAll((oldServices) => {
-            const servicesArray = oldServices;
-
-            const index = servicesArray["services"].findIndex(c => {
-                return c._id === serviceObj.id;
+        try {
+            setServicesAll((oldServices) => {
+                const servicesArray = oldServices;
+    
+                const index = servicesArray["services"].findIndex(c => {
+                    return c._id == serviceObj.id;
+                });
+    
+               
+                if(index != -1) {
+                    // console.debug("Updating service")
+                    // console.debug(servicesArray["services"][index])
+                    servicesArray["services"][index].state = serviceObj.state;
+                    servicesArray["services"][index].updatedAt = Date.now();
+                    return servicesArray;
+                } else if(index == -1) {
+                    // console.debug("Pushing service")
+                    let newService = {};
+                    newService = serviceObj;
+                    newService._id = serviceObj.id;
+                    servicesArray["services"].push(newService);
+                    return servicesArray;    
+                }
+                
+                return oldServices;         
             });
+        } catch (error) {
+            console.log(error)
+        }
 
-           
-            if(index !== -1) {
-                // console.debug("Updating service")
-                // console.debug(servicesArray["services"][index])
-                servicesArray["services"][index].state = serviceObj.state;
-                servicesArray["services"][index].updatedAt = Date.now();
-                return servicesArray;
-            } else if(index == -1) {
-                // console.debug("Pushing service")
-                let newService = {};
-                newService = serviceObj;
-                newService._id = serviceObj.id;
-                servicesArray["services"].push(newService);
-                return servicesArray;    
+        try { 
+            if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
+                setService((oldService) => {
+                    let service = oldService;
+
+                    // console.debug("Updating user service")
+                    service.stateOld = service.state;
+                    service.state = serviceObj.state;
+                    service.updatedAt = Date.now();
+                    service.duration = serviceObj.duration;
+                    service.type = agent.type;
+                    return service;
+                });
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            // console.log(services)
+            let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
+
+            if(purchasedService.length > 0) {
+                setServices((oldServices) => {
+                    // console.log("Updating users services state in SERVICE EVENT")
+                    let services = oldServices;
+                    
+                    let serviceIndex = services["services"].findIndex((s) => s._id == serviceObj.id);
+
+                    if(serviceIndex == -1) {
+                        console.log("No service found")
+                        return services;
+                    }
+
+                    services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
+                    services["services"][serviceIndex].state = serviceObj.state;
+
+                    return services;
+                });
             }
             
-            return oldServices;         
-        });
-
-        if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
-            setService((oldService) => {
-                let service = oldService;
-
-                // console.debug("Updating user service")
-                service.stateOld = service.state;
-                service.state = serviceObj.state;
-                service.updatedAt = Date.now();
-                service.duration = serviceObj.duration;
-                service.type = agent.type;
-                return service;
-            });
-        }        
-
-        // console.log(services)
-        let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
-
-        if(purchasedService.length > 0) {
-            setServices((oldServices) => {
-                // console.log("Updating users services state in SERVICE EVENT")
-                let services = oldServices;
-                
-                let serviceIndex = services["services"].findIndex((s) => s._id === serviceObj.id);
-
-                if(serviceIndex == -1) {
-                    console.log("No service found")
-                    return services;
-                }
-
-                services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
-                services["services"][serviceIndex].state = serviceObj.state;
-
-                return services;
-            });
-        }
-        
-        
+        } catch (error) {
+            console.log(error)
+        }   
         
     }
 
     const updateTransactionsState = (transObj) => {
-        // console.debug("TRANSACTION EVENT");
-        // console.debug(transObj);
-          setTransactions((oldTrans) => {
-            const transactions = [...oldTrans];
+        try {
 
-            // console.log(transactions)
-            const index = transactions.findIndex(c => {
-                return c.id === transObj[0].id;
-            });
-            console.log(index)
-            if(index !== -1) {
-                // console.log("updating existing")
-                transactions[index].state = transObj[0].state;
-                return transactions;
-            } else if(index == -1) {
-                // console.log("pushing");
-                let newTrans = {};
-                newTrans = transObj[0];
-                transactions.push(newTrans);
-                // console.log(newTrans)
-                return transactions;
-            }
-            
-            return oldTrans;         
-        });
+            setTransactions((oldTrans) => {
+                const transactions = [...oldTrans];
 
+                // console.log(transactions)
+                const index = transactions.findIndex(c => {
+                    return c.id == transObj[0].id;
+                });
 
-        if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
-            setServices((oldServices) => {
-                // console.log("Updating users services array state")
-                let services = oldServices;
-                
-                let agent= agents["agents"].filter(agent=> agent.account == transObj[0].to );
-                let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld === "IDLE");
-
-                //TODO: FIX this
-                let serviceIndex;
-                try{
-                    serviceIndex = services["services"].findIndex((s) => s._id === service[0]._id);
-                }
-                catch(err) {
-                    console.debug("Service doesnt exis in users purchased services")
-                    console.debug(err)
-                    
+                if(index != -1) {
+                    // console.log("updating existing")
+                    transactions[index].state = transObj[0].state;
+                    return transactions;
+                } else if(index == -1) {
+                    // console.log("pushing");
+                    let newTrans = {};
+                    newTrans = transObj[0];
+                    transactions.push(newTrans);
+                    // console.log(newTrans)
+                    return transactions;
                 }
                 
-                if(service == undefined ||service.length == 0 || serviceIndex !== -1) {
-                    // console.log("No new service")
-                    return services;
-                }             
-
-                let newObj = {};
-
-                newObj = {...service[0]};
-                newObj.state = "ACTIVE";
-                newObj.stateOld = "MARKET";
-                let time = new Date();
-                newObj.updatedAt = time.toISOString();
-                services["services"].push(newObj);
-                return services;
+                return oldTrans;         
             });
+        } catch (error) {
+            console.log(error)
         }
 
-
-        if(transObj[0].type == "ATTACK-GAIN") {
-            setNotifCard((prevState) => {
-                return({
-                  ...prevState,
-                  msg: "Check your balances and attack history",
-                  heading: "👺 Attack detected 👺",
-                  show: true,
-                  color: '#EBB8B7'
+        try {
+            if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
+                setServices((oldServices) => {
+                    // console.log("Updating users services array state")
+                    let services = oldServices;
+                    
+                    let agent = agents["agents"].filter(agent=> agent.account == transObj[0].to );
+                    let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld == "IDLE");
+    
+                    //TODO: FIX this
+                    let serviceIndex;
+                    try{
+                        serviceIndex = services["services"].findIndex((s) => s._id == service[0]._id);
+                    }
+                    catch(err) {
+                        console.debug("Service doesnt exis in users purchased services")
+                        console.debug(err) 
+                    }
+                    
+                    if(service == undefined ||service.length == 0 || serviceIndex != -1) {
+                        // console.log("No new service")
+                        return services;
+                    }             
+    
+                    let newObj = {};
+    
+                    newObj = {...service[0]};
+                    newObj.state = "ACTIVE";
+                    newObj.stateOld = "MARKET";
+                    let time = new Date();
+                    newObj.updatedAt = time.toISOString();
+                    services["services"].push(newObj);
+                    return services;
                 });
-              });
+            }
+    
+        } catch (error) {
+            console.log(error)
+        }
 
+        try {
+            if(transObj[0].type == "ATTACK-GAIN") {
+                setNotifCard((prevState) => {
+                    return({
+                      ...prevState,
+                      msg: "Check your balances and attack history",
+                      heading: "👺 Attack detected 👺",
+                      show: true,
+                      color: '#EBB8B7'
+                    });
+                  });
+    
+            }
+        } catch (error) {
+            console.log(error)
         }
 
     }
 
     const updateRankingState = (rankingObj) => {
-            // console.debug("RANKIN EVENT")
-            // console.debug(rankingObj);
+        try {
             setRanking((oldRanking) => {
                 let ranking = [...oldRanking];
                 ranking = rankingObj;
                 return ranking;
             })
+            
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const updateBridgesState = (bridgeObj) => {
-        // console.debug("BRIDGE EVENT")
-        // console.log((bridgeObj));
-        //Bridge object is returned with whole chain objects
-        setBridges((oldBridges) => {
-            let bridges = [...oldBridges];
-            bridges.push(bridgeObj);
-            return bridges;     
-        });
+        try {
+            setBridges((oldBridges) => {
+                let bridges = [...oldBridges];
+                bridges.push(bridgeObj);
+                return bridges;     
+            });
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
 
 
     const updateBalancesState = (balanceObj) => {
-        // console.debug("BALANCE EVENT")
-        // console.debug((balanceObj));
-
-        if(balanceObj.agent == agent.id) {
-            // console.log("Updating user balance")
-            const index = chains["chains"].findIndex(c => {
-                return c.id === balanceObj.chain;
-            });
-
-            // console.log(index)
-            // console.log(chains["chains"][index].name)
-            
-            setUsersBalances((oldBalances) => {
-                let balances = [...oldBalances];
-                // console.log(balances)
-                if(balances[index] !== undefined) {
-                    balances[index][chains["chains"][index].name] = balanceObj.amount;
-                    return balances;
-                }
-                else {
-                    setUsersStakes((oldStakes) => {
-                        let stakes = [...oldStakes];
-                        let newStake = {};
-                        newStake[[chains["chains"][index].name]] = 0;
-                        stakes.push(newStake);
-                        return stakes;
-                    });
-                    let newBalance = {};
-                    newBalance[[chains["chains"][index].name]] = balanceObj.amount;
-                    balances.push(newBalance);
-                    return balances;
-                }
-            });
-
-
+        try {
+            if(balanceObj.agent == agent.id) {
+                // console.log("Updating user balance")
+                const index = chains["chains"].findIndex(c => {
+                    return c.id == balanceObj.chain;
+                });
+    
+                // console.log(index)
+                // console.log(chains["chains"][index].name)
+                
+                setUsersBalances((oldBalances) => {
+                    let balances = [...oldBalances];
+                    // console.log(balances)
+                    if(balances[index] != undefined) {
+                        balances[index][chains["chains"][index].name] = balanceObj.amount;
+                        return balances;
+                    }
+                    else {
+                        setUsersStakes((oldStakes) => {
+                            let stakes = [...oldStakes];
+                            let newStake = {};
+                            newStake[[chains["chains"][index].name]] = 0;
+                            stakes.push(newStake);
+                            return stakes;
+                        });
+                        let newBalance = {};
+                        newBalance[[chains["chains"][index].name]] = balanceObj.amount;
+                        balances.push(newBalance);
+                        return balances;
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error)
         }
-
     }
 
     const updateStakesState = (stakeObj) => {
-        // console.debug("STAKE EVENT")
-        // console.debug((stakeObj));
+        try {
+            if(stakeObj.agent == agent.id) {
 
-        if(stakeObj.agent == agent.id) {
-            // console.log("Updating user stake")
-            const index = chains["chains"].findIndex(c => {
-                return c.id === stakeObj.chain;
-            });
-
-            // console.log(index)
-            // console.log(chains["chains"][index].name)
-
-            
-            
-            setUsersStakes((oldStakes) => {
-                let stakes = [...oldStakes];
-
-                let stakesKeys = [];
-            
-                for(let i = 0; i < Object.keys(stakes).length; i++) {
-                    stakesKeys[i] = Object.keys(stakes[i])[0];
-                }
-                // console.log(stakesKeys)
-                let stakeIndex =  stakesKeys.indexOf(chains["chains"][index].name);
-                console.log(stakeIndex)
-
-
-                // console.log(stakes)
-                if(stakes[stakeIndex] !== undefined) {
-                    stakes[stakeIndex][chains["chains"][index].name] = stakeObj.stake;
-                    // console.log("New array:")
+                const index = chains["chains"].findIndex(c => {
+                    return c.id == stakeObj.chain;
+                });            
+                
+                setUsersStakes((oldStakes) => {
+                    let stakes = [...oldStakes];
+    
+                    let stakesKeys = [];
+                
+                    for(let i = 0; i < Object.keys(stakes).length; i++) {
+                        stakesKeys[i] = Object.keys(stakes[i])[0];
+                    }
+                    // console.log(stakesKeys)
+                    let stakeIndex =  stakesKeys.indexOf(chains["chains"][index].name);
+    
+    
                     // console.log(stakes)
-                    return stakes;
-                }
-                else {
-                    let newStake = {};
-                    newStake[[chains["chains"][index].name]] = stakeObj.stake;
-                    stakes.push(newStake);
-                    return stakes;
-                }
-            });
+                    if(stakes[stakeIndex] != undefined) {
+                        stakes[stakeIndex][chains["chains"][index].name] = stakeObj.stake;
+                        // console.log("New array:")
+                        // console.log(stakes)
+                        return stakes;
+                    }
+                    else {
+                        let newStake = {};
+                        newStake[[chains["chains"][index].name]] = stakeObj.stake;
+                        stakes.push(newStake);
+                        return stakes;
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error)
         }
 
     }
 
     const updateAttackState = (attacObj) => {
-        // console.debug("BRIDGE EVENT")
-        // console.log((bridgeObj));
-        //Bridge object is returned with whole chain objects
-        setStealVotes((oldStealVotes) => {
-            let votes = oldStealVotes;
-            votes.stealVotes = attacObj;
-            return votes;     
-        });
+        try {
+            setStealVotes((oldStealVotes) => {
+                let votes = oldStealVotes;
+                votes.stealVotes = attacObj;
+                return votes;     
+            });
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 
@@ -562,7 +575,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Fetches user's balance on all chains.
@@ -589,7 +602,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
 
     /**
@@ -619,7 +632,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Fetches user's service
@@ -629,7 +642,7 @@ export const ContextWrapper = (props) => {
      * upgradeLevel: 0, 
      * timeForService: 100}
      */
-    const apiUserFetchService = useCallback((gameId) => {
+    const apiUserFetchService = useCallback(() => {
 
         return new Promise(async (resolve, reject) => {
             try {
@@ -648,7 +661,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Fetches user's purchased services
@@ -672,7 +685,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Register user function
@@ -680,7 +693,7 @@ export const ContextWrapper = (props) => {
      * @param {string} name - User's name
      * @param {string} email - User's email
      */
-    const apiUserRegister = useCallback((registerNumber, name, email) => {
+    const apiUserRegister = ((registerNumber, name, email) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let out = await axios.get(`user/create`,{
@@ -695,14 +708,14 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    });
 
     /**
      * Login user function
      * @param {string} registerCode - User's register number
      * @param {string} password - User's password
      */
-    const apiUserLogin = useCallback((registerCode, password) => {
+    const apiUserLogin = ((registerCode, password) => {
 
         return new Promise(async (resolve, reject) => {
             try {
@@ -716,7 +729,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    });
 
      /**
       * User's stake function
@@ -743,7 +756,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's unstake function
@@ -770,7 +783,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's create order function
@@ -794,7 +807,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's update order function
@@ -818,7 +831,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's cancel order function
@@ -840,7 +853,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's bid order function
@@ -864,7 +877,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's cancel order function
@@ -886,7 +899,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User's get agent function
@@ -908,7 +921,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * Api user bridge function
@@ -936,7 +949,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * Api user create chain function
@@ -964,7 +977,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * Api user vote to attack a bridge function
@@ -990,7 +1003,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * Api user retract vote to attack a bridge function
@@ -1017,7 +1030,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * Api user get user's steal votes function
@@ -1043,7 +1056,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
     /**
      * User vote to block a player function
@@ -1069,7 +1082,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
 
     /**
@@ -1096,7 +1109,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
 
     /**
@@ -1123,7 +1136,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, []);
+    }, [cookies.authToken]);
 
 
 
@@ -1131,122 +1144,92 @@ export const ContextWrapper = (props) => {
      * Api get game data function
      * @returns {Object} - Game data
      */
-    const apiGameFetch = useCallback(() => {
+    const apiGameFetch = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-                let data = await axios.get('game/get', {
-                    params: { 
-
-                         }
-                });
-                // console.log("Game data: " + alert(JSON.stringify(data.data)));
+                let data = await axios.get('game/get');
                 resolve(data.data);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get chains function
      * @returns {Object[]} - Chains data
      */
-    const apiGameChains = useCallback(() => {
+    const apiGameChains = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-                let chains = await axios.get('/game/chains/get', {
-                    params: { 
-                        
-                         }
-                });
-                // alert(JSON.stringify(chains))
-                // console.log(chains)
+                let chains = await axios.get('/game/chains/get');
                 resolve(chains.data['chains']);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get users function
      * @returns {Object[]} - Users data
      */
-    const apiGameUsers = useCallback(() => {
+    const apiGameUsers = (() => {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let data = await axios.get('/game/players/get', {
-                    params: { 
-                        
-                         }
-                });
-
+                let data = await axios.get('/game/players/get');
                 resolve(data.data);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get agents function
      * @returns {Object[]} - Agents data
      */
-    const apiGameAgents = useCallback((gameId) => {
+    const apiGameAgents = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-
-                let data = await axios.get('/game/agents/get', {
-                    params: { 
-                       
-                         }
-                });
-                // console.log(data)
+                let data = await axios.get('/game/agents/get');
                 resolve(data.data);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get orders function
      * @returns {Object[]} - Orders data
      */
-    const apiGameOrders = useCallback((gameId) => {
+    const apiGameOrders = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-                let data = await axios.get('/game/orders/get', { 
-                    params: { 
-                       
-                    }
-                    });
+                let data = await axios.get('/game/orders/get');
                 resolve(data.data);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get transactions function
      * @returns {Object[]} - Transactions data
      */
-    const apiGameTransactions = useCallback(() => {
+    const apiGameTransactions = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-                let data = await axios.get('/game/transactions/get', { 
-                    params: { 
-                        
-                    }
-                    });
+                let data = await axios.get('/game/transactions/get');
                 resolve(data.data);
             } catch (e) {
                 reject(e);
             }
         })
-    }, [])
+    })
 
 
     /**
@@ -1267,7 +1250,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Admin initialize game function.
@@ -1290,19 +1273,16 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Admin start game function.
      * Only admin can use it.
     */
-    const apiGameStart = useCallback((gameId) => {
+    const apiGameStart = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get(`game/control/start`, {
-                    params: {
-                        // gameId: gameId
-                    },
                     headers: {
                         authorization: cookies.authToken
                     }
@@ -1313,19 +1293,16 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Admin pause game function.
      * Only admin can use it.
      */
-    const apiGamePause= useCallback((gameId) => {
+    const apiGamePause= useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get(`game/control/pause`, {
-                    params: {
-                        // gameId: gameId
-                    },
                     headers: {
                         authorization: cookies.authToken
                     }
@@ -1336,19 +1313,16 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Admin stop game function.
      * Only admin can use it.
      */
-    const apiGameStop = useCallback((gameId) => {
+    const apiGameStop = useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get(`game/control/stop`, {
-                    params: {
-                        // gameId: gameId
-                    },
                     headers: {
                         authorization: cookies.authToken
                     }
@@ -1359,19 +1333,16 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Admin resume game function.
      * Only admin can use it.
      */
-    const apiGameResume= useCallback((gameId) => {
+    const apiGameResume= useCallback(() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get(`game/control/resume`, {
-                    params: {
-                        // gameId: gameId
-                    },
                     headers: {
                         authorization: cookies.authToken
                     }
@@ -1382,33 +1353,29 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
+    }, [cookies.authToken])
 
     /**
      * Api get services function
      * @returns {Object[]} - Services data
      */
-    const apiGameServices = useCallback((gameId) => {
+    const apiGameServices = (() => {
         return new Promise(async (resolve, reject) => {
             try {
-                let data = await axios.get('game/services/get', { 
-                    params: { 
-                        // gameId: gameId,
-                    }
-                    });
+                let data = await axios.get('game/services/get');
                 resolve(data.data);
             } catch (e) {
                 console.log(e);
                 reject(e);
             }
         })
-    }, [])
+    })
 
     /**
      * Api get bridges function
      * @returns {Object[]} - Bridges data
      */
-    const apiGameBridges = useCallback(() => {
+    const apiGameBridges = (() => {
         return new Promise(async (resolve, reject) => {
             try {
                 let data = await axios.get('game/bridges/get');
@@ -1418,12 +1385,7 @@ export const ContextWrapper = (props) => {
                 reject(e);
             }
         })
-    }, [])
-
-
-
-
-
+    })
 
     return (
         <AppContext.Provider value={{
@@ -1432,13 +1394,10 @@ export const ContextWrapper = (props) => {
             game, setGame,
             chains, setChains,
             openCancelOrderModal,
-            confirmModalContent,
             modalContent, setModalContent,
             tradeModalContent, setTradeModalContent,
             cancelOrderModalContent, setCancelOrderModalContent,
             openTradeModal,
-            updateActiveChain,
-            activeChain,setActiveChain,
             active, setActive,
             cookies, setCookie, removeCookie,
             apiUserFetch,

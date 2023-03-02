@@ -74,7 +74,7 @@ const TabGame = () => {
                     }
                 </Col>
                 </Suspense>
-            <div className="d-flex align-self-end justify-content-center"  style={{zIndex: 2, position: "absolute", bottom: 0}}>
+            <div className="d-flex align-self-end justify-content-center"  style={{zIndex: 200, position: "absolute", bottom: 0}}>
                     <NoteDismissible show={context.note.show}
                         msg={context.note.msg}
                         variant={context.note.type}
@@ -84,7 +84,7 @@ const TabGame = () => {
                         }}/>
             </div>
 
-            <div className="d-flex align-self-center justify-content-center"  style={{zIndex: 2, position: "absolute"}}>
+            <div className="d-flex align-self-center justify-content-center"  style={{zIndex: 100, position: "absolute"}}>
                     <NotifCardDissmisable show={context.notifCard.show}
                         msg={context.notifCard.msg}
                         color={context.notifCard.color}

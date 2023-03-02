@@ -12,8 +12,6 @@ const PanelLogin = () => {
 
     const navigate = useNavigate();
 
-
-    let [registerNumberRegister, setRegisterNumberRegister] = useState("");
     let [registerNumberLogin, setRegisterNumberLogin] = useState("");
     let [name, setName] = useState("");
     let [email, setEmail] = useState("");
@@ -25,19 +23,38 @@ const PanelLogin = () => {
           }
     }
 
+    function isNumeric(str) {
+        return isNaN(Number(str)) && 
+               isNaN(parseFloat(Number(str)))
+      }
+
     let register = async () => {
         try {
+            let numCheck = isNumeric(registerNumberLogin);
+            if (numCheck) {
+                context.setNote((prevState) => {
+                    return({
+                      ...prevState,
+                      msg: "Please enter a number, no letter are allowed",
+                      heading: 'Wrong input',
+                      show: true,
+                      type: 'danger'
+                    });
+                  });
+            } else {
+                console.log(registerNumberLogin, name, email)
             let data = await context.apiUserRegister(registerNumberLogin, name, email);
             console.log(data)
             context.setNote((prevState) => {
                 return({
                   ...prevState,
-                  msg: "Check you email",
-                  heading: 'Success',
+                  msg: "Check you email!",
+                  heading: 'Successfully registered',
                   show: true,
                   type: 'success'
                 });
               });
+           }
         } catch (e) {
             console.log(e)
             context.setNote((prevState) => {
@@ -52,9 +69,6 @@ const PanelLogin = () => {
         }
     }
 
-    async function navigateGame() {
-        
-    }
 
     let login = async () => {
         try {
@@ -64,7 +78,6 @@ const PanelLogin = () => {
             //Set cookies
             await context.setCookie("authToken", data.token);
             await context.setCookie("userId", data.user.id);
-            await context.setCookie('activeChain', 0);
 
             //Set cookies in context variables
             context.setUserId(data.user.id);
