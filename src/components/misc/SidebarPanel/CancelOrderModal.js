@@ -43,20 +43,23 @@ const CancelOrderModal = () => {
             const service = await context.service;
             const chains = await context.chains;
             const placedOrders = await orders.filter(order => order.state === "PLACED");
-            const playersOrder = await placedOrders.reduce((ordr, current) => { 
-                return ordr.service == service._id ? ordr : current;
-            })   
-
-            if(playersOrder.service == service._id) {
-                console.log(playersOrder)
-                let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
-                playersOrder.chainName = chain[0].name;
-                setOrder(playersOrder);
-            } else {
-                playersOrder.chainName = "Something went wrong";
-                playersOrder.price = "Something went wrong";
-                setOrder(playersOrder);
+            if(placedOrders.length != 0) {
+                const playersOrder = await placedOrders.reduce((ordr, current) => { 
+                    return ordr.service == service._id ? ordr : current;
+                })   
+                if(playersOrder.service == service._id) {
+                    console.log(playersOrder)
+                    let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
+                    playersOrder.chainName = chain[0].name;
+                    setOrder(playersOrder);
+                } else {
+                    playersOrder.chainName = "Something went wrong";
+                    playersOrder.price = "Something went wrong";
+                    setOrder(playersOrder);
+                }
             }
+
+            
         }
         createDataArray()
     }, [context.orders])

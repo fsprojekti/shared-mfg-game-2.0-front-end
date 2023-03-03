@@ -17,8 +17,6 @@ const RankingTable = () => {
 
                 return player
             })   
-
-            console.log(playersWithNames)
             setTableDataArray(playersWithNames);
         };
         renderTableData();

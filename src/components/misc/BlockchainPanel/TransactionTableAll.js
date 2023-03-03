@@ -297,7 +297,7 @@ const AllTransactionsTable = () => {
                         ))
                     }
                 </div>
-                <div className="filter-all-transactions">
+                {/* <div className="filter-all-transactions">
                      <div className="d-block" style={{position: "relative", margin: "10px"}}>
                         <b > Types: </b>
                     </div>
@@ -317,7 +317,7 @@ const AllTransactionsTable = () => {
                             </label>
                         ))
                     }
-                </div>
+                </div> */}
             <div className="table-all-transactions-overflow">
             <div style={{position: "absolute", top: 5, right: 15, alignSelf: "end", justifyItems: "start"}} >
                 <Button size="sm" style={{backgroundColor: "gray", borderColor: "transparent", borderRadius: "8px"}} onClick={() => { setRefresh(prevState => ({ resfresh: !prevState.refresh }));}}><MdRefresh></MdRefresh></Button>

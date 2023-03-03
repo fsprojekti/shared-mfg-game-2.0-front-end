@@ -18,7 +18,7 @@ const ChainData = () => {
 
     return (
         <>
-            <div className="d-flex justify-content-space-evenly flex-column" style={{margin: "5px"}}>
+            <div className="d-flex justify-content-space-evenly flex-column">
                 <div>
                     <div style={{height: "auto", overflow: "auto", border: '1px solid rgb(211, 211, 211)', borderRadius: "8px 8px 8px 8px"}}>
                         <table className="table-all-rankings">

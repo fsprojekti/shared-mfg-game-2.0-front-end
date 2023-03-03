@@ -155,7 +155,7 @@ const PanelLogin = () => {
                         </InputGroup>
                         <InputGroup className="mb-3 p-2">
                             <InputGroup.Text id="input-user-password">Password</InputGroup.Text>
-                            <FormControl type="password" onChange={e => setPasswordLogin(e.target.value)} onKeyPress={(k) => enter(k)} ></FormControl>
+                            <FormControl type="password"  autoComplete="on" onChange={e => setPasswordLogin(e.target.value)} onKeyPress={(k) => enter(k)} ></FormControl>
                         </InputGroup>
                         <div className="d-flex justify-content-end p-2" >
                             <Button variant="dark" style={{marginTop: "4.3rem"}}  type="button" className="p-2" onClick={e => login()}>

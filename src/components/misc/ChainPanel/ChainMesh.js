@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useContext } from 'react';
+import { Card } from 'react-bootstrap';
 import { AppContext } from '../../../context/context';
 import { Network } from "vis-network";
 import { DataSet } from 'vis-data'
@@ -23,11 +24,6 @@ const ChainMesh = () => {
 };
 
 	const visJsRef = useRef(null);
-
-  function colorNodeOnRefresh(nodes, chain){
-    nodes.update(chain);
-  }
-
 
   //TODO: na Page refresh se obarva trenutni chain
   useEffect(() => {
@@ -112,10 +108,17 @@ const ChainMesh = () => {
 	}, [chains.chains.length, activeChain, bridges.length]);
 
 	return (
-    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", borderColor: "transparent", boxShadow: "var(--light-shadow)", borderRadius: "8px", marginTop: "5px", marginLeft: "5px", marginBottom: "5px", width: "100%"}}>
-      <div style={{maxHeight: "15.5rem", height: "100rem", width: "100%"}} ref={visJsRef} />
+    <div style={{justifyContent: "center", alignItems: "center", backgroundColor: "rgba(255, 255, 255, 0.8)", borderColor: "transparent", boxShadow: "var(--light-shadow)", borderRadius: "8px", marginTop: "5px", marginLeft: "5px", marginBottom: "5px", width: "100%"}}>
+      <div style={{minHeight: "240px", height: "250px", width: "100%"}} ref={visJsRef} />
       <ChainData />
     </div>
+    // <div style={{justifyContent: "center", alignItems: "center" }}>
+    //   <Card  style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent", justifyContent: "center", alignItems: "center" }}>
+    //     <div style={{maxHeight: "200px", height: "200px", width: "100%"}} ref={visJsRef} />
+        
+    //     <ChainData />
+    //   </Card>
+    // </div>
 )
 };
 

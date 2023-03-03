@@ -655,7 +655,6 @@ export const ContextWrapper = (props) => {
                         authorization: cookies.authToken
                     }
                 })
-                console.log(JSON.stringify(out.data));
                 resolve(out.data)
             } catch (e) {
                 reject(e);

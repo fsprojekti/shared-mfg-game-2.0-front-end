@@ -1,11 +1,10 @@
-import {Alert, Button, Card, Col, Container, InputGroup, Row, Spinner} from "react-bootstrap";
+import {Card, Col, InputGroup, Row} from "react-bootstrap";
 import {useContext, useEffect, useState} from "react";
 import { AppContext } from "../../../context/context";
 
 const AttackInfo = () => {
 
     const context = useContext(AppContext);
-    const [loading, setLoading] = useState("");
     const [dataArray, setDataArray] = useState([]);
 
     useEffect(() => {
@@ -13,7 +12,7 @@ const AttackInfo = () => {
             const transactions = context.transactions;
             
             let AllAttackTransactions =  await transactions.filter(transaction => transaction.type === "ATTACK-GAIN" || transaction.type === "ATTACK-LOSS-STAKE" || transaction.type === "ATTACK-LOSS-BALANCE");
-            console.log(AllAttackTransactions)
+            // console.log(AllAttackTransactions)
             let differentAttack = [];
             if (AllAttackTransactions.length > 0) {
                 differentAttack.push(AllAttackTransactions[0]);
@@ -23,8 +22,6 @@ const AttackInfo = () => {
                     
                 });
             }
-            // console.log(differentAttack)
-            
 
 
             let AttackGainArray = transactions.filter(transaction => transaction.type === "ATTACK-GAIN" && transaction.to == context.agent.account);
@@ -45,59 +42,44 @@ const AttackInfo = () => {
 
 
     return (
-        <>
-                    <Card style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent", height: "300px" }}>
-                        <Row className="p-2">
-                        <Col className={"p-2"}>
+        <div style={{justifyContent: "center", alignItems: "center" }}>
+            <Card  style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)",  backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent"}}>
 
-                        <h3> Attack status</h3>
-                                <Card style={{ width: "100%",  borderColor: "transparent" }}>  
-                                
-                                    <Card.Body>
-                                    <div className={"d-flex justify-content-between flex-wrap"}>
-                                            <div className={"p-2 align-self-center"}>
-                                                <b>No. of attacks</b>
-                                            </div>
-                                            <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
-                                            <InputGroup.Text><b>{dataArray.noAttack}</b></InputGroup.Text>
-                                            </div>
-                                        </div>
-                                    <div className={"d-flex justify-content-between flex-wrap"}>
-                                        <div className={"p-2 align-self-center"}>
-                                            <b>Attack gain</b>
-                                        </div>
-                                        <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
-                                            
-                                            <InputGroup.Text><b>{dataArray.gain}</b></InputGroup.Text>
-                                        </div>
-                                    </div>
-                                    <div className={"d-flex justify-content-between flex-wrap"}>
-                                        <div className={"p-2 align-self-center"}>
-                                            <b>Attack loss</b>
-                                        </div>
-                                        <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
-
-                                            <InputGroup.Text><b>{dataArray.loss}</b></InputGroup.Text>
-                                        </div>
-
-                                    </div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-
-                        </Row>
+                <h3> Attack status</h3>
+                        <Card style={{  borderColor: "transparent" }}>  
                         
+                            <Card.Body>
+                            <div className={"d-flex justify-content-between flex-wrap"}>
+                                    <div className={"p-2 align-self-center"}>
+                                        <b>No. of attacks</b>
+                                    </div>
+                                    <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
+                                    <InputGroup.Text><b>{dataArray.noAttack}</b></InputGroup.Text>
+                                    </div>
+                                </div>
+                            <div className={"d-flex justify-content-between flex-wrap"}>
+                                <div className={"p-2 align-self-center"}>
+                                    <b>Attack gain</b>
+                                </div>
+                                <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
+                                    
+                                    <InputGroup.Text><b>{dataArray.gain}</b></InputGroup.Text>
+                                </div>
+                            </div>
+                            <div className={"d-flex justify-content-between flex-wrap"}>
+                                <div className={"p-2 align-self-center"}>
+                                    <b>Attack loss</b>
+                                </div>
+                                <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
 
+                                    <InputGroup.Text><b>{dataArray.loss}</b></InputGroup.Text>
+                                </div>
 
-
-
-
-
-
-                    </Card>
-
-
-        </>
+                            </div>
+                            </Card.Body>
+                        </Card>
+            </Card>
+        </div>
     )
 }
 

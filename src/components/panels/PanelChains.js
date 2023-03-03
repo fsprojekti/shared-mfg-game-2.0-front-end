@@ -14,26 +14,22 @@ const PanelChains = () => {
     return (
 
         <>
-            <div className="d-flex flex-column">
             <Row style={{paddingRight: "0", paddingLeft: "0"}}>
-                <Col className='d-flex' style={{paddingRight: "0", paddingLeft: "0", marginRight: "5px", marginBottom: "5px"}}>
+                <Col xs={6} md={6} className='d-flex' style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
                     <ChainMesh />
                 </Col>
-                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px", marginBottom: "5px"}}>
+                <Col xs={6} md={5} className='d-flex' style={{paddingRight: "0", paddingLeft: "0", marginLeft: "0px", marginRight: "20px", marginBottom: "10px", marginTop: "5px"}}>
                     <BridgeCard />
                 </Col>
-                </Row>
-                <Row style={{paddingRight: "0", paddingLeft: "0"}}>
-                
-                <Col style={{paddingRight: "0", paddingLeft: "0", paddingLeft: "0", marginRight: "5px", marginLeft: "5px"}}>
+            </Row>
+            <Row style={{paddingRight: "0", paddingLeft: "0"}}>
+                <Col xs={6} md={6} style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
                     <AttackInfo />
                 </Col>
-                <Col style={{paddingRight: "0", paddingLeft: "0", marginLeft: "5px", marginRight: "20px", marginBottom: "5px"}}>
+                <Col xs={6} md={5} style={{paddingRight: "0", paddingLeft: "0", marginRight: "20px", marginBottom: "5px", marginLeft: "0px"}}>
                     <AttackCard />
                 </Col>
             </Row>
-            </div>
-
         </>
     )
 };

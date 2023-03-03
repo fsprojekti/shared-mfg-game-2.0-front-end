@@ -1,15 +1,12 @@
-import {Col, Row, Button, Dropdown, Container} from "react-bootstrap";
-import { FaTimes } from 'react-icons/fa';
+import {Col, Row, Button, CloseButton} from "react-bootstrap";
 
 import {IconContext} from "react-icons";
 import {
     FaChartPie,
-    FaBusinessTime,
     FaMoneyBillAlt
 } from 'react-icons/fa';
 
 import { AppContext } from "../../../context/context";
-import CreateOrderModal from "./CreateOrderModal";
 import MiningBar from "../BlockchainPanel/MiningBar";
 
 import {useState, useContext, useEffect, useReducer} from "react";
@@ -28,11 +25,6 @@ const UserInfo = () => {
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState(0);
     const [numOfService2, setNumOfService2] = useState(0);
-    const [orderModal, setOrderModal] = useState({
-        show: false,
-        mode: "SET"
-    })
-
     const renderTooltip1 = (props) => (
         <Tooltip id="button-tooltip" {...props}>
           <h5> {relativeStake.stake1} %</h5>
@@ -50,22 +42,21 @@ const UserInfo = () => {
             case "IDLE":
                 return ( 
                     <div>
-                        <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
                     </div>
                 )
             case "DONE":
                 return ( 
                     <div>
-                        <Button className="create-order-btn" class="btn btn-primary btn-lg" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
                     </div>
                 )
             case "MARKET": 
                 return (
-                    <div>
-                        <Button class="btn btn-info btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>
-                        <Button variant="danger" class="btn btn-primary btn-lg" style={{marginLeft: "0.7rem" }} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
-                            <FaTimes></FaTimes>
-                        </Button>
+                    <div className="d-flex">
+                        <Button variant="btn btn-warning btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>
+                        <CloseButton variant="btn btn-primary btn-lg" style={{marginLeft: "1rem", backgroundColor: "#E73936", justifyContent: "center", alignItems: "center", height: "1.7rem", width: "1.7rem"}} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
+                        </CloseButton>
                     </div>
                 )
             case "ACTIVE": 
@@ -80,20 +71,6 @@ const UserInfo = () => {
             default:
                 return "";
         }
-    };
-
-    const openCreateOrderModal = () => {
-        setOrderModal({
-            mode: "SET",
-            show: true,     
-        });
-    };
-
-    const openUpdateOrderModal = () => {
-        setOrderModal({
-            mode: "UPDATE",
-            show: true,
-        });
     };
 
     async function changeChain(chainId){

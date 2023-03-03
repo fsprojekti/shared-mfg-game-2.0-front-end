@@ -56,7 +56,6 @@ const Stats = () => {
         const renderBalanceData = async () => {
                 const balances = usersBalances;
                 let sum = await balances.reduce((prev,next, index) => prev + next[[`${chains["chains"][index].name}`]],0);
-                console.log(sum)
                 setSumBalance({balance: sum});
         };
         renderBalanceData();
