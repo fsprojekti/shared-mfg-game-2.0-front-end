@@ -52,10 +52,6 @@ const CancelOrderModal = () => {
                     let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
                     playersOrder.chainName = chain[0].name;
                     setOrder(playersOrder);
-                } else {
-                    playersOrder.chainName = "Something went wrong";
-                    playersOrder.price = "Something went wrong";
-                    setOrder(playersOrder);
                 }
             }
 
