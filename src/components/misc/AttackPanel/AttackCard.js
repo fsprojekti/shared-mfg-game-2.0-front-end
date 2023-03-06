@@ -121,9 +121,9 @@ const AttackCard = () => {
                                             role="status"
                                             aria-hidden="true"
                                         />
-                                        <text> VOTING </text>
+                                        <span> VOTING </span>
                                         </div>
-                                    ) : ( <text> VOTE  </text>)
+                                    ) : ( <span> VOTE  </span>)
                                     
                                     }   
                                     
@@ -141,9 +141,9 @@ const AttackCard = () => {
                                             role="status"
                                             aria-hidden="true"
                                         />
-                                        <text> REMOVING </text>
+                                        <span> REMOVING </span>
                                         </div>
-                                    ) : ( <text> REMOVE VOTE  </text>)
+                                    ) : ( <span> REMOVE VOTE  </span>)
                                     
                                     }   
                                     

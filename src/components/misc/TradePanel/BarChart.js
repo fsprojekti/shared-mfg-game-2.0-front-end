@@ -3,13 +3,13 @@ import { ResponsiveBar } from '@nivo/bar';
 import { AppContext } from '../../../context/context';
 import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { Card } from 'react-bootstrap';
-import userEvent from '@testing-library/user-event';
+
 const BarChart = ({dataArray, modifiedData, checked}) => {
     const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, user } = useContext(AppContext);
     const setTradeModal = (data) => {
 
         const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
-        console.log(data)
+        // console.log(data)
 
         if (modalService.length == 0 && data.service != service._id && data.serviceType != service.type) {
             setTradeModalContent(data);

@@ -54,7 +54,8 @@ const TradeModal = () => {
             } else {
 
                     console.log(tradeModalContent);
-                    await apiUserBidOrder(txFee, tradeModalContent._id);
+                    let response = await apiUserBidOrder(txFee, tradeModalContent._id);
+                    console.log(response);
                     setIsTradeModalOpen(false);
 
                     setNote({...(note.show = false)});
@@ -191,8 +192,8 @@ const TradeModal = () => {
                                 </div> */}
 
                 <div className='d-flex'>
-                    <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
-                    <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                    <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                    <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                         setIsTradeModalOpen(false)
                         setNote({...(note.show = false)});
                         setTxFee();

@@ -35,7 +35,7 @@ const PanelLogin = () => {
                 context.setNote((prevState) => {
                     return({
                       ...prevState,
-                      msg: "Please enter a number, no letter are allowed",
+                      msg: "Please enter a number, letters are not allowed",
                       heading: 'Wrong input',
                       show: true,
                       type: 'danger'

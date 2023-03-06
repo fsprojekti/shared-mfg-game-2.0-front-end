@@ -537,13 +537,16 @@ export const ContextWrapper = (props) => {
 
     }
 
-    const updateAttackState = (attacObj) => {
+    const updateAttackState = (attackObj) => {
         try {
-            setStealVotes((oldStealVotes) => {
-                let votes = oldStealVotes;
-                votes.stealVotes = attacObj;
-                return votes;     
-            });
+            console.log(attackObj)
+            if(attackObj.account == agent.account) {
+                setStealVotes((oldStealVotes) => {
+                    let votes = oldStealVotes;
+                    votes.stealVotes = attackObj;
+                    return votes;     
+                });
+            }
         } catch (error) {
             console.log(error)
         }
