@@ -45,7 +45,7 @@ const ServiceBar = () => {
             setServiceCompleted(newServiceCompleted);
             let timeLeft = (context.service.duration*1000) - (Date.now() - timestamp);
             if (timeLeft < 0) timeLeft = 0;
-            console.log(millisToMinutesAndSeconds(timeLeft))
+            // console.log(millisToMinutesAndSeconds(timeLeft))
             setTimeLeft(millisToMinutesAndSeconds(timeLeft));
         } else {
             setServiceCompleted(100);
