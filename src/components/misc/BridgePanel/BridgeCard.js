@@ -56,8 +56,6 @@ const BridgeCard = () => {
     const confirmTransfer = async () => {
         try {
             let numCheck; 
-            // console.log(chains)
-            // console.log(bridges[bridge].chainTarget)
             await import('../HelperFunctions/functions')
             .then(async({ checkNumber }) => {
                 let index;
@@ -70,9 +68,6 @@ const BridgeCard = () => {
                         return c.id == bridges[bridge].chainSource;
                     });
                 }
-                    // console.log(index);
-                    // console.log(usersBalances[index][`${chains["chains"][index].name}`]);
-                    // console.log(chains["chains"][index]);
                     numCheck = await checkNumber(amount, fee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
                 
 
@@ -155,20 +150,20 @@ const BridgeCard = () => {
                                     value={dir.value}
                                     checked={direction === dir.value}
                                     onChange={(e) => setDirection(e.currentTarget.value)}
-                                    style={{paddingLeft: (idx == 0 ? "2rem" : "1.5rem"),paddingRight: (idx == 0 ? "1.5rem" : "2rem"), borderRadius: (idx % 2 ? "0px 8px 8px 0px" : "8px 0px 0px 8px"), marginBottom: "1rem"}}
+                                    style={{paddingLeft: (idx == 0 ? "2rem" : "1.5rem"),paddingRight: (idx == 0 ? "1.5rem" : "2rem"),  borderRadius: (idx % 2 ? "0px 8px 8px 0px" : "8px 0px 0px 8px"), marginBottom: "1rem"}}
                                 >
                                     {dir.name}
                                 </ToggleButton>
                                 ))}
                             </ButtonGroup>
-                    <Card.Text style={{justifyContent: "center", alignItems: "center", backgroundColor: "pink", padding: "2rem", borderRadius: "8px"}}>
+                    <Card.Text style={{justifyContent: "center", alignItems: "center", backgroundColor: (direction == '2' ? '#f5c6a3' : '#B1DAE7'), padding: "2rem", borderRadius: "8px"}}>
 
                             
 
                                 <InputGroup style={{margin: "10px", borderRadius: "8px"}}>
                                     <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}>Amount</InputGroup.Text>
                                     <FormControl value ={amount} onChange={e => setAmount(e.target.value)}></FormControl>
-                                    <Button variant="outline-info" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > Max </Button>
+                                    <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > Max </Button>
                                 </InputGroup>
 
                                 <InputGroup style={{margin: "10px"}}>

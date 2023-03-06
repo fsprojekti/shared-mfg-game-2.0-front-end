@@ -3,6 +3,7 @@ import {Button, Card, Spinner, Row, Col } from "react-bootstrap";
 import { AppContext } from '../../../context/context';
 import CancelVoteModal from './CancelVoteModal';
 import {GiTakeMyMoney} from "react-icons/gi";
+import AttackInfo from '../ChainPanel/AttackInfo';
 
 
 const AttackCard = () => {
@@ -161,6 +162,9 @@ const AttackCard = () => {
                             
                     
                 </Col>
+                {/* <Col>
+                    <AttackInfo />
+                </Col> */}
         </Row>
         </Card>
         </div>

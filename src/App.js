@@ -81,7 +81,7 @@ function App() {
 
         //Load user agent
         const agent = context.apiUserAgentGet().then(agentObj => {
-            console.log(agentObj)
+            // console.log(agentObj)
             let agent = context.agent;
             agent.id = agentObj.id;
             agent.type = agentObj.type;
@@ -124,19 +124,13 @@ function App() {
     
         //Load users stakes on different chains
         const stakes = context.apiUserFetchStake().then(stakes => {
-            console.log(stakes)
+            // console.log(stakes)
             context.setUsersStakes(stakes);
         }).catch(e => console.log(e));
 
         //Load all chains
         const chains = context.apiGameChains().then(chainsObj => {
-            console.log(chainsObj)
-            console.debug(context.cookies.timeDiff)
-            // if(context.cookies.timeDiff !== undefined) {
-            //     console.debug("Setting time difference")
-            //     chainsObj[0].timeDiff = parseInt(context.cookies.timeDiff);
-            //     chainsObj[0].updatedAt = (new Date(chainsObj[0].updatedAt)).getTime() - parseInt(context.cookies.timeDiff);
-            // }
+            // console.log(chainsObj)
 
             let contextChains = context.chains;
             contextChains.chains = chainsObj;
@@ -153,7 +147,7 @@ function App() {
 
         //Load user's steal votes
         const stealVotes = context.apiUserStealGet().then(stealVotes => {
-            console.debug((stealVotes))
+            // console.debug((stealVotes))
             context.setStealVotes({stealVotes: stealVotes[0]});
         }).catch(e => console.log(e))
 
@@ -185,7 +179,7 @@ function App() {
     }, [navigate, context.game.state])
 
     useEffect(() => {
-        console.log(socket)
+        // console.log(socket)
 
         // subscribe to socket events
         socket.on("chain", context.updateChainsState);

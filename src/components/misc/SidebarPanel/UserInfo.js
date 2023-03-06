@@ -55,7 +55,7 @@ const UserInfo = () => {
                 return (
                     <div className="d-flex">
                         <Button variant="btn btn-warning btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>
-                        <CloseButton variant="btn btn-primary btn-lg" style={{marginLeft: "1rem", backgroundColor: "#E73936", justifyContent: "center", alignItems: "center", height: "1.7rem", width: "1.7rem"}} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
+                        <CloseButton className="btn btn-primary btn-lg" style={{marginLeft: "1rem", backgroundColor: "#E73936", justifyContent: "center", alignItems: "center", height: "1.7rem", width: "1.7rem"}} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
                         </CloseButton>
                     </div>
                 )

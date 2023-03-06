@@ -13,7 +13,7 @@ const PanelChains = () => {
 
     return (
 
-        <>
+        <div >
             <Row style={{paddingRight: "0", paddingLeft: "0"}}>
                 <Col xs={6} md={6} className='d-flex' style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
                     <ChainMesh />
@@ -25,12 +25,13 @@ const PanelChains = () => {
             <Row style={{paddingRight: "0", paddingLeft: "0"}}>
                 <Col xs={6} md={6} style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
                     <AttackInfo />
+                    {/* <AttackCard /> */}
                 </Col>
                 <Col xs={6} md={5} style={{paddingRight: "0", paddingLeft: "0", marginRight: "20px", marginBottom: "5px", marginLeft: "0px"}}>
                     <AttackCard />
                 </Col>
             </Row>
-        </>
+        </div>
     )
 };
 

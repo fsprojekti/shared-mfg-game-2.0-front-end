@@ -411,7 +411,7 @@ const BlockchainData = () => {
                     </div>
                 </Col>
             </Row>
-
+            <CancelTransactionModal/>
         </>
     )
 };
