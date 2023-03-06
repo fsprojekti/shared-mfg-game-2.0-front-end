@@ -24,11 +24,10 @@ const PanelChains = () => {
             </Row>
             <Row style={{paddingRight: "0", paddingLeft: "0"}}>
                 <Col xs={6} md={6} style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
-                    <AttackInfo />
-                    {/* <AttackCard /> */}
+                    {/* <AttackInfo /> */}
                 </Col>
                 <Col xs={6} md={5} style={{paddingRight: "0", paddingLeft: "0", marginRight: "20px", marginBottom: "5px", marginLeft: "0px"}}>
-                    <AttackCard />
+                    {/* <AttackCard /> */}
                 </Col>
             </Row>
         </div>

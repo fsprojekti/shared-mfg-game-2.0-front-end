@@ -10,8 +10,6 @@ const ChainData = () => {
         const transactions = context.transactions;
         let mainChainTransactions = transactions.filter((item) => item.chain === context.chains.chains[0].id);
         let sideChainTransactions = transactions.filter((item) => item.chain === context.chains.chains[1].id);
-        // console.log("Main chain transactions: " + mainChainTransactions.length);
-        // console.log("Side chain transactions: " + sideChainTransactions.length);
         setTransactionsLengthArray([mainChainTransactions.length, sideChainTransactions.length]);
     }, [context.transactions]);
 
@@ -23,7 +21,7 @@ const ChainData = () => {
                     <div style={{height: "auto", overflow: "auto", border: '1px solid rgb(211, 211, 211)', borderRadius: "8px 8px 8px 8px"}}>
                         <table className="table-all-rankings">
                             <thead>
-                            <tr>
+                            <tr key={1}>
                                 <th>Chain ID</th>
                                 <th>Chain Name</th>
                                 <th>Block no.</th>
@@ -36,7 +34,7 @@ const ChainData = () => {
                             {
                                 context["chains"].chains.map((item, index) => (
                                     <tr
-                                        key={item._id}
+                                        key={item.id}
                                     >
                                         <td><strong>{index + 1}</strong></td>
                                         <td>{item.name}</td>

@@ -57,9 +57,9 @@ export const checkNumberUnstake = async (input1, input2, balance, stake, transac
       });
       
    }
-   console.debug("SUM OF TRANSACTIONS:")
-   console.log(sumOfTransactions);
-   console.log(isNaN(input1))
+   // console.debug("SUM OF TRANSACTIONS:")
+   // console.log(sumOfTransactions);
+   // console.log(isNaN(input1))
    
    if ((input1 === undefined || input1 === "" || input1 === 0)) {
    return ({state: -1, msg:"You must enter a value"});
@@ -85,7 +85,7 @@ export const checkNumberUnstake = async (input1, input2, balance, stake, transac
 };
 
 const countDecimals = (value) => {
-   console.log("Count decimals " + Math.floor(value).toString() )
+   // console.log("Count decimals " + Math.floor(value).toString() )
    if(Math.floor(value).toString() === value.toString()) return 0;
    return value.toString().split(".")[1].length || 0;
 };

@@ -48,7 +48,7 @@ const CancelOrderModal = () => {
                     return ordr.service == service._id ? ordr : current;
                 })   
                 if(playersOrder.service == service._id) {
-                    console.log(playersOrder)
+                    // console.log(playersOrder)
                     let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
                     playersOrder.chainName = chain[0].name;
                     setOrder(playersOrder);
@@ -96,8 +96,8 @@ const CancelOrderModal = () => {
                             <h3> Continue? </h3>
                             
                                 
-                                <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
-                                <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                                <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                                <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                                     context.setIsCancelUserOrderModalOpen({open: false})
                                     // setNote({...(note.show = false)});
                                 }}>

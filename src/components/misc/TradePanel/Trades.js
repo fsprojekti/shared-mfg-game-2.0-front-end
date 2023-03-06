@@ -87,23 +87,28 @@ const Trades = () => {
             let placedOrders = await orders.filter(order => order.state === "PLACED");
 
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
-                let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
+                let newOrderObj = ordr;
+                let service=servicesAll["services"].filter(srvc=> srvc._id == newOrderObj.service);
                 
-                ordr.serviceDuration=service[0].duration.toFixed(2);
+                newOrderObj.serviceDuration=service[0].duration.toFixed(2);
 
-                let chain = chains["chains"].filter(chain => chain.id === ordr.chain);
+                const chain = chains["chains"].filter(chain => chain.id === newOrderObj.chain);
 
                 const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
                 const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
-                ordr.serviceType=providerAgentObject[0].type;
-                ordr.providerName = providerClient[0].name;
-                ordr.agentId = providerAgentObject[0]._id;
-                ordr.agentAccount = providerAgentObject[0].account;
-                ordr.providerId = providerClient[0].id;
-                ordr.chainName = chain[0].name;
-                ordr.chainId = chain[0].id;
 
-                return ordr
+                newOrderObj.serviceType=providerAgentObject[0].type;
+                newOrderObj.providerName = providerClient[0].name;
+                newOrderObj.agentId = providerAgentObject[0]._id;
+                newOrderObj.agentAccount = providerAgentObject[0].account;
+                newOrderObj.providerId = providerClient[0].id;
+                newOrderObj.chainName = chain[0].name;
+                newOrderObj.chainId = chain[0].id;
+                newOrderObj.color = getColor(chain[0].name);
+                newOrderObj.price = parseInt(newOrderObj.price);
+                newOrderObj.height = millisToFloat(newOrderObj.serviceDuration);
+
+                return newOrderObj
             })   
             
             const placedOrdersWithPlayerDataByChain = await filterDataArrayByChain(placedOrdersWithPlayerData);
@@ -116,70 +121,34 @@ const Trades = () => {
             let array1 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[0]);
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service.type);
-            // console.log(array1)
-            // console.log(array2)
-            // console.log(array3)
 
             if (checked1) {
-                await array1.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);
-                await array1.forEach((item) => {
-                    item.height = millisToFloat(item.serviceDuration);
-                });
                 setDataArray1(array1);
 
             } else {
-                await array1.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array1.sort((a, b) => a.price - b.price);
                 setDataArray1(array1);
             }
             if (checked2) {
-                await array2.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array2.sort((a, b) => a.serviceDuration - b.serviceDuration);
-                await array2.forEach((item) => {
-                    item.height = millisToFloat(item.serviceDuration);
-                });
                 setDataArray2(array2);
 
             } else {
-                await array2.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array2.sort((a, b) => a.price - b.price);
                 setDataArray2(array2);
                 
             }
 
             if (checked3) {
-                await array3.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array3.sort((a, b) => a.serviceDuration - b.serviceDuration);
-                await array3.forEach((item) => {
-                    item.height = millisToFloat(item.serviceDuration);
-                });
                 setDataArray3(array3);
             } else {
-                await array3.forEach((item) => {
-                    item.price = parseInt(item.price);
-                    item.color = getColor(item.chainName);
-                });
                 await array3.sort((a, b) => a.price - b.price);
                 setDataArray3(array3);
             }
-            //Kaj naredi to: ???
-            let modifiedArray1 = await array1.map((item) => {
+
+            let modifiedArray1 = array1.map((item) => {
                if (item.price < 1) {
                    return {...item, price: 0.9};
                } else {
@@ -203,14 +172,12 @@ const Trades = () => {
             setModifiedDataArray1(modifiedArray1);
             setModifiedDataArray2(modifiedArray2);
             setModifiedDataArray3(modifiedArray3);
-            // console.log(array1);
-            // console.log(array2);
-            // console.log(array3);
 
         };
         sortDataArrays(); 
 
     }, [context.orders, checked1, checked2, checked3, checkBoxes, context.servicesAll["services"]]);
+
 
     return (
         <>  

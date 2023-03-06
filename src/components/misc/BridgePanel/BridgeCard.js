@@ -156,18 +156,18 @@ const BridgeCard = () => {
                                 </ToggleButton>
                                 ))}
                             </ButtonGroup>
-                    <Card.Text style={{justifyContent: "center", alignItems: "center", backgroundColor: (direction == '2' ? '#f5c6a3' : '#B1DAE7'), padding: "2rem", borderRadius: "8px"}}>
+                    <Card.Body style={{justifyContent: "center", alignItems: "center", backgroundColor: (direction == '2' ? '#f5c6a3' : '#B1DAE7'), padding: "2rem", borderRadius: "8px"}}>
 
                             
-
+                            
                                 <InputGroup style={{margin: "10px", borderRadius: "8px"}}>
-                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}>Amount</InputGroup.Text>
+                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Amount</span></InputGroup.Text>
                                     <FormControl value ={amount} onChange={e => setAmount(e.target.value)}></FormControl>
-                                    <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > Max </Button>
+                                    <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button>
                                 </InputGroup>
 
                                 <InputGroup style={{margin: "10px"}}>
-                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
+                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></InputGroup.Text>
                                     <FormControl value ={fee} onChange={e => setFee(e.target.value)} style={{borderRadius: "0 8px 8px 0"}}></FormControl>
                                 </InputGroup>
                                 
@@ -186,19 +186,20 @@ const BridgeCard = () => {
                                         aria-hidden="true"
                                     />
 
-                                        <text> Transfering </text>
+                                        <span> Transfering </span>
 
                                     </div>
 
 
                                 ) : (
-                                    <text> Transfer  </text>
+                                    <span> Transfer  </span>
+                                    
                                 )
 
                                 } 
                                 </Button>
 
-                </Card.Text>
+                </Card.Body>
                     
                    
 

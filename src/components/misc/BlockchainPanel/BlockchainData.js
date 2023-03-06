@@ -170,13 +170,9 @@ const BlockchainData = () => {
             let dataArray = ranking.map((item, index) => {
                 const agentObject = agents["agents"].filter(agent => agent._id === item.agent);
                 const userObject = users["users"].filter(user => user.id === agentObject[0].user);
-                // console.debug(userObject[0].name)
-                // console.log(item.stake)
-                // console.log(stakeChain)
                 if (userObject[0].name == context.user) userObject[0].name = "You";
                 return {id: userObject[0].name, label: userObject[0].id, value: item.stake[stakeChain]}
             });
-            // console.log(dataArray)
             setChartDataArray(dataArray);
         };
         createDataArray();
@@ -185,117 +181,6 @@ const BlockchainData = () => {
 
 
     return (
-        // <>
-        //     <div className="d-flex flex-column" style={{padding: "5px"}}>
-        //         <div className="d-flex">
-        //             <TransactionsTable/>
-        //             <div className="d-flex flex-column" style={{width: "100%", margin: "5px", justifyContent: "space-evenly", borderRadius: "8px", boxShadow: "var(--light-shadow)", paddingRight: "5px", zIndex: 1}}>
-                    
-                        
-        //                 <div className="d-flex-row d-inline-block" >
-        //                     <h3 className="d-inline-block"> Stake on 
-
-        //                     <Dropdown className="d-flex-row d-inline-block" style={{margin: "10px"}}>
-                
-        //                     <Dropdown.Toggle  variant="outline-danger" style={{height: "40px", borderRadius: "8px"}}>
-        //                         <b>{ context.chains["chains"].length < 1  ? "null" : context.chains["chains"][stakeChain].name  }  </b>
-        //                     </Dropdown.Toggle>
-                            
-        //                     <Dropdown.Menu>
-
-        //                     {
-        //                         context.chains["chains"].map((item, index) => (
-                                    
-        //                             <Dropdown.Item onClick={() =>  setStakeChain(index)} > {context.chains["chains"][index].name} </Dropdown.Item>
-
-        //                         ))
-        //                     }
-        //                     </Dropdown.Menu>
-                            
-        //                     </Dropdown>
-                            
-                            
-                            
-        //                     Chain </h3>
-                            
-        //                 </div>
-
-        //                 <h4>Your stake: {context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]} ({relativeStake.stake}%)</h4>         
-
-        //                 <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "30%"}}>
-
-        //                     <div style={{margin: "auto", width: "45vh", height: "36vh"}}>
-        //                         <PieChart data={chartDataArray}/>
-        //                     </div>
-        //                     <div className="d-flex flex-column" style={{justifyContent: "center", alignItems: "center", zIndex: 1}}>
-                            
-        //                             <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
-        //                                 <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Amount</InputGroup.Text>
-        //                                 <FormControl value ={newStake} placeholder={"Enter amount"} onChange={e => setNewStake(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
-        //                             </InputGroup>
-
-        //                             <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
-        //                                 <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
-        //                                 <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
-        //                             </InputGroup>
-               
-        //                         <Button  onClick={confirmStake} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px", backgroundColor: "#34ad6a", borderColor: "#34ad6a"}}>
-        //                         {loadingStake ? (
-        //                                 <div>
-        //                                     <Spinner
-        //                                     as="span"
-        //                                     animation="grow"
-        //                                     size="sm"
-        //                                     role="status"
-        //                                     aria-hidden="true"
-        //                                 />
-
-        //                                 <text> STAKE </text> 
-
-        //                                 </div>
-        //                             ) : (
-        //                                 <text> STAKE </text>
-        //                             )
-                                    
-        //                             } 
-        //                         </Button>
-                                
-        //                         <Button variant='warning'  onClick={confirmUnstake} style={{padding: "0.3rem 1.2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px"}}>
-        //                         {loadingUnstake ? (
-        //                                 <div>
-        //                                     <Spinner
-        //                                     as="span"
-        //                                     animation="grow"
-        //                                     size="sm"
-        //                                     role="status"
-        //                                     aria-hidden="true"
-        //                                 />
-
-        //                                     <text> UNSTAKE  </text>
-
-        //                                 </div>
-        //                             ) : (
-        //                                 <text> UNSTAKE  </text>
-        //                             )
-                                    
-        //                         } 
-                                
-                                
-        //                         </Button>
-        //                     </div>
-                            
-        //                 </div>
-        //             </div>
-                   
-        //         </div>
-        //         <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", textAlign: "center"}}>
-        //             <h3>Transactions History</h3>
-        //             <AllTransactionsTable/>
-        //         </div>
-                
-        //     </div>
-        //     <CancelTransactionModal/>
-        // </>
        <>
             <Row style={{ marginLeft: "0px", marginRight: "1rem"}}>
                 <Col xs={12} md={6}>
@@ -312,7 +197,7 @@ const BlockchainData = () => {
 
                         <Dropdown className="d-flex-row d-inline-block" style={{margin: "10px"}}>
             
-                        <Dropdown.Toggle  variant="outline-danger" style={{height: "40px", borderRadius: "8px"}}>
+                        <Dropdown.Toggle  variant="outline-danger" style={{height: "40px", borderRadius: "8px"}} >
                             <b>{ context.chains["chains"].length < 1  ? "null" : context.chains["chains"][stakeChain].name  }  </b>
                         </Dropdown.Toggle>
                         
@@ -321,7 +206,7 @@ const BlockchainData = () => {
                         {
                             context.chains["chains"].map((item, index) => (
                                 
-                                <Dropdown.Item onClick={() =>  setStakeChain(index)} > {context.chains["chains"][index].name} </Dropdown.Item>
+                                <Dropdown.Item key={index} onClick={() =>  setStakeChain(index)} > {context.chains["chains"][index].name} </Dropdown.Item>
 
                             ))
                         }
@@ -333,7 +218,7 @@ const BlockchainData = () => {
                         
                         Chain </h3>
                         
-                    </div>
+                        </div>
 
                     <h4>Your stake: {context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`]} ({relativeStake.stake}%)</h4>         
 
@@ -365,11 +250,11 @@ const BlockchainData = () => {
                                         aria-hidden="true"
                                     />
 
-                                    <text> STAKE </text> 
+                                    <span> STAKE </span> 
 
                                     </div>
                                 ) : (
-                                    <text> STAKE </text>
+                                    <span> STAKE </span>
                                 )
                                 
                                 } 
@@ -386,11 +271,11 @@ const BlockchainData = () => {
                                         aria-hidden="true"
                                     />
 
-                                        <text> UNSTAKE  </text>
+                                        <span> UNSTAKE  </span>
 
                                     </div>
                                 ) : (
-                                    <text> UNSTAKE  </text>
+                                    <span> UNSTAKE  </span>
                                 )
                                 
                             } 

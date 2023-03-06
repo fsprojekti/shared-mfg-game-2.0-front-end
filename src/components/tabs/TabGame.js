@@ -94,12 +94,19 @@ const TabGame = () => {
                         }}/>
             </div>
 
-
-
+            {
+                (context.loadingMain) ? ( null ) : (
+                    <div>
+                        <CreateOrderModal />
+                        <CancelOrderModal />
+                    </div>
+                )
+                    
+            }
+            
             </Row>
-            <CreateOrderModal />
-            <CancelOrderModal />
-
+            
+            
              </Container>
 
 

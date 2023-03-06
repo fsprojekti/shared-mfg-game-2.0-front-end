@@ -4,13 +4,8 @@ import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstra
 import {motion} from 'framer-motion'
 
 const CreateOrderModal = () => {
-    const { transactions, users, isTradeModalUserOpen, usersBalances, servicesAll, isCreateOrderModalOpen, setIsCreateOrderModalOpen, service, chains, cookies, agents, note, setNote} = useContext(AppContext);
-    const [txFee, setTxFee] = useState("0");
-    const [tableDataArray, setTableDataArray] = useState([]);
-    const [provider, setProvider] = useState('');
-    const [chain, setChain]  = useState(0);
-
     const context = useContext(AppContext);
+    const [chain, setChain]  = useState(0);
     const [price, setPrice] = useState("0");
 
 
@@ -77,33 +72,40 @@ const CreateOrderModal = () => {
                                   });
                             } else {
 
-                                console.log("ORDER")
+                                let response;
 
-                                if(isCreateOrderModalOpen.mode == "set") {
-                                    console.log("SET")
-                                    await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
+                                if(context.isCreateOrderModalOpen.mode == "set") {
+                                    response = await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
+                                    response.message = `${context.service.type} order created successfully`;
                                 } else { 
-                                    console.log(context.orders)
-                                    let userOrder;
-                                    const placedOrders = context.orders.filter(order => order.state === "PLACED")
-                                    console.log(servicesAll["services"]);
-                                    const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
-                                        let service=servicesAll["services"].filter(srvc=> srvc._id == ordr.service);
-                                        const providerAgentObject = agents["agents"].filter(agent => agent._id === service[0].agent);
-                                        const providerClient = users["users"].filter(user => user.id === providerAgentObject[0].user);
-
-                                        if (providerClient[0].id == context.user.id) {
-                                            // console.log("Im in")
-                                            userOrder = ordr;
+                                    const orders = await context.orders;
+                                    const service = await context.service;
+                                    const chains = await context.chains;
+                                    const placedOrders = await orders.filter(order => order.state === "PLACED");
+                                    if(placedOrders.length != 0) {
+                                        const playersOrder = await placedOrders.reduce((ordr, current) => { 
+                                            return ordr.service == service._id ? ordr : current;
+                                        })   
+                                        if(playersOrder.service == service._id) {
+                                            response = await context.apiUserUpdateOrder(price, playersOrder._id);
                                         }
-                                        return ordr;
-                                    })   
-                                    
-                                    console.log(userOrder)
-                                    await context.apiUserUpdateOrder(price, userOrder._id);
+                                    } else {
+                                        return;
+                                    }
                                 }
+
+                                context.setNote((prevState) => {
+                                    return({
+                                      ...prevState,
+                                      msg: response.message,
+                                      heading: 'Success',
+                                      show: true,
+                                      type: 'success'
+                                    });
+                                  });
+
                                 setPrice("0");
-                                setIsCreateOrderModalOpen({open: false})
+                                context.setIsCreateOrderModalOpen({open: false})
 
                             }
                         }
@@ -112,7 +114,8 @@ const CreateOrderModal = () => {
             }
         } catch(err) {
             console.log(err)
-                setNote((prevState) => {
+            try {
+                context.setNote((prevState) => {
                     return({
                       ...prevState,
                       msg: err.response.data.message,
@@ -121,6 +124,9 @@ const CreateOrderModal = () => {
                       type: 'danger'
                     });
                   });
+                } catch(err) {
+                    console.log("Could not set note with error message")
+                }
         }
     };
 
@@ -137,7 +143,7 @@ const CreateOrderModal = () => {
 
     return (
         <div >
-            {isCreateOrderModalOpen.open == true ? (
+            {context.isCreateOrderModalOpen.open == true ? (
 
                 
 
@@ -154,12 +160,12 @@ const CreateOrderModal = () => {
                 }}
             >
             <div className='modal-confirm-container'>
-            <h3 > {isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {service.type} order price </h3> 
+            <h3 > {context.isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {context.service.type} order price </h3> 
                 
                 <div className='modal-confirm-container-input'> 
                 
 
-                        {isCreateOrderModalOpen.mode == "set" ? (
+                        {context.isCreateOrderModalOpen.mode == "set" ? (
                         <div >
                     
                             <InputGroup style={{paddingBottom: "5px"}}>
@@ -167,15 +173,15 @@ const CreateOrderModal = () => {
                                 <InputGroup.Text >CHAIN</InputGroup.Text>
                                 <Dropdown >
                                 <Dropdown.Toggle variant="outline-secondary"  style={{width: "10rem"}}>
-                                    <b >  { chains["chains"].length < 1  ? "null" : chains["chains"][chain].name  } </b>
+                                    <b >  { context.chains["chains"].length < 1  ? "null" : context.chains["chains"][chain].name  } </b>
                                 </Dropdown.Toggle>
                     
                                 <Dropdown.Menu>
 
                                 {
-                                    chains["chains"].map((item, index) => (
+                                    context.chains["chains"].map((item, index) => (
                                         
-                                        <Dropdown.Item onClick={(item) => (setChain(index))} > {chains["chains"][index].name} </Dropdown.Item>
+                                        <Dropdown.Item key={index} onClick={(item) => (setChain(index))} > {context.chains["chains"][index].name} </Dropdown.Item>
 
                                     ))
                                 }
@@ -194,11 +200,10 @@ const CreateOrderModal = () => {
                         <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
                     </InputGroup>
                     
-                    <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
-                    <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
-                        setIsCreateOrderModalOpen({open: false})
-                        setNote({...(note.show = false)});
-                        setTxFee();
+                    <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                    <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                        context.setIsCreateOrderModalOpen({open: false})
+                        context.setNote({...(context.note.show = false)});
                     }}>
                     Cancel
                     </Button>

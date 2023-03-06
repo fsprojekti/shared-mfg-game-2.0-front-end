@@ -17,18 +17,16 @@ const CancelTransactionModal = () => {
         try {
 
             let response = await apiUserCancelTransaction(cancelTransactionModalContent.data.id);
-            console.log("cancel transaction")
-            // console.log(cancelTransactionModalContent)
-            console.debug(response)
-            // setNote((prevState) => {
-            //     return({
-            //       ...prevState,
-            //       msg: response,
-            //       heading: 'Success',
-            //       show: true,
-            //       type: 'success'
-            //     });
-            //   });
+
+            setNote((prevState) => {
+                return({
+                  ...prevState,
+                  msg: response.message,
+                  heading: 'Success',
+                  show: true,
+                  type: 'success'
+                });
+              });
             setCancelTransactionModalContent({open: false})
         } catch(err) {
             console.log(err)
@@ -56,7 +54,7 @@ const CancelTransactionModal = () => {
 
     useEffect(() => {
 
-        console.log(cancelTransactionModalContent)
+        // console.log(cancelTransactionModalContent)
     }, [orders])
 
 
@@ -84,7 +82,7 @@ const CancelTransactionModal = () => {
 
                         <div className='modal-confirm-container-input'>
 
-                            <ul>
+                            <ul key={cancelTransactionModalContent.data.id}>
                                 <li> From: {cancelTransactionModalContent.data.consumer}  </li>
                                 {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                                 <li> To: <span style={{color: 'blue'}}> {cancelTransactionModalContent.data.provider} </span>    </li>
@@ -98,8 +96,8 @@ const CancelTransactionModal = () => {
                             <h3> Continue? </h3>
                             
                                 
-                                <Button class="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
-                                <Button class="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                                <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                                <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                                     setCancelTransactionModalContent({open: false})
                                     // setNote({...(note.show = false)});
                                 }}>
