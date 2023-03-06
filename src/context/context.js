@@ -266,6 +266,7 @@ export const ContextWrapper = (props) => {
 
     const updateServiceState = (serviceObj) => {
         try {
+            if(game.state == "RUN") {
             setServicesAll((oldServices) => {
                 const servicesArray = oldServices;
     
@@ -289,8 +290,10 @@ export const ContextWrapper = (props) => {
                     return servicesArray;    
                 }
                 
-                return oldServices;         
+                return oldServices;        
+                 
             });
+        }
         } catch (error) {
             console.log(error)
         }

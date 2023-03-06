@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { Table } from "react-fluid-table";
-import { Button, Card, ToggleButton} from 'react-bootstrap';
+import { Button, Card, Accordion} from 'react-bootstrap';
 import { MdRefresh } from "react-icons/md";
 
 
@@ -15,7 +15,6 @@ const AllTransactionsTable = () => {
     const [checkBoxesOwner, setCheckBoxesOwner] = useState([{type: "My tx", isChecked: false}]);
     const [chainCheckBoxes, setChainCheckBoxes] = useState([{chain: context.chains["chains"][0], isChecked: true}, {chain: context.chains["chains"][1], isChecked: true}]);
     const [refresh, setRefresh] = useState({refresh: false});
-    const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 
     const HeaderCell = ({ name, sortDirection, style, onClick }) => {
@@ -281,7 +280,8 @@ const AllTransactionsTable = () => {
 
 
     return (
-        <Card className='d-flex' style={{borderColor: "transparent"}}> 
+        <Card className='d-flex' style={{borderColor: "transparent", zIndex: 1}}> 
+        
             <div className="filter-all-transactions">            
                            
                     <div className="d-block" style={{position: "relative", marginLeft: "10px", marginTop: "10px", marginBottom: "10px"}}>
@@ -297,27 +297,61 @@ const AllTransactionsTable = () => {
                         ))
                     }
                 </div>
-                <div className="filter-all-transactions">
-                     <div className="d-block" style={{position: "relative", margin: "10px"}}>
-                        <b > Types: </b>
+                <div style={{height: "50px"}}>
+                <Accordion style={{position: "absolute", zIndex: 10, top: 42, width:"100%"}}>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>More filtering options</Accordion.Header>
+                    <Accordion.Body>
+                        <div className="filter-all-transactions">
+                        <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                            <b > Services: </b>
+                        </div>
+                        <div className='d-flex flex-row'>
+                        {
+                            checkBoxes.slice(0,3).map((item) => (
+                                <label className="checkbox-container" key={item.type}>{item.type}
+                                    <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
+                                    <span className="checkmark"></span>
+                                </label>
+                            ))
+                        }
+                        </div>
                     </div>
-                    {
-                        checkBoxes.map((item) => (
-                            <label className="checkbox-container" key={item.type}>{item.type}
-                                <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
-                                <span className="checkmark"></span>
-                            </label>
-                        ))
-                    }
-                    {
-                        checkBoxesOwner.map((item) => (
-                            <label className="checkbox-container" key={item.type}>{item.type}
-                                <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOwner}/>
-                                <span className="checkmark"></span>
-                            </label>
-                        ))
-                    }
+                    <div className="filter-all-transactions">
+                        <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                            <b > Other types : </b>
+                        </div>
+                        <div className='d-flex flex-row'>
+                        {
+                            checkBoxes.slice(3).map((item) => (
+                                <label className="checkbox-container" key={item.type}>{item.type}
+                                    <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOne}/>
+                                    <span className="checkmark"></span>
+                                </label>
+                            ))
+                        }
+                        </div>
+                    </div>
+                    <div className="filter-all-transactions">
+                        <div className="d-block" style={{position: "relative", margin: "10px"}}>
+                            <b > Owner : </b>
+                        </div>
+                        <div className='d-flex flex-row'>
+                        {
+                            checkBoxesOwner.map((item) => (
+                                <label className="checkbox-container" key={item.type}>{item.type}
+                                    <input type="checkbox" name={item.type} checked={item.isChecked} onChange={selectOwner}/>
+                                    <span className="checkmark"></span>
+                                </label>
+                            ))
+                        }
+                        </div>
+                    </div>
+                    </Accordion.Body>
+                </Accordion.Item>
+                </Accordion>
                 </div>
+                
             <div className="table-all-transactions-overflow">
             <div style={{position: "absolute", top: 5, right: 15, alignSelf: "end", justifyItems: "start"}} >
                 <Button size="sm" style={{backgroundColor: "gray", borderColor: "transparent", borderRadius: "8px"}} onClick={() => { setRefresh(prevState => ({ resfresh: !prevState.refresh }));}}><MdRefresh></MdRefresh></Button>
@@ -326,7 +360,7 @@ const AllTransactionsTable = () => {
              <Table 
                 data={tableDataArray} 
                 columns={columns} 
-                tableWidth="100%"
+                tableWidth="99%"
                 onSort={onSort}
                 className="d-flex"
                 headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)", fontSize: "14px", color: "white", textAlign: "center", fontWeight: "lighter"}}

@@ -1175,7 +1175,7 @@ Pending transactions
 }
 
 .table-pending-transactions thead {
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .table-pending-transactions thead th {
