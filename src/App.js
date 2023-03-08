@@ -109,7 +109,6 @@ function App() {
 
         //Load user service
         const service = context.apiUserFetchService().then(service => {
-            console.log(service)
             let contextService = context.service;
             contextService.service = service;
             context.setService({ ...contextService });
@@ -159,9 +158,11 @@ function App() {
         }).catch(e => console.log(e))
 
         //Load user's block votes
-        const blockVotes = context.apiUserBlockGet().then(blockVotes => {
-            // console.log(JSON.stringify(blockVotes))
-            context.setBlockVotes(blockVotes);
+        const ranking = context.apiGameRanking().then(ranking => {
+            console.log((ranking))
+            let contextRanking = context.ranking;
+            contextRanking.ranking = ranking;
+            context.setRanking({ ...contextRanking });
         }).catch(e => console.log(e))
 
         //Load user data
@@ -178,7 +179,7 @@ function App() {
 
             }).catch(e => console.log(e))
 
-            Promise.all([game, chains,  agents, agent, orders,  bridges, stealVotes, blockVotes, users, transactions, services, service, userServices,
+            Promise.all([game, chains,  agents, agent, orders,  bridges, stealVotes, ranking, users, transactions, services, service, userServices,
                 balance, stakes]).then(() => {
                 context.setLoadingMain(false);
             });

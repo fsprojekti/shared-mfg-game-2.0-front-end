@@ -460,8 +460,8 @@ export const ContextWrapper = (props) => {
 
     const _updateRankingState = (rankingObj) => {
         setRanking((oldRanking) => {
-            let ranking = [...oldRanking];
-            ranking = rankingObj;
+            let ranking = oldRanking;
+            ranking.ranking = rankingObj;
             return ranking;
         })
 
@@ -1286,6 +1286,21 @@ export const ContextWrapper = (props) => {
         })
     })
 
+    /**
+     * Api get ranking function
+     * @returns {Object[]} - Ranking data
+     */
+    const apiGameRanking = (() => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let data = await axios.get('/game/ranking/get');
+                resolve(data.data);
+            } catch (e) {
+                reject(e);
+            }
+        })
+    })
+
 
     /**
      * Admin create game function.
@@ -1529,7 +1544,8 @@ export const ContextWrapper = (props) => {
             notifCard, setNotifCard,
             cancelTransactionModalContent, setCancelTransactionModalContent,
             apiUserCancelTransaction,
-            updateAttackState
+            updateAttackState,
+            apiGameRanking
         }}>
             {props.children}
         </AppContext.Provider>

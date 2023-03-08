@@ -167,7 +167,7 @@ const BlockchainData = () => {
         const users = context.users;
         const createDataArray = async () => { 
             
-            let dataArray = ranking.map((item, index) => {
+            let dataArray = ranking["ranking"].map((item, index) => {
                 const agentObject = agents["agents"].filter(agent => agent._id === item.agent);
                 const userObject = users["users"].filter(user => user.id === agentObject[0].user);
                 if (userObject[0].name == context.user) userObject[0].name = "You";
