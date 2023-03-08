@@ -371,7 +371,7 @@ export const ContextWrapper = (props) => {
                     setNote((prevState) => {
                         return({
                           ...prevState,
-                          msg: "You had the highest bid!",
+                          msg: "You had the highest fee!",
                           heading: 'New service obtained',
                           show: true,
                           type: 'success'
