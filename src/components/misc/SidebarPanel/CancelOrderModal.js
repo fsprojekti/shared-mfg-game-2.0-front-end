@@ -45,9 +45,9 @@ const CancelOrderModal = () => {
             const placedOrders = await orders.filter(order => order.state === "PLACED");
             if(placedOrders.length != 0) {
                 const playersOrder = await placedOrders.reduce((ordr, current) => { 
-                    return ordr.service == service._id ? ordr : current;
+                    return ordr.service == service["service"]._id ? ordr : current;
                 })   
-                if(playersOrder.service == service._id) {
+                if(playersOrder.service == service["service"]._id) {
                     // console.log(playersOrder)
                     let chain = await chains["chains"].filter(chain => chain.id == playersOrder.chain);
                     playersOrder.chainName = chain[0].name;
@@ -86,7 +86,7 @@ const CancelOrderModal = () => {
                         <div className='modal-confirm-container-input'>
 
                             <ul>
-                                <li> Type: {context.service.type}  </li>
+                                <li> Type: {context.service["service"].type}  </li>
                                 {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                                 <li> Price: <span style={{color: 'green'}}> {order.price} </span> </li>
                                 <li> Chain: <span style={{color: 'blue'}}> {order.chainName} </span> </li>

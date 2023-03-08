@@ -76,17 +76,18 @@ const CreateOrderModal = () => {
 
                                 if(context.isCreateOrderModalOpen.mode == "set") {
                                     response = await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
-                                    response.message = `${context.service.type} order created successfully`;
+                                    response.message = `${context.service["service"].type} order created successfully`;
                                 } else { 
                                     const orders = await context.orders;
                                     const service = await context.service;
                                     const placedOrders = await orders.filter(order => order.state === "PLACED");
                                     if(placedOrders.length != 0) {
                                         const playersOrder = await placedOrders.reduce((ordr, current) => { 
-                                            return ordr.service == service._id ? ordr : current;
+                                            return ordr.service == service["service"]._id ? ordr : current;
                                         })   
-                                        if(playersOrder.service == service._id) {
+                                        if(playersOrder.service == service["service"]._id) {
                                             response = await context.apiUserUpdateOrder(price, playersOrder._id);
+                                            console.log(response)
                                         }
                                     } else {
                                         return;
@@ -159,7 +160,7 @@ const CreateOrderModal = () => {
                 }}
             >
             <div className='modal-confirm-container'>
-            <h3 > {context.isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {context.service.type} order price </h3> 
+            <h3 > {context.isCreateOrderModalOpen.mode == "set" ? "Set" : "Update"} {context.service["service"].type} order price </h3> 
                 
                 <div className='modal-confirm-container-input'> 
                 

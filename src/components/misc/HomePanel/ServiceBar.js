@@ -36,14 +36,14 @@ const ServiceBar = () => {
     }
 
     useInterval(async () => {
-        if (context.service.state === "ACTIVE" ) {
-            let timestamp = (new Date(context.service.updatedAt).getTime())
+        if (context.service["service"].state === "ACTIVE" ) {
+            let timestamp = (new Date(context.service["service"].updatedAt).getTime())
             // console.log(timestamp)
-            let newServiceCompleted = Math.floor(((Date.now() - timestamp) / (context.service.duration*1000)) * 100);
+            let newServiceCompleted = Math.floor(((Date.now() - timestamp) / (context.service["service"].duration*1000)) * 100);
             if (newServiceCompleted > 100) newServiceCompleted = 100;
 
             setServiceCompleted(newServiceCompleted);
-            let timeLeft = (context.service.duration*1000) - (Date.now() - timestamp);
+            let timeLeft = (context.service["service"].duration*1000) - (Date.now() - timestamp);
             if (timeLeft < 0) timeLeft = 0;
             // console.log(millisToMinutesAndSeconds(timeLeft))
             setTimeLeft(millisToMinutesAndSeconds(timeLeft));
@@ -64,7 +64,7 @@ const ServiceBar = () => {
                     <div className="bottom">
                         {
                             (context.service.state !== "ACTIVE") ? (
-                                <p>Time for service = {(context.service.duration)} s</p>
+                                <p>Time for service = {(context.service["service"].duration)} s</p>
                             ) : (
                                 <p>Time left = {timeLeft}</p>
                             )

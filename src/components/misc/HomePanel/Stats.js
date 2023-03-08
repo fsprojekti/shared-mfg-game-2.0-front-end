@@ -88,7 +88,7 @@ const Stats = () => {
 
         const getOtherServiceTypes = async () => {
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
-            uniqueService = uniqueService.filter(item => item !== service.type);
+            uniqueService = uniqueService.filter(item => item !== service["service"].type);
             setOtherServices({service1: uniqueService[0], service2: uniqueService[1]});
             const filledOrders = await services["services"].filter(service => service.state === "DONE");
 
@@ -134,10 +134,10 @@ const Stats = () => {
                 </div>
                 <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", background: (getColor(service.state))}}>
                     <div className="time-value">
-                        <h2>{service.type}</h2>
+                        <h2>{service["service"].type}</h2>
                     </div>
                     <div className={`${(service.state !== "ACTIVE" ) ? 'time-value-available' : 'time-value-unavailable'}`}>
-                        <h2>{(service.state !== "ACTIVE") ? 'Available' : 'Unavailable'}</h2>
+                        <h2>{(service["service"].state !== "ACTIVE") ? 'Available' : 'Unavailable'}</h2>
                     </div>
                     <ServiceBar/>
                 </div>
@@ -156,7 +156,7 @@ const Stats = () => {
                 </div>
                 <div className="w-100 p-3" style={{boxShadow: "var(--light-shadow)", padding: "10px", borderRadius: "8px", fontSize: "30px", backgroundColor: backColor}}>
                     <div className="upgrade-value" >
-                        <h3>Number of upgrades: {user.upgradeNumber}</h3>
+                        <h3>Number of upgrades: {agent.upgradeLevel}</h3>
                     </div>
                     <div className="upgrade-container">
                         <div className={`${(numOfService1.num > 0) ? 'upgrade-container-green' : 'upgrade-container-red'}`}>

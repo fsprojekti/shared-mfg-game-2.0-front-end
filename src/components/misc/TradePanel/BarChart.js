@@ -11,20 +11,20 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
         const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
         // console.log(data)
 
-        if (modalService.length == 0 && data.service != service._id && data.serviceType != service.type) {
+        if (modalService.length == 0 && data.service != service["service"]._id && data.serviceType != service["service"].type) {
             setTradeModalContent(data);
             openTradeModal();
-        } else if(modalService && data.service != service._id && data.serviceType != service.type){
+        } else if(modalService && data.service != service["service"]._id && data.serviceType != service["service"].type){
             setCancelOrderModalContent(data);
             openCancelOrderModal();
         }
     };
 
     const mouseHover = (data, event) => {
-        if (data.serviceType !== service.type) {
+        if (data.serviceType !== service["service"].type) {
             event.target.style.cursor = 'pointer';
         } else {
-            if (data.service === service._id) {
+            if (data.service === service["service"]._id) {
                 event.target.style.cursor = 'not-allowed';
             }
             else {
@@ -128,7 +128,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             fill={[
                 {
                 match: 
-                    d => d.data.data.service === service._id,
+                    d => d.data.data.service === service["service"]._id,
                 id: 'lines-pattern'
             },
                 // { match: '*', id: 'custom' },

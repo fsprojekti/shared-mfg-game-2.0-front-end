@@ -317,7 +317,7 @@ export const ContextWrapper = (props) => {
 
         if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
             setService((oldService) => {
-                let service = oldService;
+                let service = oldService["service"];
 
                 // console.debug("Updating user service")
                 service.stateOld = service.state;
@@ -338,8 +338,10 @@ export const ContextWrapper = (props) => {
                       });
                 }
 
+                let newServiceObj = {};
+                newServiceObj.service = service;
 
-                return service;
+                return newServiceObj;
             });
         }
 

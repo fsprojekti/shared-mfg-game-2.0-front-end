@@ -109,7 +109,10 @@ function App() {
 
         //Load user service
         const service = context.apiUserFetchService().then(service => {
-            context.setService(service);
+            console.log(service)
+            let contextService = context.service;
+            contextService.service = service;
+            context.setService({ ...contextService });
             return true;
         }).catch(e => console.log(e));
 

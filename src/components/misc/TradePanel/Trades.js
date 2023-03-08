@@ -77,7 +77,6 @@ const Trades = () => {
 
     useEffect(() => {
         const sortDataArrays = async () => { 
-            console.log(context.orders);
             const orders = await context.orders;
             const servicesAll = await context.servicesAll;
             const chains = await context.chains;
@@ -115,13 +114,13 @@ const Trades = () => {
             const placedOrdersWithPlayerDataByChain = await filterDataArrayByChain(placedOrdersWithPlayerData);
 
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
-            uniqueService = uniqueService.filter(item => item !== service.type);
+            uniqueService = uniqueService.filter(item => item !== service["service"].type);
             setOtherServices(uniqueService)
 
             
             let array1 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[0]);
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
-            let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service.type);
+            let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service["service"].type);
 
             if (checked1) {
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);
@@ -222,7 +221,7 @@ const Trades = () => {
                 <div >
                     <div style={{width: "35vw",boxShadow: "var(--light-shadow)", borderRadius: "8px", margin: "5px", background: backColor}}>
                         <div style={{ textAlign: "center", paddingTop: "7px"}}>
-                            <h3>{`${context.service.type}`}</h3>
+                            <h3>{`${context.service["service"].type}`}</h3>
                         </div>
                         <ToggleSwitch checked={checked3} onChange={handleChange3}/>
                         <div style={{ height: "300px", width: "auto", margin: "auto"}}>

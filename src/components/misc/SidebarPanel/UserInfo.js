@@ -73,13 +73,6 @@ const UserInfo = () => {
         }
     };
 
-    async function changeChain(chainId){
-        setCookie("activeChain", chainId);
-        updateActiveChain(chainId);
-        console.log(chains.chains[chainId]);
-        console.log("ACtive chain:" + chains.chains[chainId].id);
-    }
-    
     useEffect(() => {
         const renderStakeData = async () => {
             if(Object.keys(usersStakes).length == 0) return;
@@ -109,7 +102,7 @@ const UserInfo = () => {
 
         const getOtherServiceTypes = async () => {
             let uniqueService = [...new Set(servicesAll["services"].map(item => item.type))];
-            uniqueService = uniqueService.filter(item => item !== service.type);
+            uniqueService = uniqueService.filter(item => item !== service["service"].type);
             setOtherServices({service1: uniqueService[0], service2: uniqueService[1]});
             const filledOrders = await services["services"].filter(service => service.state === "DONE");
 
@@ -145,10 +138,10 @@ const UserInfo = () => {
                 <div className="d-flex flex-column overflow-hidden" style={{marginTop: "5%", borderRadius: "5px", width: "100%", boxShadow: "var(--dark-shadow)", zIndex: 1}}>
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px", paddingTop: "15px"}}>
                     <div className={'stats-sidebar-container-blue'}>
-                        <h4>{`${service.type.slice(0, 4)}. S.`} </h4>
+                        <h4>{`${service["service"].type.slice(0, 4)}. S.`} </h4>
                     </div>
                     {/* <FaBusinessTime style={{color: "#38aaff", fontSize: "22px"}}/> */}
-                    {serviceState(service)}
+                    {serviceState(service["service"])}
                     
                 </div>
                 <hr />
