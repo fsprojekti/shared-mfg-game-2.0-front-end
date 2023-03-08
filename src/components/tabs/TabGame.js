@@ -54,7 +54,7 @@ const TabGame = () => {
                 <Col  style={{zIndex: 1}}>
 
                     { 
-                        (context.game["game"].state === 'RUN' && context.user.id != "") ? (
+                        (context.game["game"].state === 'RUN' && context.user.id != "NULL") ? (
                             <>
                                 {(context.loadingMain) ? (<Spinner animation="grow" style={{margin: "30%"}}></Spinner>) : 
                                 (renderGroup(context.active))}
@@ -62,7 +62,7 @@ const TabGame = () => {
    
                         ): (
                             <div className='d-flex flex-column'>
-                            { (context.user.id != "") ? (
+                            { (context.user.id != "NULL") ? (
                                 <div className="d-flex flex-column align-items-center justify-content-center" style={{ margin: "15px", height: "400px"}}>
                                     <NotificationCard  heading="Please wait for the game to start" />
                                 </div>

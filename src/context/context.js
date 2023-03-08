@@ -44,7 +44,7 @@ export const ContextWrapper = (props) => {
         {
             //State of user ["NONE","LOGGED-IN","LOGGED-OUT"]
             state: "NONE",
-            id: "",
+            id: "NULL",
             //Type ADMIN, USER
             role: "",
             stake: 0,
@@ -193,7 +193,6 @@ export const ContextWrapper = (props) => {
     }
 
     const updateGameState = (game) => {
-        console.log("GAME STATE UPDATED")
         try{
             _updateGameState(game);
         }
@@ -250,14 +249,12 @@ export const ContextWrapper = (props) => {
             });
 
             if(index != -1) {
-                // console.log("updating existing")
-                // console.log(orders[index]);
+
                 orders[index].state = orderObj.state;
                 orders[index].price = orderObj.price;
                 return orders;
             } else if(index == -1 && orderObj.id != undefined) {
-                // console.log("pushing");
-                // console.log(orderObj.chain._id);
+
                 //The new object I get is not in the correct format, so I need to create a new one
                 let newOrder = {};
                 newOrder._id = orderObj.id;
@@ -286,7 +283,7 @@ export const ContextWrapper = (props) => {
 
     const _updateServicesAllState = (serviceObj) => {
         if(game["game"].state == "RUN") {
-            console.log("Updating services all")
+            // console.log("Updating services all")
             setServicesAll((oldServices) => {
                 const servicesArray = oldServices;
                 const index = servicesArray["services"].findIndex(c => {
@@ -294,13 +291,13 @@ export const ContextWrapper = (props) => {
                 });
 
                 if(index != -1) {
-                    console.debug("Updating service")
-                    console.debug(servicesArray["services"][index])
+                    // console.debug("Updating service")
+                    // console.debug(servicesArray["services"][index])
                     servicesArray["services"][index].state = serviceObj.state;
                     servicesArray["services"][index].updatedAt = Date.now();
                     return servicesArray;
                 } else if(index == -1) {
-                    console.debug("Pushing service")
+                    // console.debug("Pushing service")
                     let newService = {};
                     newService = serviceObj;
                     newService._id = serviceObj.id;
@@ -321,7 +318,7 @@ export const ContextWrapper = (props) => {
             setService((oldService) => {
                 let service = oldService["service"];
 
-                console.debug("Updating user servicE")
+                // console.debug("Updating user servicE")
                 service.stateOld = service.state;
                 service.state = serviceObj.state;
                 service.updatedAt = Date.now();
@@ -352,18 +349,18 @@ export const ContextWrapper = (props) => {
     const _updateUserServices = (serviceObj) => {
         if(serviceObj.agentConsumer == agent.account || serviceObj.agentConsumer == agent.id) {
             setServices((oldServices) => {
-                console.log("Updating user services")
+                // console.log("Updating user services")
                 let services = [...oldServices["services"]];
     
                 let serviceIndex = services.findIndex((s) => s._id == serviceObj.id);
-                console.log("Servic index" + serviceIndex)
-                console.log(services)
+                // console.log("Servic index" + serviceIndex)
+                // console.log(services)
     
                 if(serviceIndex == -1) {
                     let newServiceObj = {};
-                    console.debug("SERVICE INDEX IS -1")
+                    // console.debug("SERVICE INDEX IS -1")
                     let agent = agents["agents"].filter((a) => a._id == serviceObj.agent)[0];
-                    console.log(agent)
+                    // console.log(agent)
 
                     newServiceObj = serviceObj;
                     newServiceObj._id = serviceObj.id;
@@ -394,7 +391,7 @@ export const ContextWrapper = (props) => {
     }
 
     const updateServiceState = (serviceObj) => {
-        console.log("Service state update")
+        // console.log("Service state update")
         try {
              _updateServicesAllState(serviceObj);
         }

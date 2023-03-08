@@ -122,6 +122,10 @@ const Trades = () => {
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service["service"].type);
 
+            // console.log(array1)
+            // console.log(array2)
+            // console.log(array3)
+
             if (checked1) {
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);
                 setDataArray1(array1);

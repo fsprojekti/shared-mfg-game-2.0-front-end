@@ -349,7 +349,7 @@ const PanelAdmin = () => {
                                                 State
                                             </div>
                                             <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
-                                                <InputGroup.Text>{context.game ? context.game.state : <text>No game</text>}</InputGroup.Text>
+                                                <InputGroup.Text>{context.game ? context.game["game"].state : <text>No game</text>}</InputGroup.Text>
                                             </div>
                                         </div>
                                     <div className={"d-flex justify-content-between flex-wrap"}>

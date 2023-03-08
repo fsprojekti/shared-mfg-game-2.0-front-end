@@ -18,12 +18,6 @@ function App() {
     const navigate = useNavigate();
 
 
-    async function navigateLogin(event) {
-        event.preventDefault();
-        navigate("/login", {replace: true});
-    }
-
-
     async function navigateAdmin(event) {
         event.preventDefault();
         navigate("/admin", {replace: true});
@@ -37,7 +31,7 @@ function App() {
         context.removeCookie("authToken");
         context.removeCookie("userId");
         context.setUser({
-            id: "",
+            id: "NULL",
             type: "",
             state: ""
         })
@@ -233,7 +227,7 @@ function App() {
                     
                     {
                     //Popravi to da se gleda local id in pol al je logged al ne
-                    context.user.id === "" ? (null):(
+                    context.user.id === "NULL" ? (null):(
 
                         <div className='d-flex'>
                             <NavDropdown title={<Avatar name={`${context.user.name}`}  round={true} size="45" />} id="navbarScrollingDropdown">
