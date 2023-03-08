@@ -298,10 +298,10 @@ const AllTransactionsTable = () => {
                     }
                 </div>
                 <div style={{height: "50px"}}>
-                <Accordion style={{position: "absolute", zIndex: 10, top: 42, width:"100%"}}>
-                <Accordion.Item eventKey="0">
+                <Accordion id={'dropdown-button-drop-up'} drop={'up'} style={{position: "absolute", zIndex: 10, top: 42, width:"100%"}}>
+                <Accordion.Item eventKey="0" style={{backgroundColor:"rgba(255, 255, 255, 0.95)"}}>
                     <Accordion.Header>More filtering options</Accordion.Header>
-                    <Accordion.Body>
+                    <Accordion.Body >
                         <div className="filter-all-transactions">
                         <div className="d-block" style={{position: "relative", margin: "10px"}}>
                             <b > Services: </b>

@@ -53,7 +53,7 @@ const TabGame = () => {
                 <Col  style={{zIndex: 1}}>
 
                     { 
-                        (context.game.state === 'RUN' && context.user.id != "") ? (
+                        (context.game["game"].state === 'RUN' && context.user.id != "") ? (
                             <>
                                 {(context.loadingMain) ? (<Spinner animation="grow" style={{margin: "30%"}}></Spinner>) : 
                                 (renderGroup(context.active))}

@@ -84,7 +84,7 @@ const PanelSide = () => {
                 
             </IconContext.Provider>
 
-            { ((context.user.type == "PLAYER") && context.game.state == "RUN") ? ( 
+            { ((context.user.type == "PLAYER") && context.game["game"].state == "RUN") ? ( 
                 <>
                     {(context.loadingMain) ? (<Spinner animation="grow" style={{margin: "30%"}}></Spinner>):(<UserInfo/>)}
                 </>

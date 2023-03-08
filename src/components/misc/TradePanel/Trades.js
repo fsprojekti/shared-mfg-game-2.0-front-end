@@ -77,7 +77,7 @@ const Trades = () => {
 
     useEffect(() => {
         const sortDataArrays = async () => { 
-            // console.log(orders);
+            console.log(context.orders);
             const orders = await context.orders;
             const servicesAll = await context.servicesAll;
             const chains = await context.chains;
@@ -85,11 +85,12 @@ const Trades = () => {
             const users = await context.users;
             const service = await context.service;
             let placedOrders = await orders.filter(order => order.state === "PLACED");
-
+            console.log(placedOrders)
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let newOrderObj = ordr;
                 let service=servicesAll["services"].filter(srvc=> srvc._id == newOrderObj.service);
-                
+                console.log(service)
+                // if (service.length > 0) {
                 newOrderObj.serviceDuration=service[0].duration.toFixed(2);
 
                 const chain = chains["chains"].filter(chain => chain.id === newOrderObj.chain);

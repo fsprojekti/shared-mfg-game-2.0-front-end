@@ -55,24 +55,55 @@ const TradeModal = () => {
 
                     console.log(tradeModalContent);
                     let response = await apiUserBidOrder(txFee, tradeModalContent._id);
-                    console.log(response);
+                    // console.log(response);
+                    setTxFee("0");
                     setIsTradeModalOpen(false);
-
                     setNote({...(note.show = false)});
-                    setTxFee();
                         }
         } catch(err) {
-            if (err.response !== undefined && err.response.data.message === "Trade already exists") {
-                // setAlertContent('Trade with this person already exists');
-                // setShowAlert(true);
+            console.log(err)
+            if (err.response.data.message === "Order not in state PLACED") {
+                console.log("Order not in state PLACED")
+                setTxFee("0");
+                setNote((prevState) => {
+                    return({
+                      ...prevState,
+                      msg: "Service was already purchased :(",
+                      heading: 'Too slow',
+                      show: true,
+                      type: 'warning'
+                    });
+                  });
+                  setIsTradeModalOpen(false)
             }
         }
     };
 
     useEffect(() => {
         
-        // console.log(servicesAll);
-        // console.log(transactions);
+        const checkOrderStatus = async () => {
+            // console.log(orders)
+            const order = await orders.filter(order => order._id === tradeModalContent._id);
+            console.log(order)
+            if(order.length > 0) {
+                if (order[0].state !== "PLACED" && isTradeModalOpen) {
+                    setNote((prevState) => {
+                        return({
+                        ...prevState,
+                        msg: "Service was already purchased :(",
+                        heading: 'Too slow',
+                        show: true,
+                        type: 'warning'
+                        });
+                    });
+                    setIsTradeModalOpen(false);
+                } 
+            }
+
+        }
+
+        checkOrderStatus();
+
 
         const renderTableData = async () => {
             const orderTransactions = await transactions.filter(transaction => transaction.to == tradeModalContent.agentAccount  && transaction.state == "SEND");
@@ -99,7 +130,7 @@ const TradeModal = () => {
             setTableDataArray(transactionsArray);
         };
         renderTableData();
-    }, [transactions, tradeModalContent]);
+    }, [transactions, tradeModalContent, orders]);
 
     const handleKeypress = async e => {
         try {
@@ -145,7 +176,7 @@ const TradeModal = () => {
                             <label htmlFor={"txFee"}>Tx Fee</label>
                             <div className="trade-modal-input-group-container">
                                 <InputGroup style={{paddingBottom: "15px"}}>
-                                    <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "8px 8px 8px 8px"}}></FormControl>
+                                    <FormControl value ={txFee} placeholder={"0"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "8px 8px 8px 8px"}}></FormControl>
                                 </InputGroup>
 
                             </div>
@@ -181,22 +212,13 @@ const TradeModal = () => {
                         </table>
                     </div>
                 </div>
-                {/* <div className="d-flex align-items-center justify-content-center" style={{zIndex: 2, position: "absolute"}}>
-                                    <NoteDismissible show={note.show}
-                                        msg={note.msg}
-                                        variant={note.type}
-                                        heading={note.heading}
-                                        reportHide={() => {
-                                            setNote({...(note.show = false)});
-                                        }}/>
-                                </div> */}
 
                 <div className='d-flex'>
                     <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
                     <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                         setIsTradeModalOpen(false)
                         setNote({...(note.show = false)});
-                        setTxFee();
+                        setTxFee("0");
                     }}>
                     Cancel
                     </Button>

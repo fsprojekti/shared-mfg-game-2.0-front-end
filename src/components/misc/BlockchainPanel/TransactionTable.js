@@ -130,9 +130,20 @@ const TransactionsTable = () => {
             const users = context.users;
             let orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
+            // const transactionsByMainChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][0].id);
+            // const transactionsBySideChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][1].id);
+            // let transactionByFeeAndChains = []
+            // transactionByFeeAndChains = a.forEach((e,i) => res.push(e, b[i]))
             // console.log(transactionsByFee)
+            let transactinsCount = [0 , 0];
+            let count = 0;
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction, index) => {
                 let { from, to, fee, amount, chain, owner} = transaction;
+
+                // let transactionIndex
+                // if(chain == chains["chains"][0].id) transactionIndex = transactionsByMainChain.findIndex((t) => t.id === transaction.id);
+                // else transactionIndex = transactionsBySideChain.findIndex((t) => t.id === transaction.id);
+                
 
                 let chainIndex = chains["chains"].findIndex((c) => c.id === chain);
 
@@ -149,10 +160,14 @@ const TransactionsTable = () => {
                 let ownerUser;
                 if(ownerAgent.length) ownerUser =  await users["users"].filter(user => user.id === ownerAgent[0].user);
 
+                let indexChainT = 0;
+                if (chain == chains["chains"][0].id) indexChainT = transactinsCount[0];
+                else indexChainT = transactinsCount[1];
+
                 return (
                     {
                         id: transaction.id,
-                        index: index+1,
+                        index: index,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
                         // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,

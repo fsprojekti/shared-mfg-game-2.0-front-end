@@ -1,5 +1,5 @@
 import './App.css';
-import {useContext, useEffect, useCallback } from "react";
+import {useContext, useEffect, useCallback, useState } from "react";
 import {AppContext} from "./context/context";
 import { SocketContext } from './context/socket';
 import {Container, Spinner, Navbar, Button} from "react-bootstrap";
@@ -15,6 +15,7 @@ import TabGame from './components/tabs/TabGame';
 function App() {
     const context = useContext(AppContext);
     const socket = useContext(SocketContext);
+    const [game, setGame] = useState([]);
     const navigate = useNavigate();
 
 
@@ -45,16 +46,20 @@ function App() {
         })
     }
 
-
     useEffect(() => {
         context.setLoadingMain(true);
 
         //Load game
-        const game = context.apiGameFetch().then(game => {
+        const game = context.apiGameFetch().then(gameObj => {
             //TODO: Reset active chain if idle game
-            const cotnextGame = context.game;
-            cotnextGame.game = game;
-            context.setGame({...game});
+            const contextGame = context.game;
+            contextGame.game = gameObj;
+            context.setGame({...contextGame});
+            
+            if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
+                console.log("reloading")
+                window.location.reload(true)
+            } 
         })
 
         //Load all logged in users and their data
@@ -176,7 +181,7 @@ function App() {
                 context.setLoadingMain(false);
             });
 
-    }, [navigate, context.game.state])
+    }, [navigate, context.game["game"].state])
 
     useEffect(() => {
         // console.log(socket)

@@ -11,7 +11,6 @@ const RankingTable = () => {
             const playersWithNames = await players.map(function(player){ 
                 const agentObject = context.agents["agents"].filter(agent => agent._id === player.agent);
                 const userObject = context.users["users"].filter(user => user.id === agentObject[0].user);
-
                 player.userName = userObject[0].name;
                 player.serviceType = agentObject[0].type;
 

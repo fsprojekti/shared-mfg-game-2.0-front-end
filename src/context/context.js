@@ -16,12 +16,12 @@ axios.defaults.baseURL = config.server;
 
 // /**
 //  * @type {import("react").Context<ICTXDefault>}
-//  */ 
+//  */
 export const AppContext = React.createContext(null);
 
 export const ContextWrapper = (props) => {
 
-    
+
 
     //--------------------- STATE VARIABLES ------------------------------------------------------
 
@@ -38,7 +38,7 @@ export const ContextWrapper = (props) => {
     const [userId, setUserId] = useState(cookies.userId);
     //Loading state on page refresh
     const [loadingMain, setLoadingMain] = useState(false);
-    
+
     //User
     const [user, setUser] = useState(
         {
@@ -53,7 +53,7 @@ export const ContextWrapper = (props) => {
 
     //User's balance on all chains
     const [usersBalances, setUsersBalances] = useState({});
-    
+
     //User's stake on all chains
     const [usersStakes, setUsersStakes] = useState([]);
 
@@ -64,7 +64,9 @@ export const ContextWrapper = (props) => {
     //Game properties
     const [game, setGame] = useState({
         //Game states ["NONE","IDLE","RUNNING","STOPPED","ENDED"]
-        state: "NONE",
+        game: {
+            state: "NONE",
+        },
     })
 
     //User's asigned agent
@@ -88,7 +90,7 @@ export const ContextWrapper = (props) => {
         //If service in state ACTIVE this is begin time of its execution
         beginAt:0
     });
-    
+
     //All User's purchased services in state: ACTIVE
     const [services, setServices] = useState([]);
 
@@ -141,7 +143,7 @@ export const ContextWrapper = (props) => {
     const [isCancelUserOrderModalOpen, setIsCancelUserOrderModalOpen] = useState({open: false});
 
     const [cancelTransactionModalContent, setCancelTransactionModalContent] = useState({open: false, data: {}});
-    
+
     const [tradeModalContent, setTradeModalContent] = useState({})
     const [cancelOrderModalContent, setCancelOrderModalContent] = useState({});
 
@@ -149,7 +151,7 @@ export const ContextWrapper = (props) => {
     const [isCancelVoteModalOpen, setIsCancelVoteModalOpen] = useState(false);
 
     const [cancelBlockMocalContent, setCancelBlockModalContent] = useState({});
-    const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);    
+    const [isCancelBlockModalOpen, setIsCanclBlockModalOpen] = useState(false);
 
     //--------------------- FUNCTIONS ------------------------------------------------------
 
@@ -168,113 +170,127 @@ export const ContextWrapper = (props) => {
         setIsTradeModalOpen(true);
     };
 
-    const updateGameState = (game) => {
-        // console.log("GAME EVENT")
-        // console.log(game)
+    const _updateGameState = (game) => {
         setGame((oldGame) => {
             return {...oldGame, state: game.state}
         });
     }
 
-    const updateChainsState = async (chainObj) => {
-        // console.debug("CHAIN EVENT")
-        // console.debug(chainObj);
-        if(chains["chains"].length != 0) {
-            try {
-                setChains((chains) => {
-                    const oldChains = chains;
-                    // console.log(oldChains)
-    
-                    //Check if chain already exists in the state
-                    const index = oldChains["chains"].findIndex(c => {
-                        return c.id == chainObj.id;
-                    });
-    
-                    //If chain exists, update its state
-                    if(index !== -1) {
-                        oldChains.chains[index].balance = chainObj.balance;
-                        oldChains.chains[index].stake = chainObj.stake;
-    
-                        //Checking if this is a first run after refresh, to calculate time difference between server and client
-                        //Wrong logic, but somehow "works"
-                        if(oldChains.chains[0].timeDiff == undefined) { 
-                            let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
-                            oldChains.chains[0].timeDiff = difference;
-                            console.log("time difference: " + difference + "ms")
-                        }          
-                        
-                        oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
-                        oldChains.chains[index].blockNumber = chainObj.blockNumber; 
-    
-    
-                        // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
-    
-                        return oldChains;
-                    } else if(index == -1 && chainObj.id != undefined) {
-                        oldChains.chains.push(chainObj);
-                        return oldChains;
-                    }
-                    
-                    return chains;         
-                });
-                
-            } catch (error) {
-                console.log(error)
-            }
-            
+    const updateGameState = (game) => {
+        console.log("GAME STATE UPDATED")
+        try{
+            _updateGameState(game);
+        }
+        catch(err) {
+            console.log(err)
         }
     }
 
-    
+    const _updateChainsState = async (chainObj) => {
+        if(chains["chains"].length != 0) {
+            setChains((chains) => {
+                const oldChains = chains;
+                // console.log(oldChains)
+
+                //Check if chain already exists in the state
+                const index = oldChains["chains"].findIndex(c => {
+                    return c.id == chainObj.id;
+                });
+
+                //If chain exists, update its state
+                if(index !== -1) {
+                    oldChains.chains[index].balance = chainObj.balance;
+                    oldChains.chains[index].stake = chainObj.stake;
+                    oldChains.chains[index].blockTimestamp = Date.now();
+                    oldChains.chains[index].blockNumber = chainObj.blockNumber;
+
+                    //Checking if this is a first run after refresh, to calculate time difference between server and client
+                    //Wrong logic, but somehow "works"
+                    // if(oldChains.chains[0].timeDiff == undefined) {
+                    //     let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
+                    //     oldChains.chains[0].timeDiff = difference;
+                    //     console.log("time difference: " + difference + "ms")
+                    // }
+
+                    // oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
+                    // oldChains.chains[index].blockNumber = chainObj.blockNumber;
+
+
+                    // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
+
+                    return oldChains;
+                } else if(index == -1 && chainObj.id != undefined) {
+                    oldChains.chains.push(chainObj);
+                    return oldChains;
+                }
+
+                return chains;
+            });
+        }
+    }
+
+    const updateChainsState = async (chainObj) => {
+        try {
+            _updateChainsState(chainObj);
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    const _updateOrdersState = (orderObj) => {
+        console.log(orderObj)
+        setOrders((oldOrders) => {
+            const orders = [...oldOrders];
+
+            const index = orders.findIndex(c => {
+                return c._id == orderObj.id;
+            });
+
+            if(index != -1) {
+                // console.log("updating existing")
+                // console.log(orders[index]);
+                orders[index].state = orderObj.state;
+                orders[index].price = orderObj.price;
+                return orders;
+            } else if(index == -1 && orderObj.id != undefined) {
+                // console.log("pushing");
+                // console.log(orderObj.chain._id);
+                //The new object I get is not in the correct format, so I need to create a new one
+                let newOrder = {};
+                newOrder._id = orderObj.id;
+                newOrder.chain = orderObj.chain;
+                newOrder.state = orderObj.state;
+                newOrder.service = orderObj.service;
+                newOrder.price = orderObj.price;
+                orders.push(newOrder);
+                return orders;
+            }
+
+            return oldOrders;
+        });
+
+
+    }
+
     const updateOrdersState = (orderObj) => {
         try {
-            setOrders((oldOrders) => {
-                const orders = [...oldOrders];
-    
-                const index = orders.findIndex(c => {
-                    return c._id == orderObj.id;
-                });
-    
-                if(index != -1) {
-                    // console.log("updating existing")
-                    // console.log(orders[index]); 
-                    orders[index].state = orderObj.state;
-                    orders[index].price = orderObj.price;
-                    return orders;
-                } else if(index == -1 && orderObj.id != undefined) {
-                    // console.log("pushing");
-                    // console.log(orderObj.chain._id);
-                    //The new object I get is not in the correct format, so I need to create a new one
-                    let newOrder = {};
-                    newOrder._id = orderObj.id;
-                    newOrder.chain = orderObj.chain;
-                    newOrder.state = orderObj.state;
-                    newOrder.service = orderObj.service;
-                    newOrder.price = orderObj.price;
-                    orders.push(newOrder);
-                    return orders;
-                }
-                
-                return oldOrders;         
-            });
-            
-        } catch (error) {
-            console.log(error)
+            _updateOrdersState(orderObj);
         }
-
+        catch(err) {
+            console.log(err)
+        }
     }
 
-    const updateServiceState = (serviceObj) => {
-        try {
-            if(game.state == "RUN") {
+    const _updateServicesAllState = (serviceObj) => {
+        if(game["game"].state == "RUN") {
+            console.log("Updating services all")
             setServicesAll((oldServices) => {
                 const servicesArray = oldServices;
-    
                 const index = servicesArray["services"].findIndex(c => {
                     return c._id == serviceObj.id;
                 });
-    
-               
+
                 if(index != -1) {
                     // console.debug("Updating service")
                     // console.debug(servicesArray["services"][index])
@@ -287,271 +303,332 @@ export const ContextWrapper = (props) => {
                     newService = serviceObj;
                     newService._id = serviceObj.id;
                     servicesArray["services"].push(newService);
-                    return servicesArray;    
+                    return servicesArray;
                 }
-                
-                return oldServices;        
-                 
+
+                return oldServices;
+
             });
         }
-        } catch (error) {
-            console.log(error)
+    }
+
+
+    const _updateUserService = (serviceObj) => {
+
+        if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
+            setService((oldService) => {
+                let service = oldService;
+
+                // console.debug("Updating user service")
+                service.stateOld = service.state;
+                service.state = serviceObj.state;
+                service.updatedAt = Date.now();
+                service.duration = serviceObj.duration;
+                service.type = agent.type;
+                return service;
+            });
         }
 
-        try { 
-            if(serviceObj.agent == agent.id || serviceObj.agent._id == agent.id) {
-                setService((oldService) => {
-                    let service = oldService;
+    }
 
-                    // console.debug("Updating user service")
-                    service.stateOld = service.state;
-                    service.state = serviceObj.state;
-                    service.updatedAt = Date.now();
-                    service.duration = serviceObj.duration;
-                    service.type = agent.type;
-                    return service;
-                });
-            }
-        } catch (error) {
-            console.log(error)
-        }
+    // const _updateUserServices = (serviceObj) => {
+    //     console.log("Updating user services")
+    //     console.log(serviceObj)
+    //     let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
 
+    //     if(serviceObj.agent == agent.id) {
+    //         setServices((oldServices) => {
+    //             // console.log("Updating users services state in SERVICE EVENT")
+    //             let services = oldServices;
+    
+    //             let serviceIndex = services["services"].findIndex((s) => s._id == serviceObj.id);
+    
+    //             if(serviceIndex == -1) {
+    //                 services.push(serviceObj);
+    //             } else {
+    //                 services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
+    //                 services["services"][serviceIndex].state = serviceObj.state;
+    //             }
+    //             return services;
+    //         });
+    //     }
+
+    // }
+
+    const updateServiceState = (serviceObj) => {
+        console.log("Service state update")
         try {
-            // console.log(services)
-            let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
+             _updateServicesAllState(serviceObj);
+        }
+        catch(err) {
+            console.log(err)
+        }
+        try {
+             _updateUserService(serviceObj);
+        }
+        catch(err) {
+            console.log(err)
+        }
+        // try {
+        //     _updateUserServices(serviceObj);
+        // }
+        // catch(err) {
+        //     console.log(err)
+        // }
+    }
 
-            if(purchasedService.length > 0) {
-                setServices((oldServices) => {
-                    // console.log("Updating users services state in SERVICE EVENT")
-                    let services = oldServices;
-                    
-                    let serviceIndex = services["services"].findIndex((s) => s._id == serviceObj.id);
+    const _updateTransactionsState = (transObj) => {
+        setTransactions((oldTrans) => {
+            const transactions = [...oldTrans];
 
-                    if(serviceIndex == -1) {
-                        console.log("No service found")
-                        return services;
-                    }
+            // console.log(transactions)
+            const index = transactions.findIndex(c => {
+                return c.id == transObj[0].id;
+            });
 
-                    services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
-                    services["services"][serviceIndex].state = serviceObj.state;
-
-                    return services;
-                });
+            if(index != -1) {
+                // console.log("updating existing")
+                transactions[index].state = transObj[0].state;
+                return transactions;
+            } else if(index == -1) {
+                // console.log("pushing");
+                let newTrans = {};
+                newTrans = transObj[0];
+                transactions.push(newTrans);
+                // console.log(newTrans)
+                return transactions;
             }
-            
-        } catch (error) {
-            console.log(error)
-        }   
-        
+
+            return oldTrans;
+        });
+
+        // if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
+        //     setServices((oldServices) => {
+        //         console.log("Updating users services array state")
+        //         let services = oldServices;
+
+        //         let agent = agents["agents"].filter(agent=> agent.account == transObj[0].to );
+        //         let service = [];
+        //         try {
+        //             service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld == "IDLE");
+        //         }
+        //         catch(err) {
+        //             console.debug("Service doesnt exist in users purchased services")
+        //             console.debug(err)
+        //             setNote((prevState) => {
+        //                 return({
+        //                     ...prevState,
+        //                     msg: "You might need to refresh the page",
+        //                     heading: 'Something went wrong',
+        //                     show: true,
+        //                     type: 'warning'
+        //                 });
+        //                 });
+        //         }
+
+        //         //TODO: FIX this
+        //         let serviceIndex;
+        //         try{
+        //             serviceIndex = services["services"].findIndex((s) => s._id == service[0]._id);
+        //         }
+        //         catch(err) {
+        //             console.debug("Service doesnt exist in users purchased services")
+        //             console.debug(err)
+        //             setNote((prevState) => {
+        //                 return({
+        //                     ...prevState,
+        //                     msg: "You might need to refresh the page",
+        //                     heading: 'Something went wrong',
+        //                     show: true,
+        //                     type: 'warning'
+        //                 });
+        //                 });
+        //         }
+
+        //         if(service == undefined ||service.length == 0 || serviceIndex != -1) {
+        //             // console.log("No new service")
+        //             return services;
+        //         }
+
+        //         let newObj = {};
+
+        //         newObj = {...service[0]};
+        //         newObj.state = "ACTIVE";
+        //         newObj.stateOld = "MARKET";
+        //         let time = new Date();
+        //         newObj.updatedAt = time.toISOString();
+        //         services["services"].push(newObj);
+        //         return services;
+        //     });
+        // }
+
+        if(transObj[0].type == "ATTACK-GAIN") {
+            setNotifCard((prevState) => {
+                return({
+                    ...prevState,
+                    msg: "Check your balances and attack history",
+                    heading: "👺 Attack detected 👺",
+                    show: true,
+                    color: '#EBB8B7'
+                });
+                });
+
+        }
     }
 
     const updateTransactionsState = (transObj) => {
         try {
-
-            setTransactions((oldTrans) => {
-                const transactions = [...oldTrans];
-
-                // console.log(transactions)
-                const index = transactions.findIndex(c => {
-                    return c.id == transObj[0].id;
-                });
-
-                if(index != -1) {
-                    // console.log("updating existing")
-                    transactions[index].state = transObj[0].state;
-                    return transactions;
-                } else if(index == -1) {
-                    // console.log("pushing");
-                    let newTrans = {};
-                    newTrans = transObj[0];
-                    transactions.push(newTrans);
-                    // console.log(newTrans)
-                    return transactions;
-                }
-                
-                return oldTrans;         
-            });
-        } catch (error) {
-            console.log(error)
+            _updateTransactionsState(transObj);
         }
-
-        try {
-            if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
-                setServices((oldServices) => {
-                    // console.log("Updating users services array state")
-                    let services = oldServices;
-                    
-                    let agent = agents["agents"].filter(agent=> agent.account == transObj[0].to );
-                    let service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld == "IDLE");
-    
-                    //TODO: FIX this
-                    let serviceIndex;
-                    try{
-                        serviceIndex = services["services"].findIndex((s) => s._id == service[0]._id);
-                    }
-                    catch(err) {
-                        console.debug("Service doesnt exis in users purchased services")
-                        console.debug(err) 
-                    }
-                    
-                    if(service == undefined ||service.length == 0 || serviceIndex != -1) {
-                        // console.log("No new service")
-                        return services;
-                    }             
-    
-                    let newObj = {};
-    
-                    newObj = {...service[0]};
-                    newObj.state = "ACTIVE";
-                    newObj.stateOld = "MARKET";
-                    let time = new Date();
-                    newObj.updatedAt = time.toISOString();
-                    services["services"].push(newObj);
-                    return services;
-                });
-            }
-    
-        } catch (error) {
-            console.log(error)
+        catch(err) {
+            console.log(err)
         }
+    }
 
-        try {
-            if(transObj[0].type == "ATTACK-GAIN") {
-                setNotifCard((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: "Check your balances and attack history",
-                      heading: "👺 Attack detected 👺",
-                      show: true,
-                      color: '#EBB8B7'
-                    });
-                  });
-    
-            }
-        } catch (error) {
-            console.log(error)
-        }
+    const _updateRankingState = (rankingObj) => {
+        setRanking((oldRanking) => {
+            let ranking = [...oldRanking];
+            ranking = rankingObj;
+            return ranking;
+        })
 
     }
 
     const updateRankingState = (rankingObj) => {
         try {
-            setRanking((oldRanking) => {
-                let ranking = [...oldRanking];
-                ranking = rankingObj;
-                return ranking;
-            })
-            
-        } catch (error) {
-            console.log(error)
+            _updateRankingState(rankingObj);
         }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    const _updateBridgesState = (bridgeObj) => {
+        setBridges((oldBridges) => {
+            let bridges = [...oldBridges];
+            bridges.push(bridgeObj);
+            return bridges;
+        });
     }
 
     const updateBridgesState = (bridgeObj) => {
         try {
-            setBridges((oldBridges) => {
-                let bridges = [...oldBridges];
-                bridges.push(bridgeObj);
-                return bridges;     
-            });
-        } catch (error) {
-            console.log(error)
+            _updateBridgesState(bridgeObj);
         }
-        
+        catch(err) {
+            console.log(err)
+        }
     }
 
 
+    const _updateBalancesState = (balanceObj) => {
+        if(balanceObj.agent == agent.id) {
+            console.log("Updating user balance")
+            console.log(balanceObj)
+            console.log(chains)
+            const index = chains["chains"].findIndex(c => {
+                return c.id == balanceObj.chain;
+            });
+
+            // console.log(index)
+            // console.log(chains["chains"][index].name)
+
+            setUsersBalances((oldBalances) => {
+                let balances = [...oldBalances];
+                // console.log(balances)
+                if(balances[index] != undefined) {
+                    balances[index][chains["chains"][index].name] = balanceObj.amount;
+                    return balances;
+                }
+                else {
+                    setUsersStakes((oldStakes) => {
+                        let stakes = [...oldStakes];
+                        let newStake = {};
+                        newStake[[chains["chains"][index].name]] = 0;
+                        stakes.push(newStake);
+                        return stakes;
+                    });
+                    let newBalance = {};
+                    newBalance[[chains["chains"][index].name]] = balanceObj.amount;
+                    balances.push(newBalance);
+                    return balances;
+                }
+            });
+        }
+    }
+
     const updateBalancesState = (balanceObj) => {
         try {
-            if(balanceObj.agent == agent.id) {
-                // console.log("Updating user balance")
-                const index = chains["chains"].findIndex(c => {
-                    return c.id == balanceObj.chain;
-                });
-    
-                // console.log(index)
-                // console.log(chains["chains"][index].name)
-                
-                setUsersBalances((oldBalances) => {
-                    let balances = [...oldBalances];
-                    // console.log(balances)
-                    if(balances[index] != undefined) {
-                        balances[index][chains["chains"][index].name] = balanceObj.amount;
-                        return balances;
-                    }
-                    else {
-                        setUsersStakes((oldStakes) => {
-                            let stakes = [...oldStakes];
-                            let newStake = {};
-                            newStake[[chains["chains"][index].name]] = 0;
-                            stakes.push(newStake);
-                            return stakes;
-                        });
-                        let newBalance = {};
-                        newBalance[[chains["chains"][index].name]] = balanceObj.amount;
-                        balances.push(newBalance);
-                        return balances;
-                    }
-                });
-            }
-        } catch (error) {
-            console.log(error)
+            _updateBalancesState(balanceObj);
         }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    const _updateStakesState = (stakeObj) => {
+        if(stakeObj.agent == agent.id) {
+
+            const index = chains["chains"].findIndex(c => {
+                return c.id == stakeObj.chain;
+            });
+
+            setUsersStakes((oldStakes) => {
+                let stakes = [...oldStakes];
+
+                let stakesKeys = [];
+
+                for(let i = 0; i < Object.keys(stakes).length; i++) {
+                    stakesKeys[i] = Object.keys(stakes[i])[0];
+                }
+                // console.log(stakesKeys)
+                let stakeIndex =  stakesKeys.indexOf(chains["chains"][index].name);
+
+
+                // console.log(stakes)
+                if(stakes[stakeIndex] != undefined) {
+                    stakes[stakeIndex][chains["chains"][index].name] = stakeObj.stake;
+                    // console.log("New array:")
+                    // console.log(stakes)
+                    return stakes;
+                }
+                else {
+                    let newStake = {};
+                    newStake[[chains["chains"][index].name]] = stakeObj.stake;
+                    stakes.push(newStake);
+                    return stakes;
+                }
+            });
+        }
+
     }
 
     const updateStakesState = (stakeObj) => {
         try {
-            if(stakeObj.agent == agent.id) {
-
-                const index = chains["chains"].findIndex(c => {
-                    return c.id == stakeObj.chain;
-                });            
-                
-                setUsersStakes((oldStakes) => {
-                    let stakes = [...oldStakes];
-    
-                    let stakesKeys = [];
-                
-                    for(let i = 0; i < Object.keys(stakes).length; i++) {
-                        stakesKeys[i] = Object.keys(stakes[i])[0];
-                    }
-                    // console.log(stakesKeys)
-                    let stakeIndex =  stakesKeys.indexOf(chains["chains"][index].name);
-    
-    
-                    // console.log(stakes)
-                    if(stakes[stakeIndex] != undefined) {
-                        stakes[stakeIndex][chains["chains"][index].name] = stakeObj.stake;
-                        // console.log("New array:")
-                        // console.log(stakes)
-                        return stakes;
-                    }
-                    else {
-                        let newStake = {};
-                        newStake[[chains["chains"][index].name]] = stakeObj.stake;
-                        stakes.push(newStake);
-                        return stakes;
-                    }
-                });
-            }
-        } catch (error) {
-            console.log(error)
+            _updateStakesState(stakeObj);
+        }
+        catch(err) {
+            console.log(err)
         }
 
     }
 
+    const _updateAttackState = (attackObj) => {
+        if(attackObj.account == agent.account) {
+            setStealVotes((oldStealVotes) => {
+                let votes = oldStealVotes;
+                votes.stealVotes = attackObj;
+                return votes;
+            });
+        }
+    }
+
     const updateAttackState = (attackObj) => {
         try {
-            console.log(attackObj)
-            if(attackObj.account == agent.account) {
-                setStealVotes((oldStealVotes) => {
-                    let votes = oldStealVotes;
-                    votes.stealVotes = attackObj;
-                    return votes;     
-                });
-            }
-        } catch (error) {
-            console.log(error)
+            _updateAttackState(attackObj);
+        }
+        catch(err) {
+            console.log(err)
         }
     }
 
@@ -569,7 +646,7 @@ export const ContextWrapper = (props) => {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let out = await axios.get(`user`, 
+                let out = await axios.get(`user`,
                  {
                     headers: {
                         authorization: cookies.authToken
@@ -643,9 +720,9 @@ export const ContextWrapper = (props) => {
     /**
      * Fetches user's service
      * @returns {Object} service - User's service object
-     * @example id: '63a576228ac157377b59bcec', 
-     * type: 'MECHANICAL', 
-     * upgradeLevel: 0, 
+     * @example id: '63a576228ac157377b59bcec',
+     * type: 'MECHANICAL',
+     * upgradeLevel: 0,
      * timeForService: 100}
      */
     const apiUserFetchService = useCallback(() => {
@@ -724,10 +801,10 @@ export const ContextWrapper = (props) => {
 
         return new Promise(async (resolve, reject) => {
             try {
-                let out = await axios.get(`user/login`, { 
-                    params: { 
-                        registerCode: registerCode, 
-                        password: password } 
+                let out = await axios.get(`user/login`, {
+                    params: {
+                        registerCode: registerCode,
+                        password: password }
                     })
                 resolve(out.data)
             } catch (e) {
@@ -738,7 +815,7 @@ export const ContextWrapper = (props) => {
 
      /**
       * User's stake function
-      * @param {Object} data - User's stake data. 
+      * @param {Object} data - User's stake data.
       * @param {string} data.amount - User's stake amount
       * @param {string} data.fee - User's stake fee
       * @param {string} data.chainId - User's stake chain id
@@ -772,7 +849,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserUnstake = useCallback((data ) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/stake/remove`,{
                     params: {
                         amount: data.amount,
@@ -797,7 +874,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserCreateOrder= useCallback((price, chainId) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/order/place`,{
                     params: {
                         price: price,
@@ -821,7 +898,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserUpdateOrder= useCallback((price, orderId) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/order/update`,{
                     params: {
                         price: price,
@@ -844,7 +921,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserCancelOrder= useCallback((orderId) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/order/cancel`,{
                     params: {
                         orderId: orderId,
@@ -867,7 +944,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserBidOrder= useCallback((fee, orderId) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/order/bid`,{
                     params: {
                         fee: fee,
@@ -890,7 +967,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserCancelTransaction= useCallback((transactionId) => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/transactions/cancel`,{
                     params: {
                         transactionId: transactionId,
@@ -912,7 +989,7 @@ export const ContextWrapper = (props) => {
      */
     const apiUserAgentGet= useCallback(() => {
         return new Promise(async (resolve, reject) => {
-            try {                
+            try {
                 let out = await axios.get(`user/agent`,{
                     params: {
                         // gameId: gameId,
@@ -1021,7 +1098,7 @@ export const ContextWrapper = (props) => {
                 // setLoading(true);
                 let out = await axios.get(`user/attack/steal/vote/off`, {
                     params: {
-                        // gameId: gameId,  
+                        // gameId: gameId,
                         bridgeId: bridgeId,
                     },
                     headers: {
@@ -1243,7 +1320,7 @@ export const ContextWrapper = (props) => {
      */
     const apiGameCreate = useCallback(() => {
         return new Promise(async (resolve, reject) => {
-            
+
             try {
                 let data = await axios.get('game/control/create', {
                     headers: {

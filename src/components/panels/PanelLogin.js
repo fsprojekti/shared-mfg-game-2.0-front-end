@@ -36,7 +36,7 @@ const PanelLogin = () => {
                     return({
                       ...prevState,
                       msg: "Please enter a number, letters are not allowed",
-                      heading: 'Wrong input',
+                      heading: 'Invalid Player ID',
                       show: true,
                       type: 'danger'
                     });
