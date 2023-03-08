@@ -68,6 +68,11 @@ export const ContextWrapper = (props) => {
             state: "NONE",
         },
     })
+    
+    const [gameState, setGameState] = useState({
+        //Game states ["NONE","IDLE","RUNNING","STOPPED","ENDED"]
+        state: "NONE",
+    });
 
     //User's asigned agent
     const [agent, setAgent] = useState({
@@ -83,12 +88,14 @@ export const ContextWrapper = (props) => {
 
     //User's service
     const [service, setService] = useState({
-            //Id of last service
-        id:"serviceId",
-        state:"IDLE",
-        duration:100,
-        //If service in state ACTIVE this is begin time of its execution
-        beginAt:0
+        service: {
+            //Id of current service
+            id:"serviceId",
+            state:"IDLE",
+            duration:100,
+            //If service in state ACTIVE this is begin time of its execution
+            beginAt:0
+        }
     });
 
     //All User's purchased services in state: ACTIVE
@@ -172,7 +179,16 @@ export const ContextWrapper = (props) => {
 
     const _updateGameState = (game) => {
         setGame((oldGame) => {
-            return {...oldGame, state: game.state}
+            let newGameObj = oldGame;
+            newGameObj["game"] = game;
+            return newGameObj;
+        });
+
+        setGameState((oldState) => {    
+            let newState = oldState;
+            newState.state = game.state;
+            if (newState.state == "RUN" || newState.state == "STOP") window.location.reload(true);
+            return newState;
         });
     }
 
@@ -203,20 +219,6 @@ export const ContextWrapper = (props) => {
                     oldChains.chains[index].stake = chainObj.stake;
                     oldChains.chains[index].blockTimestamp = Date.now();
                     oldChains.chains[index].blockNumber = chainObj.blockNumber;
-
-                    //Checking if this is a first run after refresh, to calculate time difference between server and client
-                    //Wrong logic, but somehow "works"
-                    // if(oldChains.chains[0].timeDiff == undefined) {
-                    //     let difference = Date.now() - (new Date(oldChains.chains[index].updatedAt)).getTime() - 10000;
-                    //     oldChains.chains[0].timeDiff = difference;
-                    //     console.log("time difference: " + difference + "ms")
-                    // }
-
-                    // oldChains.chains[index].blockTimestamp = chainObj.blockTimestamp- oldChains.chains[0].timeDiff
-                    // oldChains.chains[index].blockNumber = chainObj.blockNumber;
-
-
-                    // console.debug("Time subtracted from current time: " + oldChains[index].timeDiff);
 
                     return oldChains;
                 } else if(index == -1 && chainObj.id != undefined) {
@@ -292,13 +294,13 @@ export const ContextWrapper = (props) => {
                 });
 
                 if(index != -1) {
-                    // console.debug("Updating service")
-                    // console.debug(servicesArray["services"][index])
+                    console.debug("Updating service")
+                    console.debug(servicesArray["services"][index])
                     servicesArray["services"][index].state = serviceObj.state;
                     servicesArray["services"][index].updatedAt = Date.now();
                     return servicesArray;
                 } else if(index == -1) {
-                    // console.debug("Pushing service")
+                    console.debug("Pushing service")
                     let newService = {};
                     newService = serviceObj;
                     newService._id = serviceObj.id;
@@ -319,7 +321,7 @@ export const ContextWrapper = (props) => {
             setService((oldService) => {
                 let service = oldService["service"];
 
-                // console.debug("Updating user service")
+                console.debug("Updating user servicE")
                 service.stateOld = service.state;
                 service.state = serviceObj.state;
                 service.updatedAt = Date.now();
@@ -350,13 +352,16 @@ export const ContextWrapper = (props) => {
     const _updateUserServices = (serviceObj) => {
         if(serviceObj.agentConsumer == agent.account || serviceObj.agentConsumer == agent.id) {
             setServices((oldServices) => {
+                console.log("Updating user services")
                 let services = [...oldServices["services"]];
     
                 let serviceIndex = services.findIndex((s) => s._id == serviceObj.id);
+                console.log("Servic index" + serviceIndex)
+                console.log(services)
     
                 if(serviceIndex == -1) {
                     let newServiceObj = {};
-
+                    console.debug("SERVICE INDEX IS -1")
                     let agent = agents["agents"].filter((a) => a._id == serviceObj.agent)[0];
                     console.log(agent)
 
@@ -1545,7 +1550,8 @@ export const ContextWrapper = (props) => {
             cancelTransactionModalContent, setCancelTransactionModalContent,
             apiUserCancelTransaction,
             updateAttackState,
-            apiGameRanking
+            apiGameRanking,
+            gameState, setGameState,
         }}>
             {props.children}
         </AppContext.Provider>

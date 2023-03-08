@@ -15,7 +15,6 @@ import TabGame from './components/tabs/TabGame';
 function App() {
     const context = useContext(AppContext);
     const socket = useContext(SocketContext);
-    const [game, setGame] = useState([]);
     const navigate = useNavigate();
 
 
@@ -44,15 +43,18 @@ function App() {
         })
     }
 
+
     useEffect(() => {
         context.setLoadingMain(true);
+
+        console.log(context.game.game.state)
 
         //Load game
         const game = context.apiGameFetch().then(gameObj => {
         //TODO: Reset active chain if idle game
             const contextGame = context.game;
             contextGame.game = gameObj;
-            context.setGame({...contextGame});
+            context.setGame(contextGame);
             
             //Not good!
             if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
@@ -184,7 +186,7 @@ function App() {
                 context.setLoadingMain(false);
             });
 
-    }, [navigate, context.game["game"].state])
+    }, [navigate, context.gameState.state])
 
     useEffect(() => {
         // console.log(socket)

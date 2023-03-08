@@ -1,5 +1,5 @@
 import {Col, Container, Row, Spinner} from "react-bootstrap";
-import React, {Suspense, useContext} from "react";
+import React, {Suspense, useContext, useEffect} from "react";
 import { AppContext } from "../../context/context";
 import PanelSide from "../panels/PanelSide";
 import NotificationCard from "../notifications/NotificationCard";
@@ -40,9 +40,10 @@ const renderGroup = (active) => {
     }
 };
 
+
+
 const TabGame = () => {
     const context = useContext(AppContext);
-
 
     return (
         <div style={{zIndex: 1}}>

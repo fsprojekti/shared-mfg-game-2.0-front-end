@@ -42,19 +42,19 @@ const UserInfo = () => {
             case "IDLE":
                 return ( 
                     <div>
-                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>SET PRICE</Button> 
                     </div>
                 )
             case "DONE":
                 return ( 
                     <div>
-                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>Set Price</Button> 
+                        <Button className="create-order-btn" variant="btn btn-primary" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "set"})}>SET PRICE</Button> 
                     </div>
                 )
             case "MARKET": 
                 return (
                     <div className="d-flex">
-                        <Button variant="btn btn-warning btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE PRICE</b></Button>
+                        <Button variant="btn btn-warning btn" onClick={() =>  setIsCreateOrderModalOpen({open: true, mode: "update"})}><b>UPDATE Price</b></Button>
                         <CloseButton className="btn btn-primary btn-lg" style={{marginLeft: "1rem", backgroundColor: "#E73936", justifyContent: "center", alignItems: "center", height: "1.7rem", width: "1.7rem"}} onClick={() =>  setIsCancelUserOrderModalOpen({open: true, mode: "set"})}>
                         </CloseButton>
                     </div>
