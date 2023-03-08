@@ -37,8 +37,6 @@ function App() {
         console.log("Logging out")
         context.removeCookie("authToken");
         context.removeCookie("userId");
-        context.removeCookie("activeChain");
-        context.removeCookie("timeDiff");
         context.setUser({
             id: "",
             type: "",
@@ -51,15 +49,15 @@ function App() {
 
         //Load game
         const game = context.apiGameFetch().then(gameObj => {
-            //TODO: Reset active chain if idle game
+        //TODO: Reset active chain if idle game
             const contextGame = context.game;
             contextGame.game = gameObj;
             context.setGame({...contextGame});
             
-            if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
-                console.log("reloading")
-                window.location.reload(true)
-            } 
+            // if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
+            //     console.log("reloading")
+            //     window.location.reload(true)
+            // } 
         })
 
         //Load all logged in users and their data
