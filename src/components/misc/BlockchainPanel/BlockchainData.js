@@ -177,7 +177,7 @@ const BlockchainData = () => {
         };
         createDataArray();
 
-    }, [context.chains, stakeChain, stakeIndex, context.ranking]);
+    }, [context.chains, stakeChain, stakeIndex, context.ranking["ranking"]]);
 
 
     return (
