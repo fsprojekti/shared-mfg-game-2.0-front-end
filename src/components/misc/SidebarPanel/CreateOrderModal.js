@@ -80,7 +80,6 @@ const CreateOrderModal = () => {
                                 } else { 
                                     const orders = await context.orders;
                                     const service = await context.service;
-                                    const chains = await context.chains;
                                     const placedOrders = await orders.filter(order => order.state === "PLACED");
                                     if(placedOrders.length != 0) {
                                         const playersOrder = await placedOrders.reduce((ordr, current) => { 

@@ -108,7 +108,7 @@ const PanelLogin = () => {
             context.setNote((prevState) => {
                 return({
                   ...prevState,
-                  msg: e.message,
+                  msg: e.response.data.message,
                   heading: 'Error',
                   show: true,
                   type: 'danger'

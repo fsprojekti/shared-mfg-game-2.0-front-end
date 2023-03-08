@@ -9,7 +9,6 @@ import { AppContext } from '../../../context/context';
 
 const Stats = () => {
     const { stakeIndex, user, users, chains, cookies, activeChain, transactions, servicesAll, usersBalances, usersStakes, orders, services, agent, agents, service} = useContext(AppContext);
-    const [relativeStake, setRelativeStake] = useState(0);
     const [serviceDataArray, setServiceDataArray] = useState([]);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
     const [numOfService1, setNumOfService1] = useState({num: 0});
@@ -35,8 +34,7 @@ const Stats = () => {
 
 
     useEffect(() => {
-        
-
+       
         const renderStakeData = async () => {
 
             let stakesKeys = [];
@@ -66,7 +64,7 @@ const Stats = () => {
             const activeServices = await services["services"].filter(service => service.state === "ACTIVE");            
             // console.log(activeServices)
             const userServices = await Promise.all(activeServices.map(async (item) => {
-
+                let service = item;
                 // console.log(item)
 
                 const providerAgentObject = await agents["agents"].filter(agent => agent._id === item.agent);
@@ -74,22 +72,15 @@ const Stats = () => {
 
                 const providerUser = await users["users"].filter(user => user.id === providerAgentObject[0].user); 
                 // console.log(providerUser)
-                   
+                service.id = item._id;
+                service.provider = providerUser[0].name;
+                service.consumer = user.name;
+                
+                console.log(service)
                       
-                return ( 
-                    {
-                        id: item._id,
-                        consumer: user.name,
-                        provider: providerUser[0].name,
-                        type: item.type,
-                        duration: item.duration,
-                        updatedAt: item.updatedAt,
-                        state: item.state,
-
-                    }
-                )
+                return (service)
             }));
-            if(userServices.length == 0) return [];
+            if(userServices.length == 0) setServiceDataArray([]);;
             setServiceDataArray(userServices);
         };
         renderServiceData();
@@ -127,7 +118,7 @@ const Stats = () => {
         
 
 
-    }, [services["services"], activeChain, user, servicesAll["services"], usersStakes, stakeIndex]);
+    }, [services["services"], user, servicesAll["services"], usersStakes, stakeIndex]);
 
     return (
         <>

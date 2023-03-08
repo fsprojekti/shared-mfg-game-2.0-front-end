@@ -54,10 +54,11 @@ function App() {
             contextGame.game = gameObj;
             context.setGame({...contextGame});
             
-            // if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
-            //     console.log("reloading")
-            //     window.location.reload(true)
-            // } 
+            //Not good!
+            if((Date.now() - new Date(game.updatedAt).getTime()) < 1500) {
+                console.log("reloading")
+                window.location.reload(true)
+            } 
         })
 
         //Load all logged in users and their data

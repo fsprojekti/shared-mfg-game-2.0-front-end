@@ -19,7 +19,7 @@ import {Tooltip} from "react-bootstrap";
 
 const UserInfo = () => {
 
-    const { chains, setCookie, updateActiveChain, user, activeChain, cookies, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen, setIsCancelUserOrderModalOpen} = useContext(AppContext);
+    const { chains, setCookie, updateActiveChain, user, activeChain, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen, setIsCancelUserOrderModalOpen} = useContext(AppContext);
 
     const [relativeStake, setRelativeStake] = useState(0);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
@@ -135,7 +135,7 @@ const UserInfo = () => {
         };
         getOtherServiceTypes();
 
-    }, [user, chains, activeChain, services["services"], servicesAll["services"], usersBalances, usersStakes]);
+    }, [services["services"], user, servicesAll["services"], usersStakes]);
 
     return (
 

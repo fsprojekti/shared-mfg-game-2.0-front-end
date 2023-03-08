@@ -325,35 +325,66 @@ export const ContextWrapper = (props) => {
                 service.updatedAt = Date.now();
                 service.duration = serviceObj.duration;
                 service.type = agent.type;
+
+                if(serviceObj.state == "ACTIVE") {
+                    setNote((prevState) => {
+                        return({
+                          ...prevState,
+                          msg: "Somebody bought your service!",
+                          heading: '💰',
+                          show: true,
+                          type: 'success'
+                        });
+                      });
+                }
+
+
                 return service;
             });
         }
 
     }
 
-    // const _updateUserServices = (serviceObj) => {
-    //     console.log("Updating user services")
-    //     console.log(serviceObj)
-    //     let purchasedService = services["services"].filter(service => service._id == serviceObj.id);
-
-    //     if(serviceObj.agent == agent.id) {
-    //         setServices((oldServices) => {
-    //             // console.log("Updating users services state in SERVICE EVENT")
-    //             let services = oldServices;
+    const _updateUserServices = (serviceObj) => {
+        if(serviceObj.agentConsumer == agent.account || serviceObj.agentConsumer == agent.id) {
+            setServices((oldServices) => {
+                let services = [...oldServices["services"]];
     
-    //             let serviceIndex = services["services"].findIndex((s) => s._id == serviceObj.id);
+                let serviceIndex = services.findIndex((s) => s._id == serviceObj.id);
     
-    //             if(serviceIndex == -1) {
-    //                 services.push(serviceObj);
-    //             } else {
-    //                 services["services"][serviceIndex].stateOld = services["services"][serviceIndex].state;
-    //                 services["services"][serviceIndex].state = serviceObj.state;
-    //             }
-    //             return services;
-    //         });
-    //     }
+                if(serviceIndex == -1) {
+                    let newServiceObj = {};
 
-    // }
+                    let agent = agents["agents"].filter((a) => a._id == serviceObj.agent)[0];
+                    console.log(agent)
+
+                    newServiceObj = serviceObj;
+                    newServiceObj._id = serviceObj.id;
+                    newServiceObj.type = agent.type;
+                    newServiceObj.updatedAt = Date.now();
+                    services.push(newServiceObj);
+
+                    setNote((prevState) => {
+                        return({
+                          ...prevState,
+                          msg: "You had the highest bid!",
+                          heading: 'New service obtained',
+                          show: true,
+                          type: 'success'
+                        });
+                      });
+
+                } else {
+                    services[serviceIndex].stateOld = services[serviceIndex].state;
+                    services[serviceIndex].state = serviceObj.state;
+                }
+                const servicesObj = {};
+                servicesObj["services"] = services;
+                return servicesObj;
+            });
+        }
+
+    }
 
     const updateServiceState = (serviceObj) => {
         console.log("Service state update")
@@ -369,12 +400,12 @@ export const ContextWrapper = (props) => {
         catch(err) {
             console.log(err)
         }
-        // try {
-        //     _updateUserServices(serviceObj);
-        // }
-        // catch(err) {
-        //     console.log(err)
-        // }
+        try {
+            _updateUserServices(serviceObj);
+        }
+        catch(err) {
+            console.log(err)
+        }
     }
 
     const _updateTransactionsState = (transObj) => {
@@ -401,66 +432,6 @@ export const ContextWrapper = (props) => {
 
             return oldTrans;
         });
-
-        // if(transObj[0].type == "SERVICE" && transObj[0].from == agent.account && transObj[0].state == "MINED") {
-        //     setServices((oldServices) => {
-        //         console.log("Updating users services array state")
-        //         let services = oldServices;
-
-        //         let agent = agents["agents"].filter(agent=> agent.account == transObj[0].to );
-        //         let service = [];
-        //         try {
-        //             service= servicesAll["services"].filter(srvc=> srvc.agent == agent[0]._id && srvc.stateOld == "IDLE");
-        //         }
-        //         catch(err) {
-        //             console.debug("Service doesnt exist in users purchased services")
-        //             console.debug(err)
-        //             setNote((prevState) => {
-        //                 return({
-        //                     ...prevState,
-        //                     msg: "You might need to refresh the page",
-        //                     heading: 'Something went wrong',
-        //                     show: true,
-        //                     type: 'warning'
-        //                 });
-        //                 });
-        //         }
-
-        //         //TODO: FIX this
-        //         let serviceIndex;
-        //         try{
-        //             serviceIndex = services["services"].findIndex((s) => s._id == service[0]._id);
-        //         }
-        //         catch(err) {
-        //             console.debug("Service doesnt exist in users purchased services")
-        //             console.debug(err)
-        //             setNote((prevState) => {
-        //                 return({
-        //                     ...prevState,
-        //                     msg: "You might need to refresh the page",
-        //                     heading: 'Something went wrong',
-        //                     show: true,
-        //                     type: 'warning'
-        //                 });
-        //                 });
-        //         }
-
-        //         if(service == undefined ||service.length == 0 || serviceIndex != -1) {
-        //             // console.log("No new service")
-        //             return services;
-        //         }
-
-        //         let newObj = {};
-
-        //         newObj = {...service[0]};
-        //         newObj.state = "ACTIVE";
-        //         newObj.stateOld = "MARKET";
-        //         let time = new Date();
-        //         newObj.updatedAt = time.toISOString();
-        //         services["services"].push(newObj);
-        //         return services;
-        //     });
-        // }
 
         if(transObj[0].type == "ATTACK-GAIN") {
             setNotifCard((prevState) => {
