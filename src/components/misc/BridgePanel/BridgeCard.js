@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Button, Card, Dropdown,Form, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
-import {IconContext} from "react-icons";
+import {Button, Card, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
 import {GiStoneBridge} from "react-icons/gi";
 import { AppContext } from '../../../context/context';
 
@@ -21,12 +20,6 @@ const BridgeCard = () => {
         { name: 'Withdraw', value: '2' }
     ];
 
-
-    async function transfer(){
-        console.log("Amount: "+ amount);
-        //TODO: Ne dela, nevem zakaj. Poglej zakaj
-        // context.setNote({...(note.show = true)});
-    }
 
     //TODO: Popravi, da bo vleklo pravilen max amount
     function maxTransferInput(){
@@ -110,21 +103,8 @@ const BridgeCard = () => {
         } catch(e) {
             setLoading(false);
             console.log(e)
-        //     setNote({
-        //         show: true,
-        //         type: "danger",
-        //         msg: e.response.data.message,
-        //         heading: "Transfer failed! "
-        // })
         }
     };
-
-    // useEffect(() => {
-        // console.log(chains["chains"][activeChain].name);
-        // console.log(usersBalances);
-        // console.log(usersBalances.indexOf(chains["chains"][activeChain].name));
-
-    // }, [chains]);
 
 
     return (
@@ -133,7 +113,7 @@ const BridgeCard = () => {
                 { chains["chains"].length > 1 ? (
                     <Card.Body>
                     <Card.Title> 
-                    <h3> <GiStoneBridge/>  {bridges[0].name} <GiStoneBridge/> </h3>
+                    <h3> {bridges[0].name} </h3>
     
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
@@ -186,7 +166,7 @@ const BridgeCard = () => {
                                         aria-hidden="true"
                                     />
 
-                                        <span> Transfering </span>
+                                        <span> Transfer </span>
 
                                     </div>
 

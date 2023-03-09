@@ -62,7 +62,7 @@ const TabGame = () => {
    
                         ): (
                             <div className='d-flex flex-column'>
-                            { (context.user.id != "NULL") ? (
+                            { (context.cookies.userId != undefined) ? (
                                 <div className="d-flex flex-column align-items-center justify-content-center" style={{ margin: "15px", height: "400px"}}>
                                     <NotificationCard  heading="Please wait for the game to start" />
                                 </div>

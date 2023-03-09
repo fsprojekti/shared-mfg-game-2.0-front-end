@@ -23,7 +23,7 @@ const PanelChains = () => {
                 </Col>
             </Row>
             <Row style={{paddingRight: "0", paddingLeft: "0"}}>
-                <Col xs={6} md={6} style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "20px"}}>
+                <Col xs={6} md={6} style={{paddingRight: "0", paddingLeft: "0", marginRight: "10px", marginBottom: "5px", marginLeft: "25px", width: "49.7%"}}>
                     <AttackInfo />
                 </Col>
                 <Col xs={6} md={5} style={{paddingRight: "0", paddingLeft: "0", marginRight: "20px", marginBottom: "5px", marginLeft: "0px"}}>

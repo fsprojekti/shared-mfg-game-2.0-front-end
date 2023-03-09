@@ -167,7 +167,7 @@ const TransactionsTable = () => {
                 return (
                     {
                         id: transaction.id,
-                        index: index,
+                        index: index+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
                         // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,
@@ -226,7 +226,7 @@ const TransactionsTable = () => {
                     <Table 
                     data={tableDataArray} 
                     columns={columns} 
-                    tableWidth="99%"
+                    tableWidth="100%"
                     className="table-pending-transactions"
                     // rowStyle={rowStyle}
                     headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}

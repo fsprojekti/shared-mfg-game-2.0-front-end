@@ -167,7 +167,6 @@ const TradeModal = () => {
                     <div className='modal-confirm-container-input'>
                         <ul>
                             <li> Type: <span style={{color: getColor(tradeModalContent.serviceType)}}> {tradeModalContent.serviceType} </span>  </li>
-                            {/* <li> Provider: <span style={{color: 'blue'}}> {tradeModalContent.playerName} </span> </li>     */}
                             <li> Price: <span style={{color: 'green'}}> {tradeModalContent.price} </span> </li>
                             <li> Chain: <span style={{color: (tradeModalContent.chainName == chains["chains"][0].name ? '#d2abd8' : '#73bcd4')}}> {tradeModalContent.chainName} </span> </li>
                             

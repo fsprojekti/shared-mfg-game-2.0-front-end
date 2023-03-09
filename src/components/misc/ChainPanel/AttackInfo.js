@@ -45,7 +45,7 @@ const AttackInfo = () => {
         <div style={{justifyContent: "center", alignItems: "center" }}>
             <Card  style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)",  backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent"}}>
 
-                <h3> Attack status</h3>
+                <h3 style={{marginTop: "1rem"}}> Attack status</h3>
                         <Card style={{  borderColor: "transparent" }}>  
                         
                             <Card.Body>

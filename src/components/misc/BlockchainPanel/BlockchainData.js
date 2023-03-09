@@ -290,7 +290,7 @@ const BlockchainData = () => {
             </Row>
             <Row style={{marginTop: "5px", marginLeft: "2px", marginRight: "1rem"}}>
                 <Col >   
-                    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", textAlign: "center"}}>
+                    <div style={{backgroundColor: "rgba(255, 255, 255, 0.8)", boxShadow: "var(--light-shadow)", borderRadius: "8px", textAlign: "center", height: "110px",width: "100%"}}>
                         <h3>Transactions History</h3>
                         <AllTransactionsTable/>
                     </div>

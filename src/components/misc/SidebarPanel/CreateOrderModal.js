@@ -16,7 +16,7 @@ const CreateOrderModal = () => {
 
     const confirm = async () => {
         try {
-            if (price === undefined || price === "" || price == 0) {
+            if (price === undefined || price === "" ) {
                 context.setNote((prevState) => {
                     return({
                       ...prevState,

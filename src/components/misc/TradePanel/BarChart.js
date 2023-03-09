@@ -5,11 +5,10 @@ import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { Card } from 'react-bootstrap';
 
 const BarChart = ({dataArray, modifiedData, checked}) => {
-    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, user } = useContext(AppContext);
+    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services } = useContext(AppContext);
     const setTradeModal = (data) => {
 
         const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
-        // console.log(data)
 
         if (modalService.length == 0 && data.service != service["service"]._id && data.serviceType != service["service"].type) {
             setTradeModalContent(data);
@@ -46,9 +45,9 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
 
     const toggleData = () => {
         if (!checked) {
-            return [ 'price' ];
+            return [ 'heightPrice' ];
         } else {
-            return [ 'serviceDuration' ]
+            return [ 'heightTime' ]
         }
     };
 
@@ -95,7 +94,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             tooltip={({ data }) => {
                 return (
                     <Card style={{opacity: "0.8"}}>
-                        <b>Price: {data.price.toString()}</b>
+                        <b>Price: {(data.price === 0 ? '0' : (data.price))}</b>
                         <b>Time for service: {data.serviceDuration} seconds</b>
                     </Card>
 

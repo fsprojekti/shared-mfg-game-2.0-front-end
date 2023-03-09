@@ -67,10 +67,10 @@ const AttackCard = () => {
 
     return (
         <div style={{justifyContent: "center", alignItems: "center" }}>
-        <Card  style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent"}}>
+        <Card  style={{ borderRadius: "8px", boxShadow: "var(--light-shadow)", width: "100%", backgroundColor: "(255, 255, 255, 0.8)", borderColor: "transparent", height: "255px"}}>
             <Row >
             <Col>
-                <h3 style={{paddingTop: "1rem"}}> <GiTakeMyMoney /> Attack {context.bridges[0].name}  <GiTakeMyMoney/> </h3>
+                <h3 style={{paddingTop: "1rem"}}> Attack {context.bridges[0].name} </h3>
                         <Card style={{backgroundColor: "rgba(222, 243, 239, 0.5)", borderColor: "red", borderRadius: "8px", margin: "10px", padding: "10px"}}>
                         {context.bridges.length > 0 ? (
                         <Card.Body>

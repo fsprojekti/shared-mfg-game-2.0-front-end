@@ -58,11 +58,6 @@ const Trades = () => {
         setChecked3(nextChecked);
     };
 
-    const millisToFloat = (millis) => {
-        const time = millis/60000;
-        return time.toFixed(2);
-    };
-
     const getColor = (chainName) => {
         switch(chainName) {
             case context.chains["chains"][0].name:
@@ -106,7 +101,8 @@ const Trades = () => {
                 newOrderObj.chainId = chain[0].id;
                 newOrderObj.color = getColor(chain[0].name);
                 newOrderObj.price = parseInt(newOrderObj.price);
-                newOrderObj.height = millisToFloat(newOrderObj.serviceDuration);
+                newOrderObj.heightPrice = (newOrderObj.price < 1 ? 0.9 : parseInt(newOrderObj.price));
+                newOrderObj.heightTime = newOrderObj.serviceDuration;
 
                 return newOrderObj
             })   
@@ -122,9 +118,9 @@ const Trades = () => {
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service["service"].type);
 
-            // console.log(array1)
-            // console.log(array2)
-            // console.log(array3)
+            console.log(array1)
+            console.log(array2)
+            console.log(array3)
 
             if (checked1) {
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);
@@ -154,21 +150,21 @@ const Trades = () => {
 
             let modifiedArray1 = array1.map((item) => {
                if (item.price < 1) {
-                   return {...item, price: 0.9};
+                   return {...item, heightPrice: 0.9};
                } else {
                    return {...item};
                }
             });
             let modifiedArray2 = await array2.map((item) => {
                 if (item.price < 1) {
-                    return {...item, price: 0.9};
+                    return {...item, heightPrice: 0.9};
                 } else {
                     return {...item};
                 }
             });
             let modifiedArray3 = await array3.map((item) => {
                 if (item.price < 1) {
-                    return {...item, price: 0.9};
+                    return {...item, heightPrice: 0.9};
                 } else {
                     return {...item};
                 }

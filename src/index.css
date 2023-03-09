@@ -984,7 +984,6 @@ BlockchainData
 
 .table-all-transactions-overflow {
   height: 29vh;
-  overflow: auto;
 }
 
 .table-all-transactions {
@@ -2234,6 +2233,4 @@ border-color: #aed248;
   height: 1em;
   position: absolute;
   font-size: .8em;
-
 }
-
