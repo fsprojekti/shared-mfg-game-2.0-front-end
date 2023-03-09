@@ -94,7 +94,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             tooltip={({ data }) => {
                 return (
                     <Card style={{opacity: "0.8"}}>
-                        <b>Price: {(data.price === 0 ? '0' : (data.price))}</b>
+                        <b>Price: {(data.price == undefined ? '0' : (data.price))}</b>
                         <b>Time for service: {data.serviceDuration} seconds</b>
                     </Card>
 

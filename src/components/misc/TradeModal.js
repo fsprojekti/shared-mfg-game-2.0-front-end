@@ -1,18 +1,17 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../context/context';
-import {InputGroup, FormControl, Button, Spinner} from "react-bootstrap";
+import {InputGroup, FormControl, Form, Button, Spinner} from "react-bootstrap";
 import {motion} from 'framer-motion'
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 const TradeModal = () => {
-    const { transactions, user, isTradeModalOpen, usersBalances, agent, servicesAll, activeChain, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
-    const [txFee, setTxFee] = useState("0");
+    const { transactions, user, isTradeModalOpen, usersBalances, agent, servicesAll, usersPendingBalances, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
-    const [provider, setProvider] = useState('');
 
-    const countDecimals = (value) => {
-        if(Math.floor(value).toString() === value) return 0;
-        return value.toString().split(".")[1].length || 0;
-    };
+    const bidOrderSchema = yup.object({
+        txFee: yup.number("Only numbers").min(0, "Can't be negative").integer("Number must be an integer").max(3000, "Max is 3000")
+    });
 
     const getColor = (service) => {
         switch(service) {
@@ -27,44 +26,33 @@ const TradeModal = () => {
         }
     };
 
-    const confirm = async () => {
+    const validateBalance = async (values) => {  
+        let error = {};
+        let index = await chains["chains"].findIndex((c) => c.name === tradeModalContent.chainName);
+        let chain = await chains["chains"][index];
+        let balance = await usersBalances[index][`${chain.name}`];
+        let pendingBalance = await usersPendingBalances[index][`${chain.name}`];
+        console.log(balance, pendingBalance)
+        let price = (tradeModalContent.price == undefined ? 0 : tradeModalContent.price);
+
+        if (parseInt(values.txFee) + parseInt(price) > (parseInt(balance) + parseInt(pendingBalance))) {
+            error.txFee = "Balance too low";
+        }
+        return error;
+      };
+
+
+    const confirm = async (txFee) => {
         try {
-            let numCheck; 
-            console.log("confirm")
-            let index = await chains["chains"].findIndex((c) => c.name === tradeModalContent.chainName);
-            
-            await import('./HelperFunctions/functions')
-            .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(tradeModalContent.price, txFee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-
-            if (numCheck.state == -1) {
-                setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: numCheck.msg,
-                      heading: 'Wrong input',
-                      show: true,
-                      type: 'danger'
-                    });
-                  });
-            } else {
-
-                    console.log(tradeModalContent);
-                    let response = await apiUserBidOrder(txFee, tradeModalContent._id);
-                    // console.log(response);
-                    setTxFee("0");
-                    setIsTradeModalOpen(false);
-                    setNote({...(note.show = false)});
-                        }
+           
+            let response = await apiUserBidOrder(txFee, tradeModalContent._id);
+            console.log(response)
+            setIsTradeModalOpen(false);
         } catch(err) {
             console.log(err)
             if (err.response.data.message === "Order not in state PLACED") {
                 console.log("Order not in state PLACED")
-                setTxFee("0");
+                // setTxFee("0");
                 setNote((prevState) => {
                     return({
                       ...prevState,
@@ -132,22 +120,10 @@ const TradeModal = () => {
         renderTableData();
     }, [transactions, tradeModalContent, orders]);
 
-    const handleKeypress = async e => {
-        try {
-            if (e.key === 'Enter') {
-                confirm();
-            }
-        } catch(err) {
-            console.log(err);
-        }
-    };
 
     return (
         <div >
             {isTradeModalOpen ? (
-
-                
-
                 <div
             className={`${'modal-confirm-overlay show-modal-confirm'}`} >
             <motion.div 
@@ -167,17 +143,60 @@ const TradeModal = () => {
                     <div className='modal-confirm-container-input'>
                         <ul>
                             <li> Type: <span style={{color: getColor(tradeModalContent.serviceType)}}> {tradeModalContent.serviceType} </span>  </li>
-                            <li> Price: <span style={{color: 'green'}}> {tradeModalContent.price} </span> </li>
+                            <li> Price: <span style={{color: 'green'}}> {tradeModalContent.price == undefined ? '0' : tradeModalContent.price} </span> </li>
                             <li> Chain: <span style={{color: (tradeModalContent.chainName == chains["chains"][0].name ? '#d2abd8' : '#73bcd4')}}> {tradeModalContent.chainName} </span> </li>
                             
                         </ul>
                         <div className={"trade-modal-input-group"}>
-                            <label htmlFor={"txFee"}>Tx Fee</label>
                             <div className="trade-modal-input-group-container">
-                                <InputGroup style={{paddingBottom: "15px"}}>
-                                    <FormControl value ={txFee} placeholder={"0"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "8px 8px 8px 8px"}}></FormControl>
-                                </InputGroup>
-
+                        <Formik
+                            validationSchema={bidOrderSchema}
+                            initialValues={{
+                                txFee: 0,
+                            }}
+                            onSubmit={(values, {setSubmitting, resetForm}) => {
+                                setSubmitting(true);
+                                console.log("CONFIRM")
+                                confirm(values.txFee);
+                                resetForm();
+                                setSubmitting(false);
+                            }}     
+                            validate={validateBalance}                 
+                        >
+                        {}
+                        {( {
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                            isSubmitting,
+                            values,
+                            errors,
+                        }) => (
+                            <Form noValidate onSubmit={handleSubmit} id="submitBidForm" style={{ borderRadius: "8px 8px 8px 8px", paddingBottom: "15px"}} >
+                                {/* <InputGroup style={{paddingBottom: "15px"}}> */}
+                                <Form.Group controlId="validationFormikBidORder">
+                                <Form.Label>Tx Fee</Form.Label>
+                                {/* <Form.Control value ={txFee} placeholder={"0"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "8px 8px 8px 8px"}}/> */}
+                                <Form.Control 
+                                    onChange={handleChange}
+                                    type="number"
+                                    placeholder={0}
+                                    name="txFee"
+                                    value={values.txFee}
+                                    isInvalid={!!errors.txFee}
+                                    
+                                    onBlur={handleBlur}
+                                    
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.txFee}
+                                </Form.Control.Feedback>
+                                {/* </InputGroup> */}
+                                {/* <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' type="submit">Confirm</Button> */}
+                                </Form.Group>
+                            </Form>
+                        )}
+                        </Formik>
                             </div>
                         </div>
                         
@@ -213,11 +232,10 @@ const TradeModal = () => {
                 </div>
 
                 <div className='d-flex'>
-                    <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
-                    <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
+                    <Button form='submitBidForm' variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' type="submit">Confirm</Button>
+                    <Button form='submitBidForm' variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                         setIsTradeModalOpen(false)
                         setNote({...(note.show = false)});
-                        setTxFee("0");
                     }}>
                     Cancel
                     </Button>

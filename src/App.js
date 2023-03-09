@@ -123,6 +123,11 @@ function App() {
         const balance = context.apiUserFetchBalance().then(balance => {
             context.setUsersBalances(balance);
         }).catch(e => console.log(e));
+
+        //Load users pending balances on different chains
+        const pendingBalance = context.apiUserFetchPendigBalance().then(pendingBalance => {
+            context.setUsersPendingBalances(pendingBalance);
+        }).catch(e => console.log(e));
     
         //Load users stakes on different chains
         const stakes = context.apiUserFetchStake().then(stakes => {

@@ -1,10 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, FormControl, Button, Spinner, Dropdown, Container, Row, Col} from "react-bootstrap";
+import {InputGroup, Form, Button, Spinner, Dropdown, Container, Row, Col} from "react-bootstrap";
 import PieChart from './PieChart';
 import TransactionsTable from './TransactionTable';
 import AllTransactionsTable from './TransactionTableAll';
 import CancelTransactionModal from '../CancelTransaction';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 
 
@@ -13,61 +15,59 @@ const BlockchainData = () => {
     
     const [chartDataArray, setChartDataArray] = useState([]);
     const [relativeStake, setRelativeStake] = useState(0);
-    const [newStake, setNewStake] = useState("0");
-    const [txFee, setTxFee] = useState("0");
+    const [direction, setDirection] = useState("stake");
+    // const [newStake, setNewStake] = useState("0");
+    // const [txFee, setTxFee] = useState("0");
     const [loadingStake, setLoadingStake] = useState(false);
     const [loadingUnstake, setLoadingUnstake] = useState(false);
     const [stakeChain, setStakeChain] = useState(0)
     const [stakeIndex, setStakeIndex] = useState(0)
 
-    const confirmStake = async () => {
+    const stakeSchema = yup.object({
+        newStake: yup.number().required().positive("Not a valid value").integer().max(30000),
+        txFee: yup.number("Only numbers").min(0, "Can't be negative").integer("Number must be an integer").max(3000, "Max is 3000")
+    });
+
+    const validateBalance = async (values) => {  
+        let error = {};
+        let balance = await context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`]
+        let pendingBalance = context.usersPendingBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`];
+        console.log("balance: " + balance);
+        console.log("pendingBalance: " + pendingBalance);
+        console.log("newStake: " + values.newStake);
+        console.log("txFee: " + values.txFee);
+        if (parseInt(values.txFee) + parseInt(values.newStake) > (parseInt(balance) + parseInt(pendingBalance))) {
+            error.txFee = "Balance too low";
+            error.newStake = "Balance too low";
+        }
+        return error;
+      };
+
+    const confirmStake = async (newStake, txFee) => {
         try {
-            let numCheck; 
-            await import('../HelperFunctions/functions')
-            .then(async({ checkNumber }) => {
-                numCheck = await checkNumber(newStake, txFee, context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`], context.transactions, context.agent, context.chains["chains"][stakeChain]);
-            })
-            .catch(err => {
-                console.log(err);
-            });
 
-            if (numCheck.state == -1) {
-                context.setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: numCheck.msg,
-                      heading: 'Wrong input',
-                      show: true,
-                      type: 'danger'
-                    });
-                  });
-            } else {
-                setLoadingStake(true);
+            setLoadingStake(true);
 
-                const data = {
-                    amount: newStake,
-                    fee: txFee,
-                    chainId: context.chains["chains"][stakeChain].id
-                };
+            const data = {
+                amount: newStake,
+                fee: txFee,
+                chainId: context.chains["chains"][stakeChain].id
+            };
 
-                let response = await context.apiUserStake(data);
+            let response = await context.apiUserStake(data);
 
-                context.setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: response,
-                      heading: 'Success',
-                      show: true,
-                      type: 'success'
-                    });
-                  });
+            context.setNote((prevState) => {
+                return({
+                    ...prevState,
+                    msg: response,
+                    heading: 'Success',
+                    show: true,
+                    type: 'success'
+                });
+                });
 
-                setLoadingStake(false);
-                setNewStake("0");
-                setTxFee("0");
-                    
+            setLoadingStake(false);
 
-            }
 
         } catch(e) {
             setLoadingStake(false);
@@ -82,54 +82,29 @@ const BlockchainData = () => {
 
 
  
-    const confirmUnstake = async () => {
+    const confirmUnstake = async (newStake, txFee) => {
         try {
-            let numCheck; 
-            await import('../HelperFunctions/functions')
-            .then(async({ checkNumberUnstake }) => {
-                numCheck = await checkNumberUnstake(newStake, txFee, context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`], context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`], context.transactions, context.agent, context.chains["chains"][stakeChain])
-            })
-            .catch(err => {
-                console.log(err);
-            });
+            setLoadingUnstake(true);
 
-            if (numCheck.state == -1) {
-                context.setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: numCheck.msg,
-                      heading: 'Wrong input',
-                      show: true,
-                      type: 'danger'
-                    });
-                  });
-            } else {
-                setLoadingUnstake(true);
+            const data = {
+                amount: newStake,
+                fee: txFee,
+                chainId: context.chains["chains"][stakeChain].id
+            };
 
-                const data = {
-                    amount: newStake,
-                    fee: txFee,
-                    chainId: context.chains["chains"][stakeChain].id
-                };
+            let response = await context.apiUserUnstake(data);
 
-                let response = await context.apiUserUnstake(data);
+            context.setNote((prevState) => {
+                return({
+                    ...prevState,
+                    msg: response,
+                    heading: 'Success',
+                    show: true,
+                    type: 'success'
+                });
+                });
 
-                context.setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: response,
-                      heading: 'Success',
-                      show: true,
-                      type: 'success'
-                    });
-                  });
-
-                setLoadingUnstake(false);
-                setNewStake("0");
-                setTxFee("0");
-                    
-
-            }
+            setLoadingUnstake(false);                    
 
         } catch(e) {
             setLoadingStake(false);
@@ -224,22 +199,77 @@ const BlockchainData = () => {
 
                     <div className="d-flex" style={{width: "100%", height: "100%", minWidth: "30%"}}>
 
-                        <div style={{margin: "auto", width: "45vh", height: "36vh"}}>
+                        <div style={{margin: "auto", width: "47vh", height: "40vh"}}>
                             <PieChart data={chartDataArray}/>
                         </div>
                         <div className="d-flex flex-column" style={{justifyContent: "center", alignItems: "center", zIndex: 1}}>
-                        
-                                <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
-                                    <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Amount</InputGroup.Text>
-                                    <FormControl value ={newStake} placeholder={"Enter amount"} onChange={e => setNewStake(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
-                                </InputGroup>
+                        <Formik
+                            validationSchema={stakeSchema}
+                            initialValues={{
+                                newStake: 0,
+                                txFee: 0,
+                            }}
+                            onSubmit={(values, {setSubmitting, resetForm}) => {
+                                setSubmitting(true);
+                                console.log("CONFIRM")
+                                console.log("Direction:" + direction)
+                                if(direction == "stake") {
+                                    confirmStake(values.newStake, values.txFee);
+                                } else if (direction == "unstake") {
+                                    confirmUnstake(values.newStake, values.txFee);
+                                }
+                                // confirm(values.txFee);
+                                resetForm();
+                                setSubmitting(false);
+                            }}     
+                            validate={validateBalance}    
+                            validateOnChange={false}
+                            validateOnBlur={false}             
+                        >
+                        {}
+                        {( {
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                            isSubmitting,
+                            values,
+                            errors,
+                        }) => (
+                            <Form id="stakeForm"  noValidate onSubmit={handleSubmit} style={{width: "60%", height: "100%", margin: "auto", justifyContent: "center", alignItems: "center"}}>
+                                <Form.Group controlId="validationAmount" style={{paddingBottom: "15px", width: "8rem"}}>
+                                    <Form.Label id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Amount</Form.Label>
+                                    <Form.Control 
+                                    onChange={handleChange}
+                                    type="number"
+                                    placeholder={0}
+                                    name="newStake"
+                                    value={values.newStake}
+                                    isInvalid={!!errors.newStake}
+                                    onBlur={handleBlur}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.newStake}
+                                </Form.Control.Feedback>
+                                </Form.Group>
+                                
 
-                                <InputGroup style={{paddingBottom: "15px", width: "12rem"}}>
-                                    <InputGroup.Text id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
-                                    <FormControl value ={txFee} placeholder={"Enter amount"} onChange={e => setTxFee(e.target.value)} style={{borderRadius: "0px 8px 8px 0"}}></FormControl>
-                                </InputGroup>
+                                <Form.Group controlId="validationTxFee"  style={{paddingBottom: "15px", width: "8rem"}}>
+                                    <Form.Label id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Fee</Form.Label>
+                                    <Form.Control 
+                                    onChange={handleChange}
+                                    type="number"
+                                    placeholder={0}
+                                    name="txFee"
+                                    value={values.txFee}
+                                    isInvalid={!!errors.txFee}
+                                    onBlur={handleBlur}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.txFee}
+                                </Form.Control.Feedback>
+                                </Form.Group>
            
-                            <Button  onClick={confirmStake} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px", backgroundColor: "#34ad6a", borderColor: "#34ad6a"}}>
+                            <Button form='stakeForm' type='submit' onClick={() => setDirection("stake")} style={{padding: "0.3rem 2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px", backgroundColor: "#34ad6a", borderColor: "#34ad6a"}}>
                             {loadingStake ? (
                                     <div>
                                         <Spinner
@@ -260,7 +290,7 @@ const BlockchainData = () => {
                                 } 
                             </Button>
                             
-                            <Button variant='warning'  onClick={confirmUnstake} style={{padding: "0.3rem 1.2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px"}}>
+                            <Button form='stakeForm' type='submit' onClick={() => setDirection("unstake")} variant='warning' style={{padding: "0.3rem 1.2rem", margin: "5px", fontSize: "1.2rem", borderRadius: "8px"}}>
                             {loadingUnstake ? (
                                     <div>
                                         <Spinner
@@ -282,6 +312,9 @@ const BlockchainData = () => {
                             
                             
                             </Button>
+                            </Form>
+                        )}
+                        </Formik>
                         </div>
                         
                     </div>

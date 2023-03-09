@@ -54,6 +54,9 @@ export const ContextWrapper = (props) => {
     //User's balance on all chains
     const [usersBalances, setUsersBalances] = useState({});
 
+    //Users pending balance on all chains
+    const [usersPendingBalances, setUsersPendingBalances] = useState({});
+
     //User's stake on all chains
     const [usersStakes, setUsersStakes] = useState([]);
 
@@ -498,9 +501,6 @@ export const ContextWrapper = (props) => {
 
     const _updateBalancesState = (balanceObj) => {
         if(balanceObj.agent == agent.id) {
-            console.log("Updating user balance")
-            console.log(balanceObj)
-            console.log(chains)
             const index = chains["chains"].findIndex(c => {
                 return c.id == balanceObj.chain;
             });
@@ -526,6 +526,18 @@ export const ContextWrapper = (props) => {
                     let newBalance = {};
                     newBalance[[chains["chains"][index].name]] = balanceObj.amount;
                     balances.push(newBalance);
+                    return balances;
+                }
+            });
+
+            setUsersPendingBalances((oldBalances) => {
+                let balances = [...oldBalances];
+                // console.log(balances)
+                if(balances[index] != undefined) {
+                    balances[index][chains["chains"][index].name] = balanceObj.pending;
+                    return balances;
+                }
+                else {
                     return balances;
                 }
             });
@@ -647,6 +659,33 @@ export const ContextWrapper = (props) => {
             try {
 
                 let out = await axios.get(`user/balances/get`,{
+                    params: {
+                        // gameId: gameId,
+                    },
+                    headers: {
+                      authorization: cookies.authToken
+                    }
+                })
+                // alert(JSON.stringify(out.data));
+                resolve(out.data)
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }, [cookies.authToken])
+
+     /**
+     * Fetches user's pending balance on all chains.
+     * @returns {Object[]} balances - Array of pending balances on all chains .
+     * @example [{"KingsLanding": 18}, {"Chamberpad": 100}]
+     */
+     const apiUserFetchPendigBalance = useCallback(() => {
+        // console.log("Chain id " + chainId)
+        return new Promise(async (resolve, reject) => {
+            // alert(cookies.authToken)
+            try {
+
+                let out = await axios.get(`user/balances/pending/get`,{
                     params: {
                         // gameId: gameId,
                     },
@@ -1549,6 +1588,8 @@ export const ContextWrapper = (props) => {
             updateAttackState,
             apiGameRanking,
             gameState, setGameState,
+            usersPendingBalances, setUsersPendingBalances,
+            apiUserFetchPendigBalance
         }}>
             {props.children}
         </AppContext.Provider>

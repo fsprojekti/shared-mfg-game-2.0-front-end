@@ -50,7 +50,7 @@ const PieChart = ({ data}) => {
                 ]
             ]
         }}
-        arcLinkLabelsDiagonalLength={30}
+        arcLinkLabelsDiagonalLength={15}
         arcLinkLabelsSkipAngle={9}
         // arcLinkLabelsTextColor="#333333"
         // arcLinkLabelsThickness={2}
