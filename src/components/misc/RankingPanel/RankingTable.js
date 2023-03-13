@@ -46,7 +46,7 @@ const RankingTable = () => {
                             {
                                 tableDataArray.map((item, index) => (
                                     <tr
-                                        key={item._id}
+                                        key={index}
                                         style={{background: `${item.agent === context.agent.id ? '#fffd8c' : '#ffffff'}`}}
                                     >
                                         <td><strong>{index + 1}</strong></td>

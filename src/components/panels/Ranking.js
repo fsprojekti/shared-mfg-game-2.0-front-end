@@ -25,18 +25,12 @@ const Ranking = () => {
     }, []);
 
     return (
-        <div>
-            <div>
 
-                <div>
-                    <div className="home-grid">
-                        <div className="item-content">
-                            <RankingTable/>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div className="home-grid">
+        <div className="item-content">
+            <RankingTable/>
         </div>
+    </div>
     )
 };
 

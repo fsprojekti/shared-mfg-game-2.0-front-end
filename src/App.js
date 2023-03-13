@@ -40,9 +40,7 @@ function App() {
 
     useEffect(() => {
         context.setLoadingMain(true);
-
-        console.log(context.game.game.state)
-
+        
         //Load game
         const game = context.apiGameFetch().then(gameObj => {
         //TODO: Reset active chain if idle game
@@ -160,7 +158,6 @@ function App() {
 
         //Load user's block votes
         const ranking = context.apiGameRanking().then(ranking => {
-            console.log((ranking))
             let contextRanking = context.ranking;
             contextRanking.ranking = ranking;
             context.setRanking({ ...contextRanking });

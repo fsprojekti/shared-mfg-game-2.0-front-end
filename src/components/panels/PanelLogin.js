@@ -145,10 +145,10 @@ const PanelLogin = () => {
                                     isValid={touched.registerPlayerId && !errors.registerPlayerId}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" style={{position: "absolute"}}>
                                     {errors.registerPlayerId}
                                 </Form.Control.Feedback>
-                                <Form.Control.Feedback type="valid">
+                                <Form.Control.Feedback type="valid" style={{position: "absolute"}}>
                                     Looks good!
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -164,10 +164,10 @@ const PanelLogin = () => {
                                     isValid={touched.name && !errors.name}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" style={{position: "absolute"}}>
                                     {errors.name}
                                 </Form.Control.Feedback>
-                                <Form.Control.Feedback type="valid">
+                                <Form.Control.Feedback type="valid" style={{position: "absolute"}}>
                                     Looks good!
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -183,10 +183,10 @@ const PanelLogin = () => {
                                     isValid={touched.email && !errors.email}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" style={{position: "absolute"}}>
                                     {errors.email}
                                 </Form.Control.Feedback>
-                                <Form.Control.Feedback type="valid">
+                                <Form.Control.Feedback type="valid" style={{position: "absolute"}}>
                                     Looks good!
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -240,10 +240,10 @@ const PanelLogin = () => {
                                     isValid={touched.loginPlayerId && !errors.loginPlayerId}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" style={{position: "absolute"}}>
                                     {errors.loginPlayerId}
                                 </Form.Control.Feedback>
-                                <Form.Control.Feedback type="valid">
+                                <Form.Control.Feedback type="valid" style={{position: "absolute"}}>
                                     Looks good!
                                 </Form.Control.Feedback>
                         </Form.Group>
@@ -260,10 +260,10 @@ const PanelLogin = () => {
                                     onBlur={handleBlur}
                                     autoComplete="on"
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" style={{position: "absolute"}}>
                                     {errors.password}
                                 </Form.Control.Feedback>
-                                <Form.Control.Feedback type="valid">
+                                <Form.Control.Feedback type="valid" style={{position: "absolute"}}>
                                     Looks good!
                                 </Form.Control.Feedback>
                         </Form.Group>

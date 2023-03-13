@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, Form, Button, Spinner, Dropdown, Container, Row, Col} from "react-bootstrap";
+import {Form, Button, Spinner, Dropdown, Row, Col, Card} from "react-bootstrap";
 import PieChart from './PieChart';
 import TransactionsTable from './TransactionTable';
 import AllTransactionsTable from './TransactionTableAll';
@@ -16,8 +16,7 @@ const BlockchainData = () => {
     const [chartDataArray, setChartDataArray] = useState([]);
     const [relativeStake, setRelativeStake] = useState(0);
     const [direction, setDirection] = useState("stake");
-    // const [newStake, setNewStake] = useState("0");
-    // const [txFee, setTxFee] = useState("0");
+
     const [loadingStake, setLoadingStake] = useState(false);
     const [loadingUnstake, setLoadingUnstake] = useState(false);
     const [stakeChain, setStakeChain] = useState(0)
@@ -32,13 +31,18 @@ const BlockchainData = () => {
         let error = {};
         let balance = await context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`]
         let pendingBalance = context.usersPendingBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`];
-        console.log("balance: " + balance);
-        console.log("pendingBalance: " + pendingBalance);
-        console.log("newStake: " + values.newStake);
-        console.log("txFee: " + values.txFee);
         if (parseInt(values.txFee) + parseInt(values.newStake) > (parseInt(balance) + parseInt(pendingBalance))) {
-            error.txFee = "Balance too low";
-            error.newStake = "Balance too low";
+            error.txFee = " ";
+            error.newStake = " ";
+            context.setNote((prevState) => {
+                return({
+                    ...prevState,
+                    msg: "Balance on " + context.chains["chains"][stakeChain].name + " too low",
+                    heading: '',
+                    show: true,
+                    type: 'danger'
+                });
+                });
         }
         return error;
       };
@@ -170,7 +174,7 @@ const BlockchainData = () => {
                     <div className="d-flex-row d-inline-block">
                         <h3 className="d-inline-block"> Stake on 
 
-                        <Dropdown className="d-flex-row d-inline-block" style={{margin: "10px"}}>
+                        <Dropdown className="d-flex-row d-inline-block" style={{marginTop: "15px", marginLeft: "10px", marginRight: "10px"}}>
             
                         <Dropdown.Toggle  variant="outline-danger" style={{height: "40px", borderRadius: "8px"}} >
                             <b>{ context.chains["chains"].length < 1  ? "null" : context.chains["chains"][stakeChain].name  }  </b>
@@ -202,7 +206,8 @@ const BlockchainData = () => {
                         <div style={{margin: "auto", width: "47vh", height: "40vh"}}>
                             <PieChart data={chartDataArray}/>
                         </div>
-                        <div className="d-flex flex-column" style={{justifyContent: "center", alignItems: "center", zIndex: 1}}>
+                        <div className="d-flex flex-column" style={{justifyContent: "center", alignItems: "center", zIndex: 1, marginTop: "30px"}}>
+                        <Card style={{ border: 0}}>
                         <Formik
                             validationSchema={stakeSchema}
                             initialValues={{
@@ -231,11 +236,10 @@ const BlockchainData = () => {
                             handleSubmit,
                             handleChange,
                             handleBlur,
-                            isSubmitting,
                             values,
                             errors,
                         }) => (
-                            <Form id="stakeForm"  noValidate onSubmit={handleSubmit} style={{width: "60%", height: "100%", margin: "auto", justifyContent: "center", alignItems: "center"}}>
+                            <Form id="stakeForm"  noValidate onSubmit={handleSubmit} style={{width: "50%", height: "100%", margin: "auto", justifyContent: "center", alignItems: "center"}}>
                                 <Form.Group controlId="validationAmount" style={{paddingBottom: "15px", width: "8rem"}}>
                                     <Form.Label id="d-flex" style={{fontSize: "1.2rem", borderRadius: "8px 0 0 8px"}}>Amount</Form.Label>
                                     <Form.Control 
@@ -247,7 +251,7 @@ const BlockchainData = () => {
                                     isInvalid={!!errors.newStake}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: 0}}>
                                     {errors.newStake}
                                 </Form.Control.Feedback>
                                 </Form.Group>
@@ -264,7 +268,7 @@ const BlockchainData = () => {
                                     isInvalid={!!errors.txFee}
                                     onBlur={handleBlur}
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: 90}}>
                                     {errors.txFee}
                                 </Form.Control.Feedback>
                                 </Form.Group>
@@ -315,6 +319,7 @@ const BlockchainData = () => {
                             </Form>
                         )}
                         </Formik>
+                        </Card>
                         </div>
                         
                     </div>

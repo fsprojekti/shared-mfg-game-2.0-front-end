@@ -161,6 +161,7 @@ const TradeModal = () => {
                                 resetForm();
                                 setSubmitting(false);
                             }}     
+
                             validate={validateBalance}                 
                         >
                         {}
@@ -188,7 +189,7 @@ const TradeModal = () => {
                                     onBlur={handleBlur}
                                     
                                 />
-                                <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback style={{position: "absolute", top: 400, right: 8 }} type="invalid">
                                     {errors.txFee}
                                 </Form.Control.Feedback>
                                 {/* </InputGroup> */}

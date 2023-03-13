@@ -1,117 +1,82 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
-import {InputGroup, FormControl, Button, Spinner, Dropdown} from "react-bootstrap";
+import {InputGroup,Button, Spinner, Dropdown, Form} from "react-bootstrap";
 import {motion} from 'framer-motion'
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 const CreateOrderModal = () => {
     const context = useContext(AppContext);
     const [chain, setChain]  = useState(0);
-    const [price, setPrice] = useState("0");
 
 
-    const countDecimals = (value) => {
-        if(Math.floor(value).toString() === value) return 0;
-        return value.toString().split(".")[1].length || 0;
-    };
+    const orderSchema = yup.object({
+        price: yup.number().required().min(0, "Can't be negative").integer("Has to be integer").max(30000)
+    });
 
-    const confirm = async () => {
+    const validateService = async () => {  
+        let error = {};
+        const service = await context.service;
+        //Switch case for service states to check if the state is valid
+        switch(service["service"].state) {
+            case "IDLE":
+                break;
+            case "MARKET":
+                break;
+            case "ACTIVE":
+                error.price = "Service is in active state";
+                break;
+            case "DEAL":
+                error.price = "Service is in deal state";
+                break;
+            case "DONE":
+                error.price = "Service is in done state";
+                break;
+            case "STOPPED":
+                error.price = "Service is in stopped state";
+                break;
+            default:
+                error.price = "Service is in unknown state";
+                break;
+        }
+        return error;
+      };
+
+    const confirm = async (price) => {
         try {
-            if (price === undefined || price === "" ) {
-                context.setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: 'You must enter a value',
-                      heading: 'Wrong input',
-                      show: true,
-                      type: 'danger'
-                    });
-                  });
-            } else {
-                if (isNaN(price) || price < 0) {
-                    context.setNote((prevState) => {
-                        return({
-                          ...prevState,
-                          msg: 'You must enter positive numbers',
-                          heading: 'Wrong input',
-                          show: true,
-                          type: 'danger'
-                        });
-                      });
-                } else {
-                    if (countDecimals(price) > 0) {
-                        context.setNote((prevState) => {
-                            return({
-                              ...prevState,
-                              msg: 'Input value must be an integer',
-                              heading: 'Wrong input',
-                              show: true,
-                              type: 'danger'
-                            });
-                          });
-                    } else {
-                        if (parseInt(price) > 30000) {
-                            context.setNote((prevState) => {
-                                return({
-                                  ...prevState,
-                                  msg: 'Maximum price in this game is 30000',
-                                  heading: 'Wrong input',
-                                  show: true,
-                                  type: 'danger'
-                                });
-                              });
-                        } else {
-                            if (context.user.amountOfAvailableService === 0) {
-                                context.setNote((prevState) => {
-                                    return({
-                                      ...prevState,
-                                      msg: 'Amount of available services is too low',
-                                      heading: 'Wrong input',
-                                      show: true,
-                                      type: 'danger'
-                                    });
-                                  });
-                            } else {
 
-                                let response;
+            let response = {};
 
-                                if(context.isCreateOrderModalOpen.mode == "set") {
-                                    response = await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
-                                    response.message = `${context.service["service"].type} order created successfully`;
-                                } else { 
-                                    const orders = await context.orders;
-                                    const service = await context.service;
-                                    const placedOrders = await orders.filter(order => order.state === "PLACED");
-                                    if(placedOrders.length != 0) {
-                                        const playersOrder = await placedOrders.reduce((ordr, current) => { 
-                                            return ordr.service == service["service"]._id ? ordr : current;
-                                        })   
-                                        if(playersOrder.service == service["service"]._id) {
-                                            response = await context.apiUserUpdateOrder(price, playersOrder._id);
-                                            console.log(response)
-                                        }
-                                    } else {
-                                        return;
-                                    }
-                                }
-
-                                context.setNote((prevState) => {
-                                    return({
-                                      ...prevState,
-                                      msg: response.message,
-                                      heading: 'Success',
-                                      show: true,
-                                      type: 'success'
-                                    });
-                                  });
-
-                                setPrice("0");
-                                context.setIsCreateOrderModalOpen({open: false})
-
-                            }
-                        }
+            if(context.isCreateOrderModalOpen.mode == "set") {
+                await context.apiUserCreateOrder(price, context.chains["chains"][chain].id);
+                response.message = `${context.service["service"].type} order created successfully`;
+            } else { 
+                const orders = await context.orders;
+                const service = await context.service;
+                const placedOrders = await orders.filter(order => order.state === "PLACED");
+                if(placedOrders.length != 0) {
+                    const playersOrder = await placedOrders.reduce((ordr, current) => { 
+                        return ordr.service == service["service"]._id ? ordr : current;
+                    })   
+                    if(playersOrder.service == service["service"]._id) {
+                        response = await context.apiUserUpdateOrder(price, playersOrder._id);
                     }
+                } else {
+                    return;
                 }
             }
+
+            context.setNote((prevState) => {
+                return({
+                    ...prevState,
+                    msg: response.message,
+                    heading: 'Success',
+                    show: true,
+                    type: 'success'
+                });
+                });
+
+            context.setIsCreateOrderModalOpen({open: false})
         } catch(err) {
             console.log(err)
             try {
@@ -194,19 +159,58 @@ const CreateOrderModal = () => {
                 }
 
                         
-                  
+
+                        <Formik
+                            validationSchema={orderSchema}
+                            initialValues={{
+                                price: 0,
+                            }}
+                            onSubmit={(values, {setSubmitting, resetForm}) => {
+                                setSubmitting(true);
+                                console.log("CONFIRM")
+                                console.log(values)
+                                confirm(values.price);
+                                resetForm();
+                                setSubmitting(false);
+                            }}      
+                            validate={validateService}      
+                        >
+                        {}
+                        {( {
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                            values,
+                            errors,
+                        }) => (
+                    <Form id='orderForm' noValidate onSubmit={handleSubmit}>
                     <InputGroup style={{width: "14.5rem"}} >
                         <InputGroup.Text >NEW PRICE</InputGroup.Text>
-                        <FormControl value ={price} placeholder={"Enter price"} onChange={e => setPrice(e.target.value)} onKeyPress={e => handleKeypress(e)}></FormControl>
+                        <Form.Control 
+                                        onChange={handleChange}
+                                        type="number"
+                                        placeholder={0}
+                                        name="price"
+                                        value={values.price}
+                                        isInvalid={!!errors.price}
+                                        onBlur={handleBlur}
+                                    />
+                        <Form.Control.Feedback type="invalid" tooltip >
+                                {errors.price}
+                        </Form.Control.Feedback>
                     </InputGroup>
                     
-                    <Button variant="btn btn-success active" style={{backgroundColor: "green", margin: "1rem"}} className='confirm-modal-btn' onClick={confirm}>Confirm</Button>
+                    
+                    <Button variant="btn btn-success active" type='submit' style={{backgroundColor: "green", margin: "1rem"}}>Confirm</Button>
                     <Button variant="btn btn-danger" style={{backgroundColor: "red", margin: "1rem"}} onClick={() => {
                         context.setIsCreateOrderModalOpen({open: false})
                         context.setNote({...(context.note.show = false)});
                     }}>
                     Cancel
                     </Button>
+                    </Form>
+                        )}
+                    </Formik>
             
         </div>
                 

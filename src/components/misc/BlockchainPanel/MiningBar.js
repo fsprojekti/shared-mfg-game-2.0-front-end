@@ -26,7 +26,7 @@ const MiningBar = (props) => {
     }
 
     useInterval(async () => {
-        const createdMillis = new Date(context.chains["chains"][0].blockTimestamp).getTime();
+        const createdMillis = new Date(context.chains["chains"][(props.chain == "main" ? 0 : 1)].blockTimestamp).getTime();
         let timeLeft = 10000 - (Date.now() - createdMillis);
         let width = Math.floor((((Date.now() - createdMillis) / 10000)) * 100);
         if (width < 0 || timeLeft < 0) {
@@ -40,8 +40,6 @@ const MiningBar = (props) => {
 
     return (
         <>
-            {/* <ProgressBar striped variant="success" now={width} style={{width: "80%"}} animated={true} /> */}
-            {/* <progress width={width} variant="success" style={{width: "80%"}}  /> */}
             <div className={`mining-progress-container${props.version}`}>
                 <div className={`mining-progress-flex${props.version}`}>
                 

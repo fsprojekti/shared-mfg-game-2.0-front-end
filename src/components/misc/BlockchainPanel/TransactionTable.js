@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react';
 import { AppContext } from '../../../context/context';
 import { FaTimes } from 'react-icons/fa';
 import { Table } from "react-fluid-table";
-import { Button } from 'react-bootstrap';
 
 const TransactionsTable = () => {
     const context = useContext(AppContext);
@@ -28,8 +27,6 @@ const TransactionsTable = () => {
 
 
       const userRow = (row) => {      
-        // console.log(row)
-        // console.log(agent)
         return (
           <div >
           
@@ -68,9 +65,11 @@ const TransactionsTable = () => {
       }));
 
 
-    //   const rowStyle = index => ({
-    //     backgroundColor: (tableDataArray[index].owner == agent.account ? "#f0c808" : (index % 2 === 0 ? "#f0f3f5" : "#white") ),
-    //   });
+      const rowStyle = index => ({
+        backgroundColor: (tableDataArray[index].chainId ==  context.chains["chains"][0].id ? "#F9DDC8" : '#D0E9F1' ),
+        borderBottom: "1px solid #000000",
+        height: "50px",
+      });
 
 
     const selectOne = async (e) => {
@@ -123,26 +122,22 @@ const TransactionsTable = () => {
     useEffect(() => {
         // console.log(chains["chains"]);
         const renderTableData = async () => {
-            // console.log(transactions)
             const transactions = context.transactions;
             const chains = context.chains;
             const agents = context.agents;
             const users = context.users;
             let orderTransactions = await transactions.filter(transaction => transaction.state == "SEND");
             const transactionsByFee = await orderTransactions.sort((a, b) => parseInt(b.fee) - parseInt(a.fee));
-            // const transactionsByMainChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][0].id);
-            // const transactionsBySideChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][1].id);
-            // let transactionByFeeAndChains = []
-            // transactionByFeeAndChains = a.forEach((e,i) => res.push(e, b[i]))
-            // console.log(transactionsByFee)
+            const transactionsByMainChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][0].id);
+            const transactionsBySideChain = await transactionsByFee.filter(transaction => transaction.chain == chains["chains"][1].id);
+
             let transactinsCount = [0 , 0];
-            let count = 0;
             const transactionsArray = await Promise.all(transactionsByFee.map(async (transaction, index) => {
                 let { from, to, fee, amount, chain, owner} = transaction;
 
-                // let transactionIndex
-                // if(chain == chains["chains"][0].id) transactionIndex = transactionsByMainChain.findIndex((t) => t.id === transaction.id);
-                // else transactionIndex = transactionsBySideChain.findIndex((t) => t.id === transaction.id);
+                let transactionIndex
+                if(chain == chains["chains"][0].id) transactionIndex = transactionsByMainChain.findIndex((t) => t.id === transaction.id);
+                else transactionIndex = transactionsBySideChain.findIndex((t) => t.id === transaction.id);
                 
 
                 let chainIndex = chains["chains"].findIndex((c) => c.id === chain);
@@ -167,7 +162,7 @@ const TransactionsTable = () => {
                 return (
                     {
                         id: transaction.id,
-                        index: index+1,
+                        index: transactionIndex+1,
                         consumer: (!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name) ,
                         provider: (!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name) ,
                         // both: `${(!consumerAgent.length ? chains["chains"][chainIndex].name : consumerUser[0].name)} 🔁 ${(!providerAgent.length ? chains["chains"][chainIndex].name : providerUser[0].name)}`,
@@ -228,7 +223,7 @@ const TransactionsTable = () => {
                     columns={columns} 
                     tableWidth="100%"
                     className="table-pending-transactions"
-                    // rowStyle={rowStyle}
+                    rowStyle={rowStyle}
                     headerStyle={{border: "1px solid #d9dddd", flex: "1 1 auto", backgroundImage: "linear-gradient(#7c8a9e, #616f83)"}}
                     />
                 </div>

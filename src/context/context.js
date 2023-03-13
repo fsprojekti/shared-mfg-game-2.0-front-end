@@ -223,10 +223,13 @@ export const ContextWrapper = (props) => {
                     oldChains.chains[index].blockNumber = chainObj.blockNumber;
 
                     return oldChains;
+                    
                 } else if(index == -1 && chainObj.id != undefined) {
                     oldChains.chains.push(chainObj);
                     return oldChains;
                 }
+
+                
 
                 return chains;
             });
@@ -243,7 +246,7 @@ export const ContextWrapper = (props) => {
     }
 
     const _updateOrdersState = (orderObj) => {
-        console.log(orderObj)
+        // console.log(orderObj)
         setOrders((oldOrders) => {
             const orders = [...oldOrders];
 
@@ -613,6 +616,26 @@ export const ContextWrapper = (props) => {
     const updateAttackState = (attackObj) => {
         try {
             _updateAttackState(attackObj);
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    const _updateAgentState = (agentObj) => {
+        if(agentObj.account == agent.account) {
+            setAgent((oldAgent) => {
+                let agent = oldAgent;
+                agent = agentObj;
+                return agent;
+            });
+        }
+    }
+
+    const updateAgentsState = (agentObj) => {
+        try {
+            console.log(agentObj);
+            _updateAgentState(agentObj);
         }
         catch(err) {
             console.log(err)
@@ -1589,7 +1612,8 @@ export const ContextWrapper = (props) => {
             apiGameRanking,
             gameState, setGameState,
             usersPendingBalances, setUsersPendingBalances,
-            apiUserFetchPendigBalance
+            apiUserFetchPendigBalance,
+            updateAgentsState
         }}>
             {props.children}
         </AppContext.Provider>

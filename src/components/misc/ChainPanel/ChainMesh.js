@@ -40,7 +40,7 @@ const ChainMesh = () => {
 
 
     const setNodeNetwork = async () => {
-      const network = await
+      const network = 
 			visJsRef.current &&
 			new Network(
 				visJsRef.current,
@@ -82,21 +82,21 @@ const ChainMesh = () => {
 				}
 			)
 
-      network.on("hoverNode", function (params) {
+      network.on("hoverNode", {passive: true}, function (params) {
         network.canvas.body.container.style.cursor = 'help';
       });
 
-      network.on("hoverEdge", function (params) {
+      network.on("hoverEdge", {passive: true}, function (params) {
         network.canvas.body.container.style.cursor = 'help';
       });
 
 
 
-      network.on("blurNode", function (params) {
+      network.on("blurNode", {passive: true}, function (params) {
         network.canvas.body.container.style.cursor = 'default';
       }); 
       
-      network.on("blurEdge", function (params) {
+      network.on("blurEdge", {passive: true}, function (params) {
         network.canvas.body.container.style.cursor = 'default';
       });  
 

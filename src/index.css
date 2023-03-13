@@ -308,9 +308,7 @@ Sidebar
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin: 5px;
   padding-right: 20px;
-  padding-left: 20px;
 }
 
 .stats-sidebar-values h4 {
@@ -360,6 +358,13 @@ Sidebar
 
 .stats-sidebar-container-black h4{
   margin-bottom: 0;
+  background: #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stats-sidebar-container-black-own h4{
+  margin-bottom: 10;
   background: #000000;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

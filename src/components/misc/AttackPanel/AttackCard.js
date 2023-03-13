@@ -1,9 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {Button, Card, Spinner, Row, Col } from "react-bootstrap";
 import { AppContext } from '../../../context/context';
-import CancelVoteModal from './CancelVoteModal';
-import {GiTakeMyMoney} from "react-icons/gi";
-import AttackInfo from '../ChainPanel/AttackInfo';
 
 
 const AttackCard = () => {
@@ -29,6 +26,7 @@ const AttackCard = () => {
             setLoading(false);
         } catch (e) {
             setLoading(false);
+            console.log(e)
             context.setNote({
                 show: true,
                 type: "danger",

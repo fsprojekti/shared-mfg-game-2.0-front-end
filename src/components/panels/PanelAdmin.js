@@ -2,12 +2,12 @@ import {Alert, Button, Card, Col, Container, InputGroup, Row, Spinner} from "rea
 import {useContext, useEffect, useState} from "react";
 import { AppContext } from "../../context/context";
 import NoteDismissible from "../notifications/NoteDismissible";
-import $ from 'jquery';
 
 const PanelAdmin = () => {
 
     const context = useContext(AppContext);
     const [loading, setLoading] = useState("");
+    const [numOfLoggedInUsers, setNumOfLoggedInUsers] = useState(0);
 
 
     const [note, setNote] = useState({
@@ -175,7 +175,20 @@ const PanelAdmin = () => {
 
     useEffect(() => {
 
-    }, [context.users])
+        const getNumOfUsers = async () => {
+            try {
+                let users = context.users["users"];
+                if(users === null) return;
+                console.log(users)
+                let loggedInUsers = await users.filter(u => u.state == "LOGGED-IN");
+                setNumOfLoggedInUsers(loggedInUsers.length);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        getNumOfUsers()
+
+    }, [context.users["users"]])
 
 
     return (
@@ -358,16 +371,16 @@ const PanelAdmin = () => {
                                         </div>
                                         <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
 
-                                            <InputGroup.Text>{context.users["users"].length}</InputGroup.Text>
+                                            <InputGroup.Text>{context.users["users"].length - 1}</InputGroup.Text>
                                         </div>
                                     </div>
                                     <div className={"d-flex justify-content-between flex-wrap"}>
                                         <div className={"p-2 align-self-center"}>
-                                            Chains created
+                                            Logged in players
                                         </div>
                                         <div className={"p-2 align-self-center"} style={{minWidth: '115px'}}>
 
-                                            {/* <InputGroup.Text>{context.chains["chains"].length}</InputGroup.Text> */}
+                                            <InputGroup.Text>{numOfLoggedInUsers}</InputGroup.Text>
                                         </div>
                                     </div>
                                     </Card.Body>

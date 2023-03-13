@@ -45,7 +45,6 @@ const Stats = () => {
             let stakeIndex2 =  stakesKeys.indexOf(chains["chains"][1].name);
             let stakeIndexes = [stakeIndex1, stakeIndex2];
 
-            const stakes = usersStakes;
             let sum = usersStakes.reduce((prev,next, index) => prev + next[[`${chains["chains"][stakeIndexes[index]].name}`]],0);
             setSumStake({stake: sum});
             };
@@ -60,23 +59,19 @@ const Stats = () => {
 
         
         const renderServiceData = async () => {
-            // console.log(services)
+
             const activeServices = await services["services"].filter(service => service.state === "ACTIVE");            
-            // console.log(activeServices)
+
             const userServices = await Promise.all(activeServices.map(async (item) => {
                 let service = item;
-                // console.log(item)
 
                 const providerAgentObject = await agents["agents"].filter(agent => agent._id === item.agent);
-                // console.log(providerAgentObject)
 
                 const providerUser = await users["users"].filter(user => user.id === providerAgentObject[0].user); 
-                // console.log(providerUser)
+
                 service.id = item._id;
                 service.provider = providerUser[0].name;
                 service.consumer = user.name;
-                
-                console.log(service)
                       
                 return (service)
             }));
@@ -95,6 +90,9 @@ const Stats = () => {
 
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
+            //Log to see how many orders of each type are in the system
+            console.log(numOfFirst.length);
+            console.log(numOfSecond.length);
 
             // let sum = numOfFirst.length + numOfSecond.length;
             // let upgrades = Math.floor(sum / 2); 
@@ -118,7 +116,7 @@ const Stats = () => {
         
 
 
-    }, [services["services"], user, servicesAll["services"], usersStakes, stakeIndex]);
+    }, [services["services"], user, servicesAll["services"], usersStakes, stakeIndex, agent]);
 
     return (
         <>

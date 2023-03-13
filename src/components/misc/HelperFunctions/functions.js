@@ -23,9 +23,6 @@ export const checkNumber = async (input1, input2, balance, transactions, agent, 
       });
       
    }
-   // console.debug("SUM OF TRANSACTIONS:")
-   // console.log(sumOfTransactions);
-   // console.log(isNaN(input1))
    
    if ((input1 === undefined || input1 === "" || input1 === 0)) {
    return ({state: -1, msg:"You must enter a value"});

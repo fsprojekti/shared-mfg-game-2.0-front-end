@@ -1,14 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Button, Card, FormControl, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
-import {GiStoneBridge} from "react-icons/gi";
+import {Button, Card, Form, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
 import { AppContext } from '../../../context/context';
-
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 //TODO: Transfer pri max value ne gre uredu skozi.
 const BridgeCard = () => {
-    const {chains, apiUserBridge, usersBalances, bridges, setNote, transactions, agent} = useContext(AppContext);
-    let [amount, setAmount] = useState(0);
-    let [fee, setFee] = useState(0);
+    const {chains, apiUserBridge, usersBalances, usersPendingBalances, bridges, setNote, transactions, agent} = useContext(AppContext);
     let [bridge, setBridge] = useState(0);
 
     const [loading, setLoading] = useState(false);
@@ -20,23 +18,53 @@ const BridgeCard = () => {
         { name: 'Withdraw', value: '2' }
     ];
 
+    const bridgeSchema = yup.object({
+        amount: yup.number().required().min(1, "Has to be at least 1").integer(),
+        fee: yup.number().integer().min(0, "Can't be negative"),
+    });
 
-    //TODO: Popravi, da bo vleklo pravilen max amount
-    function maxTransferInput(){
-        if (direction == "1") {
-            let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainSource);
-            setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
-        } else {
-            let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainTarget);
-            setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
-        }  
-    }
 
-    const countDecimals = (value) => {
-        console.log(typeof(value))
-        if(Math.floor(value).toString() === value) return 0;
-        return value.toString().split(".")[1].length || 0;
-    };
+    // //TODO: Popravi, da bo vleklo pravilen max amount
+    // function maxTransferInput(){
+    //     if (direction == "1") {
+    //         let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainSource);
+    //         setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
+    //     } else {
+    //         let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainTarget);
+    //         setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
+    //     }  
+    // }
+
+
+    const validateBalance = async (values) => {  
+        let error = {};
+        let index;
+        if(direction == '2') {
+            index = chains["chains"].findIndex(c => {
+                return c.id == bridges[bridge].chainTarget;
+            });
+        } else if(direction == 1){
+            index = chains["chains"].findIndex(c => {
+                return c.id == bridges[bridge].chainSource;
+            });
+        }
+
+        let balance = await usersBalances[index][`${chains["chains"][index].name}`]
+        let pendingBalance = usersPendingBalances[index][`${chains["chains"][index].name}`];
+        if (parseInt(values.amount) + parseInt(values.fee) > (parseInt(balance) + parseInt(pendingBalance))) {
+            error.amount = "Low balance on " + chains["chains"][index].name + " chain";
+            // setNote((prevState) => {
+            //     return({
+            //         ...prevState,
+            //         msg: "Balance on " + chains["chains"][index].name + " too low",
+            //         heading: '',
+            //         show: true,
+            //         type: 'danger'
+            //     });
+            //     });
+        }
+        return error;
+      };
 
     const getChainsNamesFromBridgeObject = (index) => {
         let chainsArr = chains["chains"];
@@ -46,59 +74,26 @@ const BridgeCard = () => {
     };
 
     //TODO: Popravi da bo alert prikazan s tisim oblačkom spodaj, ko ga lahko skenslaš z x-om
-    const confirmTransfer = async () => {
+    const confirmTransfer = async (_amount, _fee) => {
         try {
-            let numCheck; 
-            await import('../HelperFunctions/functions')
-            .then(async({ checkNumber }) => {
-                let index;
-                if(direction == '2') {
-                    index = chains["chains"].findIndex(c => {
-                        return c.id == bridges[bridge].chainTarget;
-                    });
-                } else if(direction == 1){
-                    index = chains["chains"].findIndex(c => {
-                        return c.id == bridges[bridge].chainSource;
-                    });
-                }
-                    numCheck = await checkNumber(amount, fee, usersBalances[index][`${chains["chains"][index].name}`], transactions, agent, chains["chains"][index]);
-                
 
-            })
-            .catch(err => {
-                console.log(err);
-            });
+            setLoading(true);
+            // console.log(bridges[bridge])
+            let response;
+            if(direction == '2') response= await apiUserBridge(_amount, _fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
+            else if(direction == '1') response = await apiUserBridge(_amount, _fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  
 
-            if (numCheck.state == -1) {
-                setNote((prevState) => {
-                    return({
-                      ...prevState,
-                      msg: numCheck.msg,
-                      heading: 'Wrong input',
-                      show: true,
-                      type: 'danger'
-                    });
-                  });
-            } else {
-                            setLoading(true);
-                            // console.log(bridges[bridge])
-                            let response;
-                            if(direction == '2') response= await apiUserBridge(amount, fee, bridges[bridge].chainTarget, bridges[bridge].chainSource);
-                            else if(direction == '1') response = await apiUserBridge(amount, fee, bridges[bridge].chainSource, bridges[bridge].chainTarget);  
+            setLoading(false);
 
-                            setLoading(false);
-                            setAmount(0);
-
-                            setNote((prevState) => {
-                                return({
-                                  ...prevState,
-                                  msg: response.message,
-                                  show: true,
-                                  type: 'success',
-                                  heading: "Success"
-                                });
-                              });
-            }
+            setNote((prevState) => {
+                return({
+                    ...prevState,
+                    msg: response.message,
+                    show: true,
+                    type: 'success',
+                    heading: "Success"
+                });
+                });
 
         } catch(e) {
             setLoading(false);
@@ -137,24 +132,69 @@ const BridgeCard = () => {
                                 ))}
                             </ButtonGroup>
                     <Card.Body style={{justifyContent: "center", alignItems: "center", backgroundColor: (direction == '2' ? '#f5c6a3' : '#B1DAE7'), padding: "2rem", borderRadius: "8px"}}>
-
+                    <Formik
+                            validationSchema={bridgeSchema}
+                            initialValues={{
+                                amount: 0,
+                                fee: 0,
+                            }}
+                            onSubmit={(values, {setSubmitting, resetForm}) => {
+                                setSubmitting(true);
+                                console.log("CONFIRM")
+                                console.log(values)
+                                confirmTransfer(values.amount, values.fee);
+                                resetForm();
+                                setSubmitting(false);
+                            }}     
+                            validate={validateBalance}    
+                            validateOnChange={false}
+                            validateOnBlur={false}             
+                        >
+                        {}
+                        {( {
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                            values,
+                            errors,
+                        }) => (
+                            <Form id='bridgeForm' noValidate onSubmit={handleSubmit}>
                             
-                            
-                                <InputGroup style={{margin: "10px", borderRadius: "8px"}}>
-                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Amount</span></InputGroup.Text>
-                                    <FormControl value ={amount} onChange={e => setAmount(e.target.value)}></FormControl>
-                                    <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button>
+                                <InputGroup controlId="validateBridgeAmount" className='position-relative' style={{margin: "10px", borderRadius: "8px"}}>
+                                    {/* <Form.Label id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Amount</span></Form.Label> */}
+                                    
+                                    <InputGroup.Text>Amount</InputGroup.Text>
+                                    <Form.Control 
+                                        onChange={handleChange}
+                                        type="number"
+                                        placeholder={0}
+                                        name="amount"
+                                        value={values.amount}
+                                        isInvalid={!!errors.amount}
+                                    />
+                                    <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: -35}}>
+                                        {errors.amount}
+                                    </Form.Control.Feedback>
+                                    {/* <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button> */}
                                 </InputGroup>
 
                                 <InputGroup style={{margin: "10px"}}>
-                                    <InputGroup.Text id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></InputGroup.Text>
-                                    <FormControl value ={fee} onChange={e => setFee(e.target.value)} style={{borderRadius: "0 8px 8px 0"}}></FormControl>
+                                    <InputGroup.Text style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></InputGroup.Text>
+                                    <Form.Control 
+                                        onChange={handleChange}
+                                        type="number"
+                                        placeholder={0}
+                                        name="fee"
+                                        value={values.fee}
+                                        isInvalid={!!errors.fee}
+                                        onBlur={handleBlur}
+                                    />
+                                    <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: -35}}>
+                                        {errors.fee}
+                                    </Form.Control.Feedback>
                                 </InputGroup>
-                                
-                                
-                                
 
-                                <Button variant="success"  onClick={() => confirmTransfer()} style={{borderRadius: "8px"}}>
+                                <Button form='bridgeForm' variant="success" type='submit' style={{borderRadius: "8px"}}>
 
                                 {loading ? (
                                     <div>
@@ -178,6 +218,9 @@ const BridgeCard = () => {
 
                                 } 
                                 </Button>
+                                </Form>
+                        )}
+                        </Formik>
 
                 </Card.Body>
                     

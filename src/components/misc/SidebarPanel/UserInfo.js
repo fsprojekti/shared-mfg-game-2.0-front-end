@@ -19,7 +19,7 @@ import {Tooltip} from "react-bootstrap";
 
 const UserInfo = () => {
 
-    const { chains, setCookie, updateActiveChain, user, activeChain, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen, setIsCancelUserOrderModalOpen} = useContext(AppContext);
+    const { chains, agent, updateActiveChain, user, activeChain, usersBalances, usersStakes, servicesAll, services, service, stakeIndex, setStakeIndex, setIsCreateOrderModalOpen, setIsCancelUserOrderModalOpen} = useContext(AppContext);
 
     const [relativeStake, setRelativeStake] = useState(0);
     const [otherServices, setOtherServices] = useState(["Service1","Service2"]);
@@ -128,7 +128,7 @@ const UserInfo = () => {
         };
         getOtherServiceTypes();
 
-    }, [services["services"], user, servicesAll["services"], usersStakes]);
+    }, [services["services"], user, servicesAll["services"], usersStakes, agent]);
 
     return (
 
@@ -147,8 +147,13 @@ const UserInfo = () => {
                 <hr />
                         
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
-                            <h4>Number of upgrades: {user.upgradeNumber}</h4>
+                        <div className="stats-sidebar-container-black-own">
+                            <h4>UPGRADES: </h4>
                         </div>
+                        <div className="stats-sidebar-container-black-own">
+                            <h4>{agent.upgradeLevel}</h4>
+                        </div>
+                </div>
                         
                         <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                             <div className={`${(numOfService1["num"] > 0) ? 'stats-sidebar-container-green' : 'stats-sidebar-container-red'}`}>
@@ -186,7 +191,7 @@ const UserInfo = () => {
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
                                 
                 
-                <MiningBar showText="true" version="-side" />  
+                <MiningBar showText="true" version="-side"  chain="main"/>  
 
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>
@@ -227,7 +232,7 @@ const UserInfo = () => {
             <div style={{justifyContent: "space-around", width: "100%", alignItems: "center", padding: "5px", zIndex: 1}}>
                                 
                 
-                <MiningBar showText="true" version="-side" />  
+                <MiningBar showText="true" version="-side" chain="side"/>  
 
                 <div className="d-flex" style={{alignItems: "center", justifyContent: "space-between", width: "100%", paddingRight: "20px", paddingLeft: "20px"}}>
                     <FaMoneyBillAlt style={{color: "green", fontSize: "22px"}}/>
