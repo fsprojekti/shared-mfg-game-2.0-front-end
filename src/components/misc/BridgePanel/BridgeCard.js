@@ -24,17 +24,6 @@ const BridgeCard = () => {
     });
 
 
-    // //TODO: Popravi, da bo vleklo pravilen max amount
-    // function maxTransferInput(){
-    //     if (direction == "1") {
-    //         let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainSource);
-    //         setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
-    //     } else {
-    //         let chainIndex = chains["chains"].findIndex(item => item.id === bridges[bridge].chainTarget);
-    //         setAmount((usersBalances[chainIndex][`${chains["chains"][chainIndex].name}`]).toString());
-    //     }  
-    // }
-
 
     const validateBalance = async (values) => {  
         let error = {};
@@ -49,19 +38,16 @@ const BridgeCard = () => {
             });
         }
 
-        let balance = await usersBalances[index][`${chains["chains"][index].name}`]
-        let pendingBalance = usersPendingBalances[index][`${chains["chains"][index].name}`];
-        if (parseInt(values.amount) + parseInt(values.fee) > (parseInt(balance) + parseInt(pendingBalance))) {
-            error.amount = "Low balance on " + chains["chains"][index].name + " chain";
-            // setNote((prevState) => {
-            //     return({
-            //         ...prevState,
-            //         msg: "Balance on " + chains["chains"][index].name + " too low",
-            //         heading: '',
-            //         show: true,
-            //         type: 'danger'
-            //     });
-            //     });
+        let balanceMain = await usersBalances[0][`${chains["chains"][0].name}`]
+        let pendingBalanceMain = usersPendingBalances[0][`${chains["chains"][0].name}`];
+        let balanceSide = await usersBalances[1][`${chains["chains"][1].name}`]
+        let pendingBalanceSide = usersPendingBalances[1][`${chains["chains"][1].name}`];
+
+        if ( direction == '1' && parseInt(values.amount) + parseInt(values.fee) > (parseInt(balanceMain) + parseInt(pendingBalanceMain))) {
+            error.amount = "Low balance on " + chains["chains"][0].name + " chain";
+        } else if (direction == '2') {
+            if((parseInt(values.amount) > ( parseInt(balanceSide) + parseInt(pendingBalanceSide) ))) error.amount = "Low balance on " + chains["chains"][1].name + " chain";
+            if(parseInt(values.fee) > ( parseInt(balanceMain) + parseInt(pendingBalanceMain) )) error.amount = "Low balance on " + chains["chains"][0].name + " chain";
         }
         return error;
       };

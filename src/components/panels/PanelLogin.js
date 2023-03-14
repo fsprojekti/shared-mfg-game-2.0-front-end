@@ -88,6 +88,7 @@ const PanelLogin = () => {
 
 
         } catch (e) {
+            // console.log(e)
             context.setNote((prevState) => {
                 return({
                   ...prevState,
