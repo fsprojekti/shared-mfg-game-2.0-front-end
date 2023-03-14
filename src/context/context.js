@@ -623,10 +623,14 @@ export const ContextWrapper = (props) => {
     }
 
     const _updateAgentState = (agentObj) => {
-        if(agentObj.account == agent.account) {
+        console.log("Checking if agent is the same")
+        if(agentObj.id == agent.id) {
+            console.log("Agent is the same")
             setAgent((oldAgent) => {
                 let agent = oldAgent;
-                agent = agentObj;
+                agent.timeForService = agentObj.timeForService;
+                agent.upgradeLevel = agentObj.upgradeLevel;
+                agent.timeForServiceNext = agentObj.timeForServiceNext;
                 return agent;
             });
         }

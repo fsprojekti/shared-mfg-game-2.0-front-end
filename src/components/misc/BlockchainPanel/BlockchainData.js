@@ -31,19 +31,17 @@ const BlockchainData = () => {
         let error = {};
         let balance = await context.usersBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`]
         let pendingBalance = context.usersPendingBalances[stakeChain][`${context.chains["chains"][stakeChain].name}`];
-        if (parseInt(values.txFee) + parseInt(values.newStake) > (parseInt(balance) + parseInt(pendingBalance))) {
-            error.txFee = " ";
-            error.newStake = " ";
-            context.setNote((prevState) => {
-                return({
-                    ...prevState,
-                    msg: "Balance on " + context.chains["chains"][stakeChain].name + " too low",
-                    heading: '',
-                    show: true,
-                    type: 'danger'
-                });
-                });
+        let stake = context.usersStakes[stakeIndex][`${context.chains["chains"][stakeChain].name}`];
+        if(direction == "stake") {
+            if (parseInt(values.txFee) + parseInt(values.newStake) > (parseInt(balance) + parseInt(pendingBalance))) {
+                error.txFee = "Balance too low";
+                error.newStake = "Balance too low";
+            }
+        } else if (direction == "unstake") {
+            if(parseInt(values.newStake) > (parseInt(stake))) error.newStake = "Not enough stake";
+            if(parseInt(values.txFee) > (parseInt(balance) + parseInt(pendingBalance))) error.txFee = "Balance too low";
         }
+        
         return error;
       };
 
