@@ -59,6 +59,16 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
         }
     };
 
+    function millisToMinutesAndSeconds(millis) {
+        // console.log(context.service.duration)
+        let d = new Date(1000*Math.round(millis/1000));
+        if (d.getUTCMinutes() === 0) {
+            return ( d.getUTCSeconds() + 's' );
+        } else {
+            return ( d.getUTCMinutes() + 'min ' + d.getUTCSeconds() + 's' );
+        }
+    }
+
 
     return (
         <ResponsiveBar
@@ -95,7 +105,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
                 return (
                     <Card style={{opacity: "0.8"}}>
                         <b>Price: {(data.price == undefined ? '0' : (data.price))}</b>
-                        <b>Time for service: {data.serviceDuration} seconds</b>
+                        <b>Time for service: {millisToMinutesAndSeconds(data.serviceDuration*1000)} seconds</b>
                     </Card>
 
                 )

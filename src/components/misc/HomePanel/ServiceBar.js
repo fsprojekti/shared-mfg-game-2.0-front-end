@@ -63,8 +63,8 @@ const ServiceBar = () => {
                     <ProgressBar striped variant="success" now={serviceCompleted} label={`${serviceCompleted}%`} animated={(serviceCompleted < 100 ? true : false)} style={{borderRadius: "8px", height: "35px"}}/>
                     <div className="bottom">
                         {
-                            (context.service.state !== "ACTIVE") ? (
-                                <p>Time for service = {(context.service["service"].duration)} s</p>
+                            (context.service["service"].state !== "ACTIVE") ? (
+                                <p>Time for service = {millisToMinutesAndSeconds((context.service["service"].duration)*1000)} </p>
                             ) : (
                                 <p>Time left = {timeLeft}</p>
                             )
