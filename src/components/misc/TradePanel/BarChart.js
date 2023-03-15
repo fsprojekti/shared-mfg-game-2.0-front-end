@@ -5,7 +5,7 @@ import { patternDotsDef, patternSquaresDef, patternLinesDef } from '@nivo/core'
 import { Card } from 'react-bootstrap';
 
 const BarChart = ({dataArray, modifiedData, checked}) => {
-    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services } = useContext(AppContext);
+    const {openTradeModal, setTradeModalContent, openCancelOrderModal, setCancelOrderModalContent, service,services, agent} = useContext(AppContext);
     const setTradeModal = (data) => {
 
         const modalService = services["services"].filter(service => service._id  == data.service && service.state == "MARKET");
@@ -137,7 +137,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
             fill={[
                 {
                 match: 
-                    d => d.data.data.service === service["service"]._id,
+                    d => d.data.data.agentId === agent.id,
                 id: 'lines-pattern'
             },
                 // { match: '*', id: 'custom' },
