@@ -105,7 +105,7 @@ const BarChart = ({dataArray, modifiedData, checked}) => {
                 return (
                     <Card style={{opacity: "0.8"}}>
                         <b>Price: {(data.price == undefined ? '0' : (data.price))}</b>
-                        <b>Time for service: {millisToMinutesAndSeconds(data.serviceDuration*1000)} seconds</b>
+                        <b>Time for service: {millisToMinutesAndSeconds(data.serviceDuration*1000)} </b>
                     </Card>
 
                 )

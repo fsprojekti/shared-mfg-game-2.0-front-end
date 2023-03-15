@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import { AppContext } from '../../context/context';
 import {InputGroup, FormControl, Form, Button, Spinner} from "react-bootstrap";
 import {motion} from 'framer-motion'
@@ -25,6 +25,12 @@ const TradeModal = () => {
                 return "rgb(0, 0, 0)";
         }
     };
+
+    const escFunction = useCallback((event) => {
+        if (event.key === "Escape") {
+            setIsTradeModalOpen(false);
+        }
+      }, []);
 
     const validateBalance = async (values) => {  
         let error = {};
@@ -66,6 +72,14 @@ const TradeModal = () => {
             }
         }
     };
+
+    useEffect(() => {
+        document.addEventListener("keydown", escFunction, false);
+    
+        return () => {
+          document.removeEventListener("keydown", escFunction, false);
+        };
+      }, [escFunction]);
 
     useEffect(() => {
         

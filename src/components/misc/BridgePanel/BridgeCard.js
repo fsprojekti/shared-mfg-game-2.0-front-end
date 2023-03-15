@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {Button, Card, Form, InputGroup, ToggleButton, ButtonGroup, Spinner} from "react-bootstrap";
+import React, {useState, useContext} from 'react';
+import {Button, Card, Form, InputGroup, ToggleButton, ButtonGroup, Spinner, OverlayTrigger, Tooltip  } from "react-bootstrap";
 import { AppContext } from '../../../context/context';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -22,6 +22,12 @@ const BridgeCard = () => {
         amount: yup.number().required().min(1, "Has to be at least 1").integer(),
         fee: yup.number().integer().min(0, "Can't be negative"),
     });
+
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Fee is paid on main chain.
+        </Tooltip>
+      );
 
 
 
@@ -164,6 +170,11 @@ const BridgeCard = () => {
                                     {/* <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button> */}
                                 </InputGroup>
 
+                                <OverlayTrigger
+                                placement="left"
+                                delay={{ show: 0, hide: 400 }}
+                                overlay={renderTooltip}
+                                >
                                 <InputGroup style={{margin: "10px"}}>
                                     <InputGroup.Text style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></InputGroup.Text>
                                     <Form.Control 
@@ -179,6 +190,7 @@ const BridgeCard = () => {
                                         {errors.fee}
                                     </Form.Control.Feedback>
                                 </InputGroup>
+                                </OverlayTrigger>
 
                                 <Button form='bridgeForm' variant="success" type='submit' style={{borderRadius: "8px"}}>
 

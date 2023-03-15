@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import { AppContext } from '../../../context/context';
 import { Button } from "react-bootstrap";
 import {motion} from 'framer-motion'
@@ -6,6 +6,12 @@ import {motion} from 'framer-motion'
 const CancelOrderModal = () => {
     const context = useContext(AppContext);
     const [order, setOrder] = useState({});
+
+    const escFunction = useCallback((event) => {
+        if (event.key === "Escape") {
+            context.setIsCancelUserOrderModalOpen({open: false})
+        }
+    }, []);
 
 
     const confirm = async () => {
@@ -36,6 +42,14 @@ const CancelOrderModal = () => {
                   });
         }
     };
+
+    useEffect(() => {
+        document.addEventListener("keydown", escFunction, false);
+    
+        return () => {
+          document.removeEventListener("keydown", escFunction, false);
+        };
+      }, [escFunction]);
 
     useEffect(() => {
         const createDataArray = async () => { 

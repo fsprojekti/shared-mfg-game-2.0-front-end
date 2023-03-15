@@ -1,10 +1,16 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useCallback, useEffect, useContext} from 'react';
 import { AppContext } from '../../context/context';
 import { Button} from "react-bootstrap";
 import {motion} from 'framer-motion'
 
 const CancelTransactionModal = () => {
     const context = useContext(AppContext);
+
+    const escFunction = useCallback((event) => {
+        if (event.key === "Escape") {
+            context.setCancelTransactionModalContent({open: false})
+        }
+        }, []);
 
     const confirm = async () => {
         try {
@@ -48,6 +54,14 @@ const CancelTransactionModal = () => {
             }
         }
     };
+
+    useEffect(() => {
+        document.addEventListener("keydown", escFunction, false);
+    
+        return () => {
+          document.removeEventListener("keydown", escFunction, false);
+        };
+      }, [escFunction]);
 
     useEffect(() => {
         const transactions = context.transactions;

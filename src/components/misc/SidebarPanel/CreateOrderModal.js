@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import { AppContext } from '../../../context/context';
 import {InputGroup,Button, Spinner, Dropdown, Form} from "react-bootstrap";
 import {motion} from 'framer-motion'
@@ -41,6 +41,12 @@ const CreateOrderModal = () => {
         }
         return error;
       };
+
+    const escFunction = useCallback((event) => {
+    if (event.key === "Escape") {
+        context.setIsCreateOrderModalOpen({open: false})
+    }
+    }, []);
 
     const confirm = async (price) => {
         try {
@@ -95,15 +101,14 @@ const CreateOrderModal = () => {
         }
     };
 
-    const handleKeypress = async e => {
-        try {
-            if (e.key === 'Enter') {
-                confirm();
-            }
-        } catch(err) {
-            console.log(err);
-        }
-    };
+    useEffect(() => {
+        document.addEventListener("keydown", escFunction, false);
+    
+        return () => {
+          document.removeEventListener("keydown", escFunction, false);
+        };
+      }, [escFunction]);
+
 
 
     return (
