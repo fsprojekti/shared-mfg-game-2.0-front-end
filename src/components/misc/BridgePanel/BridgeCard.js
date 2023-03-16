@@ -154,8 +154,8 @@ const BridgeCard = () => {
                             
                                 <Form.Group controlId='amountBridge' className='position-relative' style={{margin: "10px", borderRadius: "8px"}}>
                                     {/* <Form.Label id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Amount</span></Form.Label> */}
-                                    
-                                    <Form.Label style={{textAlign: "start"}}>Amount</Form.Label>
+                                    <InputGroup>
+                                    <InputGroup.Text style={{textAlign: "start"}}>Amount</InputGroup.Text>
                                     <Form.Control 
                                         onChange={handleChange}
                                         type="number"
@@ -167,6 +167,7 @@ const BridgeCard = () => {
                                     <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: -35}}>
                                         {errors.amount}
                                     </Form.Control.Feedback>
+                                    </InputGroup>
                                     {/* <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button> */}
                                 </Form.Group>
 
@@ -176,7 +177,8 @@ const BridgeCard = () => {
                                 overlay={renderTooltip}
                                 >
                                 <Form.Group controlId='feeBridge' style={{margin: "10px"}}>
-                                    <Form.Label style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></Form.Label>
+                                    <InputGroup>
+                                    <InputGroup.Text style={{borderRadius: "8px 0 0 8px"}}>Fee</InputGroup.Text>
                                     <Form.Control 
                                         onChange={handleChange}
                                         type="number"
@@ -186,6 +188,7 @@ const BridgeCard = () => {
                                         isInvalid={!!errors.fee}
                                         onBlur={handleBlur}
                                     />
+                                    </InputGroup>
                                     <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: -35}}>
                                         {errors.fee}
                                     </Form.Control.Feedback>

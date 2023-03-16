@@ -1,5 +1,5 @@
-let server = "http://localhost:8000";
-// let server = "https://game.fs-lampa.si";
+// let server = "http://localhost:8000";
+let server = "https://game.fs-lampa.si";
 
 
 
