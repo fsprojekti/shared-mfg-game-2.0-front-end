@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 const TradeModal = () => {
-    const { transactions, user, isTradeModalOpen, usersBalances, agent, servicesAll, usersPendingBalances, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
+    const { transactions, user, isTradeModalOpen, usersBalances, usersPendingBalances, tradeModalContent, setIsTradeModalOpen, apiUserBidOrder, users, orders, chains, cookies, agents, note, setNote} = useContext(AppContext);
     const [tableDataArray, setTableDataArray] = useState([]);
 
     const bidOrderSchema = yup.object({
@@ -38,7 +38,6 @@ const TradeModal = () => {
         let chain = await chains["chains"][index];
         let balance = await usersBalances[index][`${chain.name}`];
         let pendingBalance = await usersPendingBalances[index][`${chain.name}`];
-        console.log(balance, pendingBalance)
         let price = (tradeModalContent.price == undefined ? 0 : tradeModalContent.price);
 
         if (parseInt(values.txFee) + parseInt(price) > (parseInt(balance) + parseInt(pendingBalance))) {
@@ -52,7 +51,7 @@ const TradeModal = () => {
         try {
            
             let response = await apiUserBidOrder(txFee, tradeModalContent._id);
-            console.log(response)
+            // console.log(response)
             setIsTradeModalOpen(false);
         } catch(err) {
             console.log(err)
@@ -86,7 +85,7 @@ const TradeModal = () => {
         const checkOrderStatus = async () => {
             // console.log(orders)
             const order = await orders.filter(order => order._id === tradeModalContent._id);
-            console.log(order)
+            // console.log(order)
             if(order.length > 0) {
                 if (order[0].state !== "PLACED" && isTradeModalOpen) {
                     setNote((prevState) => {

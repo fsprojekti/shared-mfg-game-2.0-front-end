@@ -172,8 +172,6 @@ const CreateOrderModal = () => {
                             }}
                             onSubmit={(values, {setSubmitting, resetForm}) => {
                                 setSubmitting(true);
-                                console.log("CONFIRM")
-                                console.log(values)
                                 confirm(values.price);
                                 resetForm();
                                 setSubmitting(false);

@@ -91,8 +91,8 @@ const Stats = () => {
             let numOfFirst = filledOrders.filter(order => order.type === uniqueService[0]);
             let numOfSecond = filledOrders.filter(order => order.type === uniqueService[1]);
             //Log to see how many orders of each type are in the system
-            console.log(numOfFirst.length);
-            console.log(numOfSecond.length);
+            // console.log(numOfFirst.length);
+            // console.log(numOfSecond.length);
 
             // let sum = numOfFirst.length + numOfSecond.length;
             // let upgrades = Math.floor(sum / 2); 

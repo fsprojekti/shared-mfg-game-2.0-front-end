@@ -79,11 +79,11 @@ const Trades = () => {
             const users = await context.users;
             const service = await context.service;
             let placedOrders = await orders.filter(order => order.state === "PLACED");
-            console.log(placedOrders)
+            // console.log(placedOrders)
             const placedOrdersWithPlayerData = await placedOrders.map(function(ordr){ 
                 let newOrderObj = ordr;
                 let service=servicesAll["services"].filter(srvc=> srvc._id == newOrderObj.service);
-                console.log(service)
+                // console.log(service)
                 // if (service.length > 0) {
                 newOrderObj.serviceDuration=service[0].duration.toFixed(2);
 
@@ -118,9 +118,9 @@ const Trades = () => {
             let array2 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === uniqueService[1]);
             let array3 = await placedOrdersWithPlayerDataByChain.filter(item => item.serviceType === service["service"].type);
 
-            console.log(array1)
-            console.log(array2)
-            console.log(array3)
+            // console.log(array1)
+            // console.log(array2)
+            // console.log(array3)
 
             if (checked1) {
                 await array1.sort((a, b) => a.serviceDuration - b.serviceDuration);

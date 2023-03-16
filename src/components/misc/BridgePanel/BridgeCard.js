@@ -152,10 +152,10 @@ const BridgeCard = () => {
                         }) => (
                             <Form id='bridgeForm' noValidate onSubmit={handleSubmit}>
                             
-                                <InputGroup controlId="validateBridgeAmount" className='position-relative' style={{margin: "10px", borderRadius: "8px"}}>
+                                <Form.Group controlId='amountBridge' className='position-relative' style={{margin: "10px", borderRadius: "8px"}}>
                                     {/* <Form.Label id="input-user-name" style={{borderRadius: "8px 0 0 8px"}}><span>Amount</span></Form.Label> */}
                                     
-                                    <InputGroup.Text>Amount</InputGroup.Text>
+                                    <Form.Label style={{textAlign: "start"}}>Amount</Form.Label>
                                     <Form.Control 
                                         onChange={handleChange}
                                         type="number"
@@ -168,15 +168,15 @@ const BridgeCard = () => {
                                         {errors.amount}
                                     </Form.Control.Feedback>
                                     {/* <Button variant="outline-dark" onClick={() =>  maxTransferInput(direction)} style={{borderRadius: "0 8px 8px 0"}} > <span>Max</span> </Button> */}
-                                </InputGroup>
+                                </Form.Group>
 
                                 <OverlayTrigger
                                 placement="left"
                                 delay={{ show: 0, hide: 400 }}
                                 overlay={renderTooltip}
                                 >
-                                <InputGroup style={{margin: "10px"}}>
-                                    <InputGroup.Text style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></InputGroup.Text>
+                                <Form.Group controlId='feeBridge' style={{margin: "10px"}}>
+                                    <Form.Label style={{borderRadius: "8px 0 0 8px"}}><span>Fee</span></Form.Label>
                                     <Form.Control 
                                         onChange={handleChange}
                                         type="number"
@@ -189,7 +189,7 @@ const BridgeCard = () => {
                                     <Form.Control.Feedback type="invalid" tooltip style={{position: "absolute", top: -35}}>
                                         {errors.fee}
                                     </Form.Control.Feedback>
-                                </InputGroup>
+                                </Form.Group>
                                 </OverlayTrigger>
 
                                 <Button form='bridgeForm' variant="success" type='submit' style={{borderRadius: "8px"}}>
